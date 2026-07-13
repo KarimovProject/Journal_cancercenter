@@ -1,0 +1,488 @@
+# RU translations for Oncoscience
+# Copyright (C) 2026
+#
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+
+msgid "Aloqa"
+msgstr "Контакты"
+
+msgid "Annotatsiya"
+msgstr "Аннотация"
+
+msgid "Aspirantura"
+msgstr "Аспирантура"
+
+msgid "Barcha huquqlar himoyalangan."
+msgstr "Все права защищены."
+
+msgid "Barcha maqolalar ilmiy kengash tomonidan ko'rib chiqiladi va uch tilda (o'zbek, rus, ingliz) taqdim etiladi."
+msgstr "Все статьи рассматриваются научным советом и представляются на трёх языках (узбекский, русский, английский)."
+
+msgid "Barcha maqolalar tahririyat va ilmiy kengash tomonidan retsenziyadan o'tkaziladi."
+msgstr "Все статьи проходят рецензирование редакцией и научным советом."
+
+msgid "Barcha muharrirlar"
+msgstr "Все редакторы"
+
+msgid "Barchasi"
+msgstr "Все"
+
+msgid "Berilgan shartlarga mos maqola topilmadi."
+msgstr "Статьи, соответствующие заданным условиям, не найдены."
+
+msgid "Biografiya"
+msgstr "Биография"
+
+msgid "Birinchi maqolangizni topshiring"
+msgstr "Подайте первую статью"
+
+msgid "Bo'lib o'tgan"
+msgstr "Прошедшие"
+
+msgid "Bo'limlar"
+msgstr "Разделы"
+
+msgid "Bosh muharrir"
+msgstr "Главный редактор"
+
+msgid "Bosh sahifa"
+msgstr "Главная"
+
+msgid "Bu muallifning nashr etilgan maqolalari yo'q."
+msgstr "У этого автора нет опубликованных статей."
+
+msgid "Bu sonda maqolalar yo'q."
+msgstr "В этом выпуске нет статей."
+
+msgid "Call for papers"
+msgstr "Call for papers"
+
+msgid "Chiqish"
+msgstr "Выйти"
+
+msgid "Dastur"
+msgstr "Программа"
+
+msgid "Dasturni yuklab olish"
+msgstr "Скачать программу"
+
+msgid "E'lonlar, tadbirlar va jurnal faoliyatidagi o'zgarishlar."
+msgstr "Объявления, события и изменения в деятельности журнала."
+
+msgid "Email"
+msgstr "Электронная почта"
+
+msgid "Email manzilingiz"
+msgstr "Ваш email"
+
+msgid "Eng eski"
+msgstr "Сначала старые"
+
+msgid "Eng yangi"
+msgstr "Сначала новые"
+
+msgid "Eslatma"
+msgstr "Примечание"
+
+msgid "Faol"
+msgstr "Активные"
+
+msgid "Faol grantlar yo'q."
+msgstr "Активных грантов нет."
+
+msgid "Faol loyihalar"
+msgstr "Активные проекты"
+
+msgid "Fayl PDF yoki Word formatida bo'lishi kerak."
+msgstr "Файл должен быть в формате PDF или Word."
+
+msgid "Filtrlash"
+msgstr "Фильтр"
+
+msgid "Grantlar"
+msgstr "Гранты"
+
+msgid "Grantlar va ilmiy loyihalar"
+msgstr "Гранты и научные проекты"
+
+msgid "Hisob ma'lumotlari"
+msgstr "Данные аккаунта"
+
+msgid "Hisobingiz bormi?"
+msgstr "У вас есть аккаунт?"
+
+msgid "Hisobingiz muvaffaqiyatli yaratildi!"
+msgstr "Ваш аккаунт успешно создан!"
+
+msgid "Hisobingiz yo'qmi?"
+msgstr "Нет аккаунта?"
+
+msgid "Holat"
+msgstr "Статус"
+
+msgid "Hozircha faol dasturlar yo'q."
+msgstr "Активных программ пока нет."
+
+msgid "Hozircha maqolalar yo'q."
+msgstr "Статей пока нет."
+
+msgid "Hozircha nashr etilgan sonlar yo'q."
+msgstr "Опубликованных выпусков пока нет."
+
+msgid "Hozircha ochiq to'plamlar yo'q."
+msgstr "Открытых коллекций пока нет."
+
+msgid "Hozircha yangiliklar yo'q."
+msgstr "Новостей пока нет."
+
+msgid "Ilmiy kafedralar"
+msgstr "Научные кафедры"
+
+msgid "Ilmiy kengash"
+msgstr "Научный совет"
+
+msgid "Ilmiy maqolalar"
+msgstr "Научные статьи"
+
+msgid "Ilmiy yo'nalishlar"
+msgstr "Научные направления"
+
+msgid "Indekslangan bazalar"
+msgstr "Индексируется в базах"
+
+msgid "Iqtibos keltirish (APA)"
+msgstr "Цитирование (APA)"
+
+msgid "Jurnal haqida"
+msgstr "О журнале"
+
+msgid "Jurnal ko'rsatkichlari"
+msgstr "Метрики журнала"
+
+msgid "Jurnal ma'lumoti"
+msgstr "Информация о журнале"
+
+msgid "Jurnal navigatsiyasi"
+msgstr "Навигация по журналу"
+
+msgid "Jurnal soni"
+msgstr "Выпуск журнала"
+
+msgid "Jurnal sonlari"
+msgstr "Выпуски журнала"
+
+msgid "Jurnal sonlari arxivi"
+msgstr "Архив выпусков журнала"
+
+msgid "Jurnal yangiliklari"
+msgstr "Новости журнала"
+
+msgid "Jurnalning tahririyat va ilmiy kengash a'zolari."
+msgstr "Члены редакции и научного совета журнала."
+
+msgid "Kafedralar"
+msgstr "Кафедры"
+
+msgid "Kafedralar hozircha kiritilmagan."
+msgstr "Кафедры пока не добавлены."
+
+msgid "Kalit so'zlar"
+msgstr "Ключевые слова"
+
+msgid "Kalit soʻz yoki muallif boʻyicha qidirish..."
+msgstr "Поиск по ключевому слову или автору..."
+
+msgid "Kalit soʻz..."
+msgstr "Ключевое слово..."
+
+msgid "Kelayotgan"
+msgstr "Предстоящие"
+
+msgid "Kirish"
+msgstr "Вход"
+
+msgid "Kirish turi"
+msgstr "Тип доступа"
+
+msgid "Ko'p iqtiboslangan"
+msgstr "Наиболее цитируемые"
+
+msgid "Ko'p ko'rilgan"
+msgstr "Наиболее просматриваемые"
+
+msgid "Ko'rib chiqish jarayoni"
+msgstr "Процесс рецензирования"
+
+msgid "Ko'rish"
+msgstr "Просмотр"
+
+msgid "Konferensiyalar"
+msgstr "Конференции"
+
+msgid "Konferensiyalar va tadbirlar"
+msgstr "Конференции и мероприятия"
+
+msgid "Ma'lumot"
+msgstr "Информация"
+
+msgid "Ma'lumot hozircha kiritilmagan."
+msgstr "Информация пока не добавлена."
+
+msgid "Ma'lumot yo'q."
+msgstr "Нет данных."
+
+msgid "Manzil"
+msgstr "Адрес"
+
+msgid "Maqola ko'rib chiqishga yuboriladi, natija 'Mening maqolalarim' bo'limida ko'rinadi."
+msgstr "Статья отправляется на рассмотрение, результат будет виден в разделе «Мои статьи»."
+
+msgid "Maqola topshirish"
+msgstr "Подача статьи"
+
+msgid "Maqola topshirish formasi."
+msgstr "Форма подачи статьи."
+
+msgid "Maqola topshirish uchun hisob oching."
+msgstr "Создайте аккаунт для подачи статей."
+
+msgid "Maqola topshirish uchun tizimga kiring."
+msgstr "Войдите в систему для подачи статей."
+
+msgid "Maqola uch tilda (o'zbek, rus, ingliz) sarlavha va annotatsiya bilan taqdim etilishi tavsiya etiladi. To'liq matn PDF yoki Word formatida bo'lishi kerak."
+msgstr "Рекомендуется представлять статью на трёх языках (узбекский, русский, английский) с заголовком и аннотацией. Полный текст должен быть в формате PDF или Word."
+
+msgid "Maqola yuborish"
+msgstr "Подать статью"
+
+msgid "Maqola yuborish tartibi"
+msgstr "Порядок подачи статей"
+
+msgid "Maqola, muallif yoki kalit soʻz boʻyicha qidirish..."
+msgstr "Поиск по статье, автору или ключевому слову..."
+
+msgid "Maqolalar"
+msgstr "Статьи"
+
+msgid "Maqolalar onkologiya, radiologiya va tegishli tibbiy fanlar bo'yicha original ilmiy tadqiqotlar, sharhlar va klinik kuzatuvlarni qamrab olishi mumkin."
+msgstr "Статьи могут охватывать оригинальные исследования, обзоры и клинические наблюдения по онкологии, радиологии и смежным медицинским наукам."
+
+msgid "Maqolalarni yuborish uchun tahririyat bilan bog'laning:"
+msgstr "Для подачи статей свяжитесь с редакцией:"
+
+msgid "Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi."
+msgstr "Ваша статья принята! Редакция сообщит о результатах после рассмотрения."
+
+msgid "Maqolani tahrirlash"
+msgstr "Редактировать статью"
+
+msgid "Maqolani topshirish"
+msgstr "Подать статью"
+
+msgid "Markazning ilmiy kafedralari va ularning yo'nalishlari."
+msgstr "Научные кафедры центра и их направления."
+
+msgid "Mening maqolalarim"
+msgstr "Мои статьи"
+
+msgid "Muallif ma'lumotlari"
+msgstr "Данные автора"
+
+msgid "Mualliflar"
+msgstr "Авторы"
+
+msgid "Mualliflar uchun"
+msgstr "Авторам"
+
+msgid "Mualliflar uchun qoidalar"
+msgstr "Правила для авторов"
+
+msgid "Muddat"
+msgstr "Срок"
+
+msgid "Mudir"
+msgstr "Заведующий"
+
+msgid "Nashr etilgan sonlar bo'yicha maqolalar to'plami."
+msgstr "Коллекция статей по опубликованным выпускам."
+
+msgid "Nashr etilmagan (preview)"
+msgstr "Не опубликовано (предпросмотр)"
+
+msgid "Nashr sanasi"
+msgstr "Дата публикации"
+
+msgid "Nusxa olish"
+msgstr "Копировать"
+
+msgid "Nusxalandi"
+msgstr "Скопировано"
+
+msgid "O'xshash maqolalar"
+msgstr "Похожие статьи"
+
+msgid "Obuna bo'lish"
+msgstr "Подписаться"
+
+msgid "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar."
+msgstr "Открытые тематические коллекции — направления, в которых принимаются статьи."
+
+msgid "Oncoscience — Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining retsenzlanadigan ilmiy nashri. Jurnal onkologiya, radiologiya, kimyoterapiya va tegishli sohalar bo'yicha original tadqiqotlar, klinik kuzatuvlar va ilmiy sharhlarni chop etadi."
+msgstr "Oncoscience — рецензируемый научный журнал Республиканского специализированного научно-практического медицинского центра онкологии и радиологии. Журнал публикует оригинальные исследования, клинические наблюдения и научные обзоры по онкологии, радиологии, химиотерапии и смежным областям."
+
+msgid "Onkologiya va radiologiya ilmiy jurnali"
+msgstr "Научный журнал по онкологии и радиологии"
+
+msgid "Onkologiya va radiologiya sohasidagi ilmiy nashrlar"
+msgstr "Научные публикации в области онкологии и радиологии"
+
+msgid "Onkologiya va radiologiya sohasidagi retsenzlangan ilmiy nashrlar."
+msgstr "Рецензированные научные публикации в области онкологии и радиологии."
+
+msgid "Ordinatura"
+msgstr "Ординатура"
+
+msgid "PDF yuklab olish"
+msgstr "Скачать PDF"
+
+msgid "Qidirish"
+msgstr "Поиск"
+
+msgid "Qidiruv"
+msgstr "Поиск"
+
+msgid "Rad etilgan"
+msgstr "Отклонено"
+
+msgid "Rad etish sababi"
+msgstr "Причина отклонения"
+
+msgid "Rahbar"
+msgstr "Руководитель"
+
+msgid "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi."
+msgstr "Платформа научных публикаций Республиканского специализированного научно-практического медицинского центра онкологии и радиологии."
+
+msgid "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining maqolalari, konferensiyalari va ilmiy faoliyati."
+msgstr "Статьи, конференции и научная деятельность Республиканского специализированного научно-практического медицинского центра онкологии и радиологии."
+
+msgid "Ro'yxatdan o'ting"
+msgstr "Зарегистрироваться"
+
+msgid "Ro'yxatdan o'tish"
+msgstr "Регистрация"
+
+msgid "Rus va ingliz tilidagi tarjima tavsiya etiladi."
+msgstr "Рекомендуется перевод на русский и английский языки."
+
+msgid "Sabab:"
+msgstr "Причина:"
+
+msgid "Sana"
+msgstr "Дата"
+
+msgid "Sarlavha"
+msgstr "Заголовок"
+
+msgid "Sarlavha va annotatsiya kamida o'zbek tilida bo'lishi shart."
+msgstr "Заголовок и аннотация должны быть как минимум на узбекском языке."
+
+msgid "Siz hali maqola topshirmagansiz."
+msgstr "Вы ещё не подали ни одной статьи."
+
+msgid "So'nggi maqolalar"
+msgstr "Последние статьи"
+
+msgid "Sonlar"
+msgstr "Выпуски"
+
+msgid "Ta'lim"
+msgstr "Образование"
+
+msgid "Tahrirlash"
+msgstr "Редактировать"
+
+msgid "Talablar"
+msgstr "Требования"
+
+msgid "Talablar (PDF)"
+msgstr "Требования (PDF)"
+
+msgid "Taʼlim"
+msgstr "Образование"
+
+msgid "Tizimdan chiqdingiz."
+msgstr "Вы вышли из системы."
+
+msgid "Tizimga kirish"
+msgstr "Вход в систему"
+
+msgid "To'liq matn"
+msgstr "Полный текст"
+
+msgid "To'plam maqolalari"
+msgstr "Статьи коллекции"
+
+msgid "To'plamlar"
+msgstr "Коллекции"
+
+msgid "Topshirish muddati"
+msgstr "Срок подачи"
+
+msgid "Tozalash"
+msgstr "Очистить"
+
+msgid "Toʻplamlar"
+msgstr "Коллекции"
+
+msgid "Xush kelibsiz, {}!"
+msgstr "Добро пожаловать, {}!"
+
+msgid "Yakunlangan"
+msgstr "Завершённые"
+
+msgid "Yakunlangan loyihalar"
+msgstr "Завершённые проекты"
+
+msgid "Yangi maqola topshirish"
+msgstr "Подать новую статью"
+
+msgid "Yangi maqolalar va sonlar chiqqanda email orqali xabar oling."
+msgstr "Получайте уведомления по email о новых статьях и выпусках."
+
+msgid "Yangiliklar"
+msgstr "Новости"
+
+msgid "Yangiliklarga obuna bo'ling"
+msgstr "Подпишитесь на новости"
+
+msgid "Yil"
+msgstr "Год"
+
+msgid "Yo'nalish"
+msgstr "Направление"
+
+msgid "Yo'nalishlar"
+msgstr "Направления"
+
+msgid "b."
+msgstr "б."
+
+msgid "iqtibos"
+msgstr "цит."
+
+msgid "ko'rish"
+msgstr "просм."
+
+msgid "maqola"
+msgstr "статья"
+
+msgid "ta natija"
+msgstr "результат(ов)"
+
+msgid "va boshqalar"
+msgstr "и др."

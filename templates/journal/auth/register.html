@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Ro'yxatdan o'tish" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card auth-card-wide">
+    <h1>{% trans "Ro'yxatdan o'tish" %}</h1>
+    <p class="auth-sub">{% trans "Maqola topshirish uchun hisob oching." %}</p>
+
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+
+      <h3 class="form-section-title">{% trans "Hisob ma'lumotlari" %}</h3>
+
+      <div class="form-field">
+        <label>{{ form.username.label }}</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field">
+          <label>{{ form.password1.label }}</label>
+          {{ form.password1 }}
+          {{ form.password1.errors }}
+        </div>
+        <div class="form-field">
+          <label>{{ form.password2.label }}</label>
+          {{ form.password2 }}
+          {{ form.password2.errors }}
+        </div>
+      </div>
+
+      <h3 class="form-section-title">{% trans "Muallif ma'lumotlari" %}</h3>
+
+      <div class="form-field">
+        <label>{{ form.full_name.label }}</label>
+        {{ form.full_name }}
+        {{ form.full_name.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.email.label }}</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field">
+          <label>{{ form.academic_degree.label }}</label>
+          {{ form.academic_degree }}
+          {{ form.academic_degree.errors }}
+        </div>
+        <div class="form-field">
+          <label>{{ form.orcid_id.label }}</label>
+          {{ form.orcid_id }}
+          {{ form.orcid_id.errors }}
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.affiliation.label }}</label>
+        {{ form.affiliation }}
+        {{ form.affiliation.errors }}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-block">{% trans "Ro'yxatdan o'tish" %}</button>
+    </form>
+
+    <p class="auth-alt">
+      {% trans "Hisobingiz bormi?" %}
+      <a href="{% url 'journal:login' %}">{% trans "Kirish" %}</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

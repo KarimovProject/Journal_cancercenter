@@ -1,0 +1,15 @@
+{% load i18n %}
+<div class="alerts-signup">
+    <div class="container alerts-inner">
+        <div>
+            <h3>{% trans "Yangiliklarga obuna bo'ling" %}</h3>
+            <p>{% trans "Yangi maqolalar va sonlar chiqqanda email orqali xabar oling." %}</p>
+        </div>
+        <form action="{% url 'journal:newsletter_subscribe' %}" method="post" class="alerts-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <input type="email" name="email" required placeholder="{% trans 'Email manzilingiz' %}">
+            <button type="submit" class="btn btn-light">{% trans "Obuna bo'lish" %}</button>
+        </form>
+    </div>
+</div>

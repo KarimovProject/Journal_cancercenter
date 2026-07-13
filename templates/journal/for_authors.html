@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Mualliflar uchun" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Mualliflar uchun" %}</div>
+        <h1>{% if page %}{{ page.title }}{% else %}{% trans "Mualliflar uchun qoidalar" %}{% endif %}</h1>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+<div class="prose">
+    {% if page and page.body %}
+        {{ page.body|linebreaks }}
+    {% else %}
+        <h2>{% trans "Maqola yuborish tartibi" %}</h2>
+        <p>{% trans "Maqolalar onkologiya, radiologiya va tegishli tibbiy fanlar bo'yicha original ilmiy tadqiqotlar, sharhlar va klinik kuzatuvlarni qamrab olishi mumkin." %}</p>
+        <h2>{% trans "Talablar" %}</h2>
+        <p>{% trans "Maqola uch tilda (o'zbek, rus, ingliz) sarlavha va annotatsiya bilan taqdim etilishi tavsiya etiladi. To'liq matn PDF yoki Word formatida bo'lishi kerak." %}</p>
+        <h2>{% trans "Ko'rib chiqish jarayoni" %}</h2>
+        <p>{% trans "Barcha maqolalar tahririyat va ilmiy kengash tomonidan retsenziyadan o'tkaziladi." %}</p>
+        <h2>{% trans "Aloqa" %}</h2>
+        <p>{% trans "Maqolalarni yuborish uchun tahririyat bilan bog'laning:" %} <a href="https://cancercenter.uz" target="_blank" rel="noopener">cancercenter.uz</a></p>
+    {% endif %}
+</div>
+</div>
+{% endblock %}

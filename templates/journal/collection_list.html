@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Call for papers — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "To'plamlar" %}</div>
+        <h1>Call for papers</h1>
+        <p>{% trans "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar." %}</p>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    {% if collections %}
+    <div class="grid grid-2">
+        {% for c in collections %}
+        <div class="collection-card">
+            <span class="status {% if c.is_open %}open{% else %}closed{% endif %}">{{ c.get_status_display }}</span>
+            <h3 style="margin:0 0 8px;"><a href="{{ c.get_absolute_url }}">{{ c.title }}</a></h3>
+            {% if c.description %}<p class="excerpt" style="color:var(--muted);flex:1;">{{ c.description|truncatewords:30 }}</p>{% endif %}
+            {% if c.submission_deadline %}<div class="meta"><span>{% trans "Muddat" %}: {{ c.submission_deadline|date:"d.m.Y" }}</span></div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">{% trans "Hozircha ochiq to'plamlar yo'q." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

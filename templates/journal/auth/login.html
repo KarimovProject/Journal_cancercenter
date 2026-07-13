@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Kirish" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <h1>{% trans "Tizimga kirish" %}</h1>
+    <p class="auth-sub">{% trans "Maqola topshirish uchun tizimga kiring." %}</p>
+
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+      <div class="form-field">
+        <label>{{ form.username.label }}</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.password.label }}</label>
+        {{ form.password }}
+        {{ form.password.errors }}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-block">{% trans "Kirish" %}</button>
+    </form>
+
+    <p class="auth-alt">
+      {% trans "Hisobingiz yo'qmi?" %}
+      <a href="{% url 'journal:register' %}">{% trans "Ro'yxatdan o'ting" %}</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

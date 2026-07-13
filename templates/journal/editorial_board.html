@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Ilmiy kengash" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Ilmiy kengash" %}</div>
+        <h1>{% trans "Ilmiy kengash" %}</h1>
+        <p>{% trans "Jurnalning tahririyat va ilmiy kengash a'zolari." %}</p>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    {% if members %}
+    <div class="people-grid">
+        {% for m in members %}
+        <div class="person">
+            {% if m.photo %}<img src="{{ m.photo.url }}" alt="{{ m.full_name }}">{% else %}<div class="avatar">{{ m.full_name|slice:':1' }}</div>{% endif %}
+            <div class="name">{{ m.full_name }}</div>
+            {% if m.position %}<div class="role">{{ m.position }}</div>{% endif %}
+            {% if m.academic_degree %}<div class="degree">{{ m.academic_degree }}</div>{% endif %}
+            {% if m.orcid_id %}<div class="degree"><a href="https://orcid.org/{{ m.orcid_id }}" target="_blank" rel="noopener">ORCID</a></div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">{% trans "Ma'lumot hozircha kiritilmagan." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

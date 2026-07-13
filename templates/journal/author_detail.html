@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ author.full_name }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Mualliflar" %} / {{ author.full_name }}</div>
+        <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
+            {% if author.photo %}<img src="{{ author.photo.url }}" alt="{{ author.full_name }}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;">{% endif %}
+            <div>
+                <h1>{{ author.full_name }}</h1>
+                {% if author.affiliation %}<p>{{ author.affiliation }}</p>{% endif %}
+                {% if author.orcid_id %}<p><a href="https://orcid.org/{{ author.orcid_id }}" target="_blank" rel="noopener">ORCID: {{ author.orcid_id }}</a></p>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding:40px 20px;">
+    {% if author.bio %}
+    <div class="prose" style="margin-bottom:40px;">
+        <h2>{% trans "Biografiya" %}</h2>
+        <p>{{ author.bio|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    <div class="section-head"><h2>{% trans "Maqolalar" %} ({{ articles.count }})</h2></div>
+    {% if articles %}
+    <div class="grid grid-3">
+        {% for article in articles %}{% include "journal/partials/_article_card.html" %}{% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">{% trans "Bu muallifning nashr etilgan maqolalari yo'q." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

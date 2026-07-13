@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Jurnal sonlari" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Sonlar" %}</div>
+        <h1>{% trans "Jurnal sonlari arxivi" %}</h1>
+        <p>{% trans "Nashr etilgan sonlar bo'yicha maqolalar to'plami." %}</p>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    {% if issues %}
+    <div class="grid grid-3">
+        {% for issue in issues %}
+        <a class="card" href="{% url 'journal:issue_detail' issue.pk %}" style="text-decoration:none;">
+            {% if issue.cover_image %}
+            <img src="{{ issue.cover_image.url }}" alt="{{ issue }}" style="width:100%; border-radius:8px; margin-bottom:12px;">
+            {% else %}
+            <div style="background:var(--brand-light); border-radius:8px; padding:34px 16px; text-align:center; margin-bottom:12px;">
+                <div style="font-size:2rem; font-weight:700; color:var(--brand-dark);">Vol. {{ issue.volume }}</div>
+                <div style="color:var(--brand); font-weight:600;">No. {{ issue.number }} · {{ issue.year }}</div>
+            </div>
+            {% endif %}
+            <h3>{{ issue.title }}</h3>
+            <div class="meta"><span>{{ issue.articles.count }} {% trans "maqola" %}</span>{% if issue.published_date %}<span>{{ issue.published_date|date:"Y-m-d" }}</span>{% endif %}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">{% trans "Hozircha nashr etilgan sonlar yo'q." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

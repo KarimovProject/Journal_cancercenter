@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ issue.title }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a> / {{ issue }}</div>
+        <h1>{{ issue.title }}</h1>
+        <p>Vol. {{ issue.volume }}, No. {{ issue.number }} · {{ issue.year }}{% if issue.published_date %} · {{ issue.published_date|date:"d.m.Y" }}{% endif %}</p>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    <div class="section-head"><h2>{% trans "Maqolalar" %} ({{ articles.count }})</h2></div>
+    {% if articles %}
+    <div class="grid grid-3">
+        {% for article in articles %}{% include "journal/partials/_article_card.html" %}{% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">{% trans "Bu sonda maqolalar yo'q." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

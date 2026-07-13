@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Kafedralar" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Kafedralar" %}</div>
+        <h1>{% trans "Ilmiy kafedralar" %}</h1>
+        <p>{% trans "Markazning ilmiy kafedralari va ularning yo'nalishlari." %}</p>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    {% if departments %}
+    <div class="grid grid-2">
+        {% for d in departments %}
+        <div class="card">
+            <h3>{{ d.name }}</h3>
+            {% if d.head_of_department %}
+            <div class="authors">{% trans "Mudir" %}: <a href="{{ d.head_of_department.get_absolute_url }}">{{ d.head_of_department.full_name }}</a></div>
+            {% endif %}
+            {% if d.description %}<p class="excerpt">{{ d.description|truncatewords:40 }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">{% trans "Kafedralar hozircha kiritilmagan." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ meta_description|default:'' }}{% endblock %}">
+
+    {# Open Graph / SEO #}
+    <meta property="og:site_name" content="{{ SITE_NAME }}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ self.title|default:SITE_NAME }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ meta_description|default:'' }}{% endblock %}">
+    <meta property="og:url" content="{{ SITE_DOMAIN }}{{ request.path }}">
+    {% block og_image %}{% endblock %}
+    <meta name="twitter:card" content="summary_large_image">
+    {% block extra_head %}{% endblock %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-top">
+        <a href="{% url 'journal:home' %}" class="brand">
+            <span class="brand-mark">Onco</span><span class="brand-mark alt">science</span>
+            <span class="brand-sub">Ilmiy-amaliy jurnal</span>
+        </a>
+
+        <form class="header-search" action="{% url 'journal:article_list' %}" method="get" role="search">
+            <input type="text" name="q" value="{{ request.GET.q }}"
+                   placeholder="{% trans 'Kalit soʻz yoki muallif boʻyicha qidirish...' %}" aria-label="{% trans 'Qidiruv' %}">
+            <button type="submit" aria-label="{% trans 'Qidirish' %}">&#128269;</button>
+        </form>
+
+        <div class="header-actions">
+            {% if user.is_authenticated %}
+                <a class="btn btn-sm" href="{% url 'journal:submit_article' %}">{% trans "Maqola yuborish" %}</a>
+                <a class="btn btn-sm btn-outline" href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a>
+                <form action="{% url 'journal:logout' %}" method="post" class="inline-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline">{% trans "Chiqish" %}</button>
+                </form>
+            {% else %}
+                <a class="btn btn-sm" href="{% url 'journal:login' %}?next={{ request.path }}">{% trans "Maqola yuborish" %}</a>
+                <a class="btn btn-sm btn-outline" href="{% url 'journal:register' %}">{% trans "Ro'yxatdan o'tish" %}</a>
+            {% endif %}
+            <form action="{% url 'set_language' %}" method="post" class="lang-switch">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.path }}">
+                {% for code, name in LANGUAGES %}
+                    <button type="submit" name="language" value="{{ code }}"
+                            class="lang-btn {% if code == LANGUAGE_CODE %}active{% endif %}">{{ code|upper }}</button>
+                {% endfor %}
+            </form>
+        </div>
+
+        <button class="nav-toggle" aria-label="Menu" onclick="document.body.classList.toggle('nav-open')">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <div class="header-nav-bar">
+        <nav class="container main-nav">
+            <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a>
+            <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a>
+            <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a>
+            <a href="{% url 'journal:collection_list' %}">{% trans "Toʻplamlar" %}</a>
+            <a href="{% url 'journal:editorial_board' %}">{% trans "Ilmiy kengash" %}</a>
+            <a href="{% url 'journal:department_list' %}">{% trans "Kafedralar" %}</a>
+            <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a>
+            <div class="nav-dropdown">
+                <a href="#" class="nav-drop-toggle">{% trans "Taʼlim" %} &#9662;</a>
+                <div class="nav-drop-menu">
+                    <a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a>
+                    <a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a>
+                    <a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a>
+                </div>
+            </div>
+            <a href="{% url 'journal:update_list' %}">{% trans "Yangiliklar" %}</a>
+            <a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a>
+        </nav>
+    </div>
+</header>
+
+{% if messages %}
+<div class="container messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <h4>{{ SITE_NAME }}</h4>
+            <p>{% trans "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi." %}</p>
+        </div>
+        <div>
+            <h4>{% trans "Bo'limlar" %}</h4>
+            <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a>
+            <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a>
+            <a href="{% url 'journal:editorial_board' %}">{% trans "Ilmiy kengash" %}</a>
+            <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a>
+        </div>
+        <div>
+            <h4>{% trans "Ta'lim" %}</h4>
+            <a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a>
+            <a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a>
+            <a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a>
+        </div>
+        <div>
+            <h4>{% trans "Ma'lumot" %}</h4>
+            <a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a>
+            <a href="https://cancercenter.uz" target="_blank" rel="noopener">cancercenter.uz</a>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <span>&copy; {% now "Y" %} {{ SITE_NAME }}. {% trans "Barcha huquqlar himoyalangan." %}</span>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ SITE_NAME }} — {% trans "Onkologiya va radiologiya ilmiy jurnali" %}{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1>{% trans "Onkologiya va radiologiya sohasidagi ilmiy nashrlar" %}</h1>
+        <p>{% trans "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining maqolalari, konferensiyalari va ilmiy faoliyati." %}</p>
+        <form class="hero-search" action="{% url 'journal:article_list' %}" method="get">
+            <input type="text" name="q" placeholder="{% trans 'Maqola, muallif yoki kalit soʻz boʻyicha qidirish...' %}">
+            <button class="btn btn-light" type="submit">{% trans "Qidirish" %}</button>
+        </form>
+        <div class="hero-stats">
+            <div><div class="num">{{ stats.articles }}</div><div class="lbl">{% trans "Maqolalar" %}</div></div>
+            <div><div class="num">{{ stats.authors }}</div><div class="lbl">{% trans "Mualliflar" %}</div></div>
+            <div><div class="num">{{ stats.categories }}</div><div class="lbl">{% trans "Yo'nalishlar" %}</div></div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container overview-grid">
+        <div>
+            <h2>{% trans "Jurnal haqida" %}</h2>
+            {% if journal_info and journal_info.overview %}
+            <p>{{ journal_info.overview|linebreaks }}</p>
+            {% else %}
+            <p>{% trans "Oncoscience — Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining retsenzlanadigan ilmiy nashri. Jurnal onkologiya, radiologiya, kimyoterapiya va tegishli sohalar bo'yicha original tadqiqotlar, klinik kuzatuvlar va ilmiy sharhlarni chop etadi." %}</p>
+            <p>{% trans "Barcha maqolalar ilmiy kengash tomonidan ko'rib chiqiladi va uch tilda (o'zbek, rus, ingliz) taqdim etiladi." %}</p>
+            {% endif %}
+            <a class="link" href="{% url 'journal:editorial_board' %}">{% trans "Barcha muharrirlar" %} &rarr;</a>
+        </div>
+        <div>
+            {% if editor_in_chief %}
+            <div class="eic-card">
+                {% if editor_in_chief.photo %}<img src="{{ editor_in_chief.photo.url }}" alt="{{ editor_in_chief.full_name }}">{% else %}<div class="avatar">{{ editor_in_chief.full_name|slice:':1' }}</div>{% endif %}
+                <div class="label">{% trans "Bosh muharrir" %}</div>
+                <div class="name">{{ editor_in_chief.full_name }}</div>
+                {% if editor_in_chief.academic_degree %}<div class="degree" style="color:var(--muted);font-size:.85rem;">{{ editor_in_chief.academic_degree }}</div>{% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if metrics %}
+<section style="background: var(--bg-soft); padding: 40px 0;">
+    <div class="container">
+        <div class="section-head"><h2>{% trans "Jurnal ko'rsatkichlari" %}</h2></div>
+        <div class="metrics-grid">
+            {% for m in metrics %}
+            <div class="metric">
+                <div class="val">{{ m.value }}</div>
+                <div class="name">{{ m.name }}{% if m.year %} ({{ m.year }}){% endif %}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if collections %}
+<section>
+    <div class="container">
+        <div class="section-head">
+            <h2>{% trans "Call for papers" %}</h2>
+            <a class="link" href="{% url 'journal:collection_list' %}">{% trans "Barchasi" %} &rarr;</a>
+        </div>
+        <div class="grid grid-3">
+            {% for c in collections %}
+            <div class="collection-card">
+                <span class="status {% if c.is_open %}open{% else %}closed{% endif %}">{{ c.get_status_display }}</span>
+                <h3 style="margin:0 0 8px;"><a href="{{ c.get_absolute_url }}">{{ c.title }}</a></h3>
+                {% if c.description %}<p class="excerpt" style="color:var(--muted);flex:1;">{{ c.description|truncatewords:20 }}</p>{% endif %}
+                {% if c.submission_deadline %}<div class="meta"><span>{% trans "Muddat" %}: {{ c.submission_deadline|date:"d.m.Y" }}</span></div>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section {% if not metrics %}style="background: var(--bg-soft);"{% endif %}>
+    <div class="container">
+        <div class="section-head">
+            <h2>{% trans "So'nggi maqolalar" %}</h2>
+            <a class="link" href="{% url 'journal:article_list' %}">{% trans "Barchasi" %} &rarr;</a>
+        </div>
+        {% if latest_articles %}
+        <div class="grid grid-2">
+            {% for article in latest_articles %}{% include "journal/partials/_article_card.html" %}{% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">{% trans "Hozircha maqolalar yo'q." %}</div>
+        {% endif %}
+    </div>
+</section>
+
+{% if journal_updates %}
+<section>
+    <div class="container">
+        <div class="section-head">
+            <h2>{% trans "Jurnal yangiliklari" %}</h2>
+            <a class="link" href="{% url 'journal:update_list' %}">{% trans "Barchasi" %} &rarr;</a>
+        </div>
+        <div class="grid grid-3">
+            {% for u in journal_updates %}
+            <a class="card" href="{{ u.get_absolute_url }}" style="text-decoration:none;">
+                {% if u.banner_image %}<img src="{{ u.banner_image.url }}" alt="" style="width:100%;border-radius:8px;margin-bottom:12px;">{% endif %}
+                <div class="meta" style="border:0;padding:0;margin-bottom:8px;"><span>{{ u.published_date|date:"d.m.Y" }}</span></div>
+                <h3>{{ u.title }}</h3>
+                {% if u.content %}<p class="excerpt">{{ u.content|truncatewords:18 }}</p>{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if categories %}
+<section style="background: var(--bg-soft);">
+    <div class="container">
+        <div class="section-head"><h2>{% trans "Ilmiy yo'nalishlar" %}</h2></div>
+        <div class="grid grid-3">
+            {% for cat in categories %}
+            <a class="card" href="{{ cat.get_absolute_url }}" style="text-decoration:none;">
+                <h3>{{ cat.name }}</h3>
+                {% if cat.description %}<p class="excerpt">{{ cat.description|truncatewords:18 }}</p>{% endif %}
+                <div class="meta"><span>{{ cat.articles.count }} {% trans "maqola" %}</span></div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% include "journal/partials/_alerts_signup.html" %}
+
+{% if journal_info %}
+<section>
+    <div class="container">
+        <div class="jinfo">
+            <h3>{% trans "Jurnal ma'lumoti" %}</h3>
+            <div class="rows">
+                {% if journal_info.issn_print %}<div><span>ISSN (Print)</span>{{ journal_info.issn_print }}</div>{% endif %}
+                {% if journal_info.issn_online %}<div><span>ISSN (Online)</span>{{ journal_info.issn_online }}</div>{% endif %}
+                {% if journal_info.is_open_access_journal %}<div><span>{% trans "Kirish turi" %}</span>Open access</div>{% endif %}
+            </div>
+            {% if journal_info.indexed_list %}
+            <div style="margin-top:18px;">
+                <span style="color:var(--muted);font-size:.8rem;">{% trans "Indekslangan bazalar" %}</span>
+                <div class="indexed-list">{% for db in journal_info.indexed_list %}<span>{{ db }}</span>{% endfor %}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

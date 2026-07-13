@@ -1,0 +1,16 @@
+{% load i18n %}
+<nav class="journal-nav" aria-label="{% trans 'Jurnal navigatsiyasi' %}">
+    <h4>{% trans "Jurnal navigatsiyasi" %}</h4>
+    <a href="{% url 'journal:home' %}">{% trans "Jurnal haqida" %}</a>
+    <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a>
+    <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a>
+    <a href="{% url 'journal:collection_list' %}">{% trans "Call for papers" %}</a>
+    <a href="{% url 'journal:editorial_board' %}">{% trans "Ilmiy kengash" %}</a>
+    <a href="{% url 'journal:department_list' %}">{% trans "Kafedralar" %}</a>
+    <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a>
+    <a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a>
+    <a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a>
+    <a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a>
+    <a href="{% url 'journal:update_list' %}">{% trans "Yangiliklar" %}</a>
+    <a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a>
+</nav>

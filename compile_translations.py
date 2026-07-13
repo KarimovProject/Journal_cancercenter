@@ -1,0 +1,417 @@
+import os, re, struct
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOCALE_DIR = os.path.join(BASE_DIR, 'locale')
+
+RU = {
+    "Aloqa": "Контакты",
+    "Annotatsiya": "Аннотация",
+    "Aspirantura": "Аспирантура",
+    "Barcha huquqlar himoyalangan.": "Все права защищены.",
+    "Barcha maqolalar ilmiy kengash tomonidan ko'rib chiqiladi va uch tilda (o'zbek, rus, ingliz) taqdim etiladi.": "Все статьи рассматриваются научным советом и представляются на трёх языках (узбекский, русский, английский).",
+    "Barcha maqolalar tahririyat va ilmiy kengash tomonidan retsenziyadan o'tkaziladi.": "Все статьи проходят рецензирование редакцией и научным советом.",
+    "Barcha muharrirlar": "Все редакторы",
+    "Barchasi": "Все",
+    "Berilgan shartlarga mos maqola topilmadi.": "Статьи, соответствующие заданным условиям, не найдены.",
+    "Biografiya": "Биография",
+    "Bo'lib o'tgan": "Прошедшие",
+    "Bo'limlar": "Разделы",
+    "Bosh muharrir": "Главный редактор",
+    "Bosh sahifa": "Главная",
+    "Bu muallifning nashr etilgan maqolalari yo'q.": "У этого автора нет опубликованных статей.",
+    "Bu sonda maqolalar yo'q.": "В этом выпуске нет статей.",
+    "Call for papers": "Call for papers",
+    "Chiqish": "Выйти",
+    "Dastur": "Программа",
+    "Dasturni yuklab olish": "Скачать программу",
+    "E'lonlar, tadbirlar va jurnal faoliyatidagi o'zgarishlar.": "Объявления, события и изменения в деятельности журнала.",
+    "Email": "Электронная почта",
+    "Email manzilingiz": "Ваш email",
+    "Eng eski": "Сначала старые",
+    "Eng yangi": "Сначала новые",
+    "Eslatma": "Примечание",
+    "Faol": "Активные",
+    "Faol grantlar yo'q.": "Активных грантов нет.",
+    "Faol loyihalar": "Активные проекты",
+    "Filtrlash": "Фильтр",
+    "Grantlar": "Гранты",
+    "Grantlar va ilmiy loyihalar": "Гранты и научные проекты",
+    "Hisobingiz bormi?": "У вас есть аккаунт?",
+    "Hisobingiz muvaffaqiyatli yaratildi!": "Ваш аккаунт успешно создан!",
+    "Hisob ma'lumotlari": "Данные аккаунта",
+    "Holat": "Статус",
+    "Hozircha faol dasturlar yo'q.": "Активных программ пока нет.",
+    "Hozircha maqolalar yo'q.": "Статей пока нет.",
+    "Hozircha nashr etilgan sonlar yo'q.": "Опубликованных выпусков пока нет.",
+    "Hozircha ochiq to'plamlar yo'q.": "Открытых коллекций пока нет.",
+    "Hozircha yangiliklar yo'q.": "Новостей пока нет.",
+    "Ilmiy kafedralar": "Научные кафедры",
+    "Ilmiy kengash": "Научный совет",
+    "Ilmiy maqolalar": "Научные статьи",
+    "Ilmiy yo'nalishlar": "Научные направления",
+    "Indekslangan bazalar": "Индексируется в базах",
+    "Iqtibos keltirish (APA)": "Цитирование (APA)",
+    "Jurnal haqida": "О журнале",
+    "Jurnal ko'rsatkichlari": "Метрики журнала",
+    "Jurnal ma'lumoti": "Информация о журнале",
+    "Jurnal navigatsiyasi": "Навигация по журналу",
+    "Jurnal soni": "Выпуск журнала",
+    "Jurnal sonlari": "Выпуски журнала",
+    "Jurnal sonlari arxivi": "Архив выпусков журнала",
+    "Jurnal yangiliklari": "Новости журнала",
+    "Jurnalning tahririyat va ilmiy kengash a'zolari.": "Члены редакции и научного совета журнала.",
+    "Kafedralar": "Кафедры",
+    "Kafedralar hozircha kiritilmagan.": "Кафедры пока не добавлены.",
+    "Kalit so'zlar": "Ключевые слова",
+    "Kalit soʻz yoki muallif boʻyicha qidirish...": "Поиск по ключевому слову или автору...",
+    "Kalit soʻz...": "Ключевое слово...",
+    "Kelayotgan": "Предстоящие",
+    "Kirish": "Вход",
+    "Kirish turi": "Тип доступа",
+    "Ko'p iqtiboslangan": "Наиболее цитируемые",
+    "Ko'p ko'rilgan": "Наиболее просматриваемые",
+    "Ko'rib chiqish jarayoni": "Процесс рецензирования",
+    "Ko'rish": "Просмотр",
+    "Konferensiyalar": "Конференции",
+    "Konferensiyalar va tadbirlar": "Конференции и мероприятия",
+    "Ma'lumot": "Информация",
+    "Ma'lumot hozircha kiritilmagan.": "Информация пока не добавлена.",
+    "Ma'lumot yo'q.": "Нет данных.",
+    "Manzil": "Адрес",
+    "Maqola topshirish": "Подача статьи",
+    "Muallif ma'lumotlari": "Данные автора",
+    "Maqola topshirish formasi.": "Форма подачи статьи.",
+    "Maqola topshirish uchun hisob oching.": "Создайте аккаунт для подачи статей.",
+    "Maqola topshirish uchun tizimga kiring.": "Войдите в систему для подачи статей.",
+    "Maqola uch tilda (o'zbek, rus, ingliz) sarlavha va annotatsiya bilan taqdim etilishi tavsiya etiladi. To'liq matn PDF yoki Word formatida bo'lishi kerak.": "Рекомендуется представлять статью на трёх языках (узбекский, русский, английский) с заголовком и аннотацией. Полный текст должен быть в формате PDF или Word.",
+    "Maqola yuborish": "Подать статью",
+    "Maqola yuborish tartibi": "Порядок подачи статей",
+    "Maqola, muallif yoki kalit soʻz boʻyicha qidirish...": "Поиск по статье, автору или ключевому слову...",
+    "Maqolalar": "Статьи",
+    "Maqolalar onkologiya, radiologiya va tegishli tibbiy fanlar bo'yicha original ilmiy tadqiqotlar, sharhlar va klinik kuzatuvlarni qamrab olishi mumkin.": "Статьи могут охватывать оригинальные исследования, обзоры и клинические наблюдения по онкологии, радиологии и смежным медицинским наукам.",
+    "Maqolalarni yuborish uchun tahririyat bilan bog'laning:": "Для подачи статей свяжитесь с редакцией:",
+    "Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi.": "Ваша статья принята! Редакция сообщит о результатах после рассмотрения.",
+    "Maqolani topshirish": "Подать статью",
+    "Markazning ilmiy kafedralari va ularning yo'nalishlari.": "Научные кафедры центра и их направления.",
+    "Mening maqolalarim": "Мои статьи",
+    "Maqolani tahrirlash": "Редактировать статью",
+    "Mualliflar": "Авторы",
+    "Mualliflar uchun": "Авторам",
+    "Mualliflar uchun qoidalar": "Правила для авторов",
+    "Muddat": "Срок",
+    "Mudir": "Заведующий",
+    "Nashr etilgan sonlar bo'yicha maqolalar to'plami.": "Коллекция статей по опубликованным выпускам.",
+    "Nashr etilmagan (preview)": "Не опубликовано (предпросмотр)",
+    "Nashr sanasi": "Дата публикации",
+    "Nusxa olish": "Копировать",
+    "Nusxalandi": "Скопировано",
+    "O'xshash maqolalar": "Похожие статьи",
+    "Obuna bo'lish": "Подписаться",
+    "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar.": "Открытые тематические коллекции — направления, в которых принимаются статьи.",
+    "Oncoscience — Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining retsenzlanadigan ilmiy nashri. Jurnal onkologiya, radiologiya, kimyoterapiya va tegishli sohalar bo'yicha original tadqiqotlar, klinik kuzatuvlar va ilmiy sharhlarni chop etadi.": "Oncoscience — рецензируемый научный журнал Республиканского специализированного научно-практического медицинского центра онкологии и радиологии. Журнал публикует оригинальные исследования, клинические наблюдения и научные обзоры по онкологии, радиологии, химиотерапии и смежным областям.",
+    "Onkologiya va radiologiya ilmiy jurnali": "Научный журнал по онкологии и радиологии",
+    "Onkologiya va radiologiya sohasidagi ilmiy nashrlar": "Научные публикации в области онкологии и радиологии",
+    "Onkologiya va radiologiya sohasidagi retsenzlangan ilmiy nashrlar.": "Рецензированные научные публикации в области онкологии и радиологии.",
+    "Ordinatura": "Ординатура",
+    "PDF yuklab olish": "Скачать PDF",
+    "Qidirish": "Поиск",
+    "Qidiruv": "Поиск",
+    "Rahbar": "Руководитель",
+    "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi.": "Платформа научных публикаций Республиканского специализированного научно-практического медицинского центра онкологии и радиологии.",
+    "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining maqolalari, konferensiyalari va ilmiy faoliyati.": "Статьи, конференции и научная деятельность Республиканского специализированного научно-практического медицинского центра онкологии и радиологии.",
+    "Ro'yxatdan o'ting": "Зарегистрироваться",
+    "Ro'yxatdan o'tish": "Регистрация",
+    "Rad etilgan": "Отклонено",
+    "Rad etish sababi": "Причина отклонения",
+    "Sana": "Дата",
+    "Sabab:": "Причина:",
+    "Sarlavha": "Заголовок",
+    "Sarlavha va annotatsiya kamida o'zbek tilida bo'lishi shart.": "Заголовок и аннотация должны быть как минимум на узбекском языке.",
+    "So'nggi maqolalar": "Последние статьи",
+    "Sonlar": "Выпуски",
+    "Siz hali maqola topshirmagansiz.": "Вы ещё не подали ни одной статьи.",
+    "Ta'lim": "Образование",
+    "Talablar": "Требования",
+    "Talablar (PDF)": "Требования (PDF)",
+    "Taʼlim": "Образование",
+    "Tizimga kirish": "Вход в систему",
+    "Tahrirlash": "Редактировать",
+    "Tizimdan chiqdingiz.": "Вы вышли из системы.",
+    "To'liq matn": "Полный текст",
+    "To'plam maqolalari": "Статьи коллекции",
+    "To'plamlar": "Коллекции",
+    "Topshirish muddati": "Срок подачи",
+    "Tozalash": "Очистить",
+    "Toʻplamlar": "Коллекции",
+    "Yakunlangan": "Завершённые",
+    "Yakunlangan loyihalar": "Завершённые проекты",
+    "Yangi maqola topshirish": "Подать новую статью",
+    "Yangi maqolalar va sonlar chiqqanda email orqali xabar oling.": "Получайте уведомления по email о новых статьях и выпусках.",
+    "Yangiliklar": "Новости",
+    "Yangiliklarga obuna bo'ling": "Подпишитесь на новости",
+    "Yil": "Год",
+    "Yo'nalish": "Направление",
+    "Yo'nalishlar": "Направления",
+    "b.": "б.",
+    "Birinchi maqolangizni topshiring": "Подайте первую статью",
+    "Fayl PDF yoki Word formatida bo'lishi kerak.": "Файл должен быть в формате PDF или Word.",
+    "Hisobingiz yo'qmi?": "Нет аккаунта?",
+    "Maqola ko'rib chiqishga yuboriladi, natija 'Mening maqolalarim' bo'limida ko'rinadi.": "Статья отправляется на рассмотрение, результат будет виден в разделе «Мои статьи».",
+    "Rus va ingliz tilidagi tarjima tavsiya etiladi.": "Рекомендуется перевод на русский и английский языки.",
+    "Xush kelibsiz, {}!": "Добро пожаловать, {}!",
+    "iqtibos": "цит.",
+    "ko'rish": "просм.",
+    "maqola": "статья",
+    "ta natija": "результат(ов)",
+    "va boshqalar": "и др.",
+}
+
+EN = {
+    "Aloqa": "Contact",
+    "Annotatsiya": "Abstract",
+    "Aspirantura": "PhD Program",
+    "Barcha huquqlar himoyalangan.": "All rights reserved.",
+    "Barcha maqolalar ilmiy kengash tomonidan ko'rib chiqiladi va uch tilda (o'zbek, rus, ingliz) taqdim etiladi.": "All articles are reviewed by the scientific council and presented in three languages (Uzbek, Russian, English).",
+    "Barcha maqolalar tahririyat va ilmiy kengash tomonidan retsenziyadan o'tkaziladi.": "All articles undergo peer review by the editorial board and scientific council.",
+    "Barcha muharrirlar": "All editors",
+    "Barchasi": "All",
+    "Berilgan shartlarga mos maqola topilmadi.": "No articles found matching the given criteria.",
+    "Biografiya": "Biography",
+    "Bo'lib o'tgan": "Past",
+    "Bo'limlar": "Sections",
+    "Bosh muharrir": "Editor-in-Chief",
+    "Bosh sahifa": "Home",
+    "Bu muallifning nashr etilgan maqolalari yo'q.": "This author has no published articles.",
+    "Bu sonda maqolalar yo'q.": "No articles in this issue.",
+    "Call for papers": "Call for papers",
+    "Chiqish": "Logout",
+    "Dastur": "Program",
+    "Dasturni yuklab olish": "Download program",
+    "E'lonlar, tadbirlar va jurnal faoliyatidagi o'zgarishlar.": "Announcements, events, and changes in journal activities.",
+    "Email": "Email",
+    "Email manzilingiz": "Your email",
+    "Eng eski": "Oldest first",
+    "Eng yangi": "Newest first",
+    "Eslatma": "Note",
+    "Faol": "Active",
+    "Faol grantlar yo'q.": "No active grants.",
+    "Faol loyihalar": "Active projects",
+    "Filtrlash": "Filter",
+    "Grantlar": "Grants",
+    "Grantlar va ilmiy loyihalar": "Grants and research projects",
+    "Hisobingiz bormi?": "Already have an account?",
+    "Hisobingiz muvaffaqiyatli yaratildi!": "Your account has been created successfully!",
+    "Hisob ma'lumotlari": "Account details",
+    "Holat": "Status",
+    "Hozircha faol dasturlar yo'q.": "No active programs yet.",
+    "Hozircha maqolalar yo'q.": "No articles yet.",
+    "Hozircha nashr etilgan sonlar yo'q.": "No published issues yet.",
+    "Hozircha ochiq to'plamlar yo'q.": "No open collections yet.",
+    "Hozircha yangiliklar yo'q.": "No updates yet.",
+    "Ilmiy kafedralar": "Scientific departments",
+    "Ilmiy kengash": "Scientific council",
+    "Ilmiy maqolalar": "Scientific articles",
+    "Ilmiy yo'nalishlar": "Research areas",
+    "Indekslangan bazalar": "Indexed in",
+    "Iqtibos keltirish (APA)": "Cite (APA)",
+    "Jurnal haqida": "About the journal",
+    "Jurnal ko'rsatkichlari": "Journal metrics",
+    "Jurnal ma'lumoti": "Journal information",
+    "Jurnal navigatsiyasi": "Journal navigation",
+    "Jurnal soni": "Journal issue",
+    "Jurnal sonlari": "Journal issues",
+    "Jurnal sonlari arxivi": "Journal issue archive",
+    "Jurnal yangiliklari": "Journal updates",
+    "Jurnalning tahririyat va ilmiy kengash a'zolari.": "Members of the editorial board and scientific council.",
+    "Kafedralar": "Departments",
+    "Kafedralar hozircha kiritilmagan.": "No departments added yet.",
+    "Kalit so'zlar": "Keywords",
+    "Kalit soʻz yoki muallif boʻyicha qidirish...": "Search by keyword or author...",
+    "Kalit soʻz...": "Keyword...",
+    "Kelayotgan": "Upcoming",
+    "Kirish": "Login",
+    "Kirish turi": "Access type",
+    "Ko'p iqtiboslangan": "Most cited",
+    "Ko'p ko'rilgan": "Most viewed",
+    "Ko'rib chiqish jarayoni": "Review process",
+    "Ko'rish": "View",
+    "Konferensiyalar": "Conferences",
+    "Konferensiyalar va tadbirlar": "Conferences and events",
+    "Ma'lumot": "Information",
+    "Ma'lumot hozircha kiritilmagan.": "No information added yet.",
+    "Ma'lumot yo'q.": "No data.",
+    "Manzil": "Address",
+    "Maqola topshirish": "Submit article",
+    "Muallif ma'lumotlari": "Author details",
+    "Maqola topshirish formasi.": "Article submission form.",
+    "Maqola topshirish uchun hisob oching.": "Create an account to submit articles.",
+    "Maqola topshirish uchun tizimga kiring.": "Log in to submit articles.",
+    "Maqola uch tilda (o'zbek, rus, ingliz) sarlavha va annotatsiya bilan taqdim etilishi tavsiya etiladi. To'liq matn PDF yoki Word formatida bo'lishi kerak.": "Articles should be submitted in three languages (Uzbek, Russian, English) with title and abstract. Full text must be in PDF or Word format.",
+    "Maqola yuborish": "Submit manuscript",
+    "Maqola yuborish tartibi": "Submission guidelines",
+    "Maqola, muallif yoki kalit soʻz boʻyicha qidirish...": "Search by article, author or keyword...",
+    "Maqolalar": "Articles",
+    "Maqolalar onkologiya, radiologiya va tegishli tibbiy fanlar bo'yicha original ilmiy tadqiqotlar, sharhlar va klinik kuzatuvlarni qamrab olishi mumkin.": "Articles may cover original research, reviews, and clinical observations in oncology, radiology, and related medical sciences.",
+    "Maqolalarni yuborish uchun tahririyat bilan bog'laning:": "To submit articles, contact the editorial office:",
+    "Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi.": "Your article has been received! The editorial board will notify you of the result after review.",
+    "Maqolani topshirish": "Submit article",
+    "Markazning ilmiy kafedralari va ularning yo'nalishlari.": "Scientific departments of the center and their research areas.",
+    "Mening maqolalarim": "My articles",
+    "Maqolani tahrirlash": "Edit article",
+    "Mualliflar": "Authors",
+    "Mualliflar uchun": "For authors",
+    "Mualliflar uchun qoidalar": "Author guidelines",
+    "Muddat": "Deadline",
+    "Mudir": "Head",
+    "Nashr etilgan sonlar bo'yicha maqolalar to'plami.": "Collection of articles by published issues.",
+    "Nashr etilmagan (preview)": "Unpublished (preview)",
+    "Nashr sanasi": "Publication date",
+    "Nusxa olish": "Copy",
+    "Nusxalandi": "Copied",
+    "O'xshash maqolalar": "Related articles",
+    "Obuna bo'lish": "Subscribe",
+    "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar.": "Open thematic collections — directions currently accepting submissions.",
+    "Oncoscience — Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining retsenzlanadigan ilmiy nashri. Jurnal onkologiya, radiologiya, kimyoterapiya va tegishli sohalar bo'yicha original tadqiqotlar, klinik kuzatuvlar va ilmiy sharhlarni chop etadi.": "Oncoscience — a peer-reviewed scientific journal of the Republican Specialized Scientific-Practical Medical Center of Oncology and Radiology. The journal publishes original research, clinical observations, and scientific reviews in oncology, radiology, chemotherapy, and related fields.",
+    "Onkologiya va radiologiya ilmiy jurnali": "Scientific Journal of Oncology and Radiology",
+    "Onkologiya va radiologiya sohasidagi ilmiy nashrlar": "Scientific publications in oncology and radiology",
+    "Onkologiya va radiologiya sohasidagi retsenzlangan ilmiy nashrlar.": "Peer-reviewed scientific publications in oncology and radiology.",
+    "Ordinatura": "Residency",
+    "PDF yuklab olish": "Download PDF",
+    "Qidirish": "Search",
+    "Qidiruv": "Search",
+    "Rahbar": "Principal investigator",
+    "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi.": "Platform for scientific publications of the Republican Specialized Scientific-Practical Medical Center of Oncology and Radiology.",
+    "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining maqolalari, konferensiyalari va ilmiy faoliyati.": "Articles, conferences, and scientific activities of the Republican Specialized Scientific-Practical Medical Center of Oncology and Radiology.",
+    "Ro'yxatdan o'tish": "Register",
+    "Rad etilgan": "Rejected",
+    "Rad etish sababi": "Rejection reason",
+    "Ro'yxatdan o'ting": "Register",
+    "Sana": "Date",
+    "Sabab:": "Reason:",
+    "Sarlavha": "Title",
+    "Sarlavha va annotatsiya kamida o'zbek tilida bo'lishi shart.": "Title and abstract must be at least in Uzbek.",
+    "So'nggi maqolalar": "Latest articles",
+    "Sonlar": "Issues",
+    "Siz hali maqola topshirmagansiz.": "You have not submitted any articles yet.",
+    "Ta'lim": "Education",
+    "Talablar": "Requirements",
+    "Talablar (PDF)": "Requirements (PDF)",
+    "Taʼlim": "Education",
+    "Tizimga kirish": "Sign in",
+    "Tahrirlash": "Edit",
+    "Tizimdan chiqdingiz.": "You have been logged out.",
+    "To'liq matn": "Full text",
+    "To'plam maqolalari": "Collection articles",
+    "To'plamlar": "Collections",
+    "Topshirish muddati": "Submission deadline",
+    "Tozalash": "Clear",
+    "Toʻplamlar": "Collections",
+    "Yakunlangan": "Completed",
+    "Yakunlangan loyihalar": "Completed projects",
+    "Yangi maqola topshirish": "Submit new article",
+    "Yangi maqolalar va sonlar chiqqanda email orqali xabar oling.": "Get notified by email about new articles and issues.",
+    "Yangiliklar": "Updates",
+    "Yangiliklarga obuna bo'ling": "Subscribe to updates",
+    "Yil": "Year",
+    "Yo'nalish": "Direction",
+    "Yo'nalishlar": "Directions",
+    "b.": "p.",
+    "Birinchi maqolangizni topshiring": "Submit your first article",
+    "Fayl PDF yoki Word formatida bo'lishi kerak.": "File must be in PDF or Word format.",
+    "Hisobingiz yo'qmi?": "No account?",
+    "Maqola ko'rib chiqishga yuboriladi, natija 'Mening maqolalarim' bo'limida ko'rinadi.": "The article is sent for review, the result will be visible in 'My articles' section.",
+    "Rus va ingliz tilidagi tarjima tavsiya etiladi.": "Translation into Russian and English is recommended.",
+    "Xush kelibsiz, {}!": "Welcome, {}!",
+    "iqtibos": "cit.",
+    "ko'rish": "views",
+    "maqola": "article",
+    "ta natija": "result(s)",
+    "va boshqalar": "et al.",
+}
+
+
+def write_mo(filepath, catalog):
+    metadata = (
+        'Content-Type: text/plain; charset=UTF-8\n'
+        'Content-Transfer-Encoding: 8bit\n'
+        'Language: \n'
+        'MIME-Version: 1.0\n'
+    )
+    entries = [('', metadata)]
+    for key in sorted(catalog.keys()):
+        val = catalog[key]
+        if not val:
+            continue
+        entries.append((key, val))
+    if len(entries) <= 1:
+        return
+    n = len(entries)
+    orig_offsets = []
+    trans_offsets = []
+    orig_data = b''
+    trans_data = b''
+    for msgid, msgstr in entries:
+        orig_offsets.append((len(orig_data), len(msgid.encode('utf-8'))))
+        orig_data += msgid.encode('utf-8') + b'\x00'
+        trans_offsets.append((len(trans_data), len(msgstr.encode('utf-8'))))
+        trans_data += msgstr.encode('utf-8') + b'\x00'
+    header_size = 28
+    orig_table_size = n * 8
+    trans_table_size = n * 8
+    off_orig_table = header_size
+    off_trans_table = header_size + orig_table_size
+    off_strings = header_size + orig_table_size + trans_table_size
+    header = struct.pack(
+        'Iiiiiii',
+        0x950412de, 0, n,
+        off_orig_table, off_trans_table, 0, 0,
+    )
+    orig_table = b''
+    for length, offset in [(o[1], o[0] + off_strings) for o in orig_offsets]:
+        orig_table += struct.pack('II', length, offset)
+    trans_table = b''
+    for length, offset in [(o[1], o[0] + off_strings + len(orig_data)) for o in trans_offsets]:
+        trans_table += struct.pack('II', length, offset)
+    with open(filepath, 'wb') as f:
+        f.write(header)
+        f.write(orig_table)
+        f.write(trans_table)
+        f.write(orig_data)
+        f.write(trans_data)
+
+
+def write_po(filepath, catalog, lang_name):
+    lines = [
+        f'# {lang_name} translations for Oncoscience',
+        '# Copyright (C) 2026',
+        '#',
+        'msgid ""',
+        'msgstr ""',
+        '"Content-Type: text/plain; charset=UTF-8\\n"',
+        '"Content-Transfer-Encoding: 8bit\\n"',
+        '"Language: \\n"',
+        '',
+    ]
+    for key in sorted(catalog.keys()):
+        val = catalog[key]
+        ek = key.replace('\\', '\\\\').replace('"', '\\"')
+        ev = val.replace('\\', '\\\\').replace('"', '\\"')
+        lines.append(f'msgid "{ek}"')
+        lines.append(f'msgstr "{ev}"')
+        lines.append('')
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(lines))
+
+
+def main():
+    for lang, catalog in [('ru', RU), ('en', EN)]:
+        po_dir = os.path.join(LOCALE_DIR, lang, 'LC_MESSAGES')
+        os.makedirs(po_dir, exist_ok=True)
+        write_po(os.path.join(po_dir, 'django.po'), catalog, lang.upper())
+        write_mo(os.path.join(po_dir, 'django.mo'), catalog)
+        print(f'  {lang}: {len(catalog)} translations')
+    print('Done!')
+
+
+if __name__ == '__main__':
+    main()

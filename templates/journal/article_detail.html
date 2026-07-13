@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ article.title }} — {{ SITE_NAME }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_image %}{% if article.category %}{% endif %}{% endblock %}
+
+{% block extra_head %}
+<meta name="citation_title" content="{{ article.title }}">
+{% for a in article.authors.all %}<meta name="citation_author" content="{{ a.full_name }}">{% endfor %}
+<meta name="citation_publication_date" content="{{ article.publication_date|date:'Y/m/d' }}">
+{% if article.doi %}<meta name="citation_doi" content="{{ article.doi }}">{% endif %}
+{% if article.pdf_file %}<meta name="citation_pdf_url" content="{{ SITE_DOMAIN }}{{ article.pdf_file.url }}">{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="breadcrumb" style="padding-top:24px;">
+    <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> /
+    <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a> /
+    {{ article.title|truncatewords:6 }}
+</div>
+<div class="detail-layout">
+    <article>
+        <div class="badges">
+            <span class="badge badge-type">{{ article.get_article_type_display }}</span>
+            {% if article.is_open_access %}<span class="badge badge-oa">Open access</span>{% endif %}
+            {% if article.category %}<span class="tag" style="background:var(--brand-light);color:var(--brand-dark);padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:600;">{{ article.category.name }}</span>{% endif %}
+            {% if not article.is_published %}<span class="chip past">{% trans "Nashr etilmagan (preview)" %}</span>{% endif %}
+        </div>
+        <h1 class="article-title">{{ article.title }}</h1>
+        <div class="article-authors">
+            {% for a in article.authors.all %}<a href="{{ a.get_absolute_url }}">{{ a.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+        </div>
+        <div class="article-meta-bar">
+            <span>{% trans "Nashr sanasi" %}: {{ article.publication_date|date:"d.m.Y" }}</span>
+            {% if article.issue %}<span>{{ article.issue }}</span>{% endif %}
+            {% if article.pages %}<span>{% trans "b." %} {{ article.pages }}</span>{% endif %}
+            <span>{{ article.views_count }} {% trans "ko'rish" %}</span>
+            {% if article.citation_count %}<span>{{ article.citation_count }} {% trans "iqtibos" %}</span>{% endif %}
+        </div>
+
+        <div class="abstract-block">
+            {% if article.abstract %}
+            <h2>{% trans "Annotatsiya" %}</h2>
+            <p>{{ article.abstract|linebreaks }}</p>
+            {% endif %}
+
+            {% if article.keywords.all %}
+            <h2>{% trans "Kalit so'zlar" %}</h2>
+            <div class="keyword-list">
+                {% for kw in article.keywords.all %}<a href="{% url 'journal:article_list' %}?q={{ kw.name|urlencode }}">{{ kw.name }}</a>{% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% if related_articles %}
+        <div style="margin-top:44px;">
+            <h2 style="font-family:'Lora',serif;">{% trans "O'xshash maqolalar" %}</h2>
+            <div class="grid grid-2" style="margin-top:16px;">
+                {% for article in related_articles %}{% include "journal/partials/_article_card.html" %}{% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </article>
+
+    <aside>
+        {% if article.pdf_file %}
+        <div class="aside-box">
+            <h4>{% trans "To'liq matn" %}</h4>
+            <a href="{{ article.pdf_file.url }}" target="_blank" class="btn" style="width:100%; justify-content:center;">{% trans "PDF yuklab olish" %}</a>
+        </div>
+        {% endif %}
+
+        {% if article.doi %}
+        <div class="aside-box">
+            <h4>DOI</h4>
+            <a href="https://doi.org/{{ article.doi }}" target="_blank" rel="noopener">{{ article.doi }}</a>
+        </div>
+        {% endif %}
+
+        <div class="aside-box">
+            <h4>{% trans "Iqtibos keltirish (APA)" %}</h4>
+            <div class="cite-box" id="citation">{{ article.citation_apa }}</div>
+            <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%; justify-content:center;"
+                    data-copied-label="{% trans 'Nusxalandi' %}"
+                    onclick="navigator.clipboard.writeText(document.getElementById('citation').innerText); this.innerText=this.dataset.copiedLabel;">
+                {% trans "Nusxa olish" %}
+            </button>
+        </div>
+
+        {% if article.authors.all %}
+        <div class="aside-box">
+            <h4>{% trans "Mualliflar" %}</h4>
+            {% for a in article.authors.all %}
+            <div style="margin-bottom:12px;">
+                <a href="{{ a.get_absolute_url }}" style="font-weight:600;">{{ a.full_name }}</a>
+                {% if a.affiliation %}<div style="color:var(--muted);font-size:.85rem;">{{ a.affiliation }}</div>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% include "journal/partials/_journal_nav.html" %}
+    </aside>
+</div>
+</div>
+{% endblock %}

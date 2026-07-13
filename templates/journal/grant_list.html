@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Grantlar" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Grantlar" %}</div>
+        <h1>{% trans "Grantlar va ilmiy loyihalar" %}</h1>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    <div class="section-head"><h2>{% trans "Faol loyihalar" %}</h2></div>
+    {% if active_grants %}
+    <div class="grid grid-2">
+        {% for g in active_grants %}
+        <div class="card">
+            <span class="tag" style="background:#e6f7ee;color:#0a7d3f;">{% trans "Faol" %}</span>
+            <h3>{{ g.title }}</h3>
+            {% if g.funding_source %}<div class="authors">{{ g.funding_source }}{% if g.year %} · {{ g.year }}{% endif %}</div>{% endif %}
+            {% if g.description %}<p class="excerpt">{{ g.description|truncatewords:32 }}</p>{% endif %}
+            {% if g.principal_investigators.all %}<div class="meta"><span>{% trans "Rahbar" %}: {% for pi in g.principal_investigators.all %}{{ pi.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</span></div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">{% trans "Faol grantlar yo'q." %}</div>
+    {% endif %}
+
+    {% if completed_grants %}
+    <div class="section-head" style="margin-top:44px;"><h2>{% trans "Yakunlangan loyihalar" %}</h2></div>
+    <div class="grid grid-2">
+        {% for g in completed_grants %}
+        <div class="card">
+            <span class="tag chip past">{% trans "Yakunlangan" %}</span>
+            <h3>{{ g.title }}</h3>
+            {% if g.funding_source %}<div class="authors">{{ g.funding_source }}{% if g.year %} · {{ g.year }}{% endif %}</div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

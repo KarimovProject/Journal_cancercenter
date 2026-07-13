@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Konferensiyalar" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Konferensiyalar" %}</div>
+        <h1>{% trans "Konferensiyalar va tadbirlar" %}</h1>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    {% if upcoming %}
+    <div class="section-head"><h2>{% trans "Kelayotgan" %}</h2></div>
+    {% for conf in upcoming %}
+    <div class="conf-card">
+        <div class="conf-date">
+            <div class="day">{{ conf.date_start|date:"d" }}</div>
+            <div class="mon">{{ conf.date_start|date:"M Y" }}</div>
+        </div>
+        <div>
+            <span class="chip upcoming">{% trans "Kelayotgan" %}</span>
+            <h3 style="margin:8px 0;"><a href="{{ conf.get_absolute_url }}">{{ conf.title }}</a></h3>
+            {% if conf.location %}<div class="authors">{{ conf.location }}</div>{% endif %}
+            {% if conf.description %}<p class="excerpt">{{ conf.description|truncatewords:28 }}</p>{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="section-head" style="margin-top:40px;"><h2>{% trans "Bo'lib o'tgan" %}</h2></div>
+    {% if past %}
+    {% for conf in past %}
+    <div class="conf-card">
+        <div class="conf-date" style="background:#f0f0f0;">
+            <div class="day" style="color:#666;">{{ conf.date_start|date:"d" }}</div>
+            <div class="mon" style="color:#888;">{{ conf.date_start|date:"M Y" }}</div>
+        </div>
+        <div>
+            <span class="chip past">{% trans "Yakunlangan" %}</span>
+            <h3 style="margin:8px 0;"><a href="{{ conf.get_absolute_url }}">{{ conf.title }}</a></h3>
+            {% if conf.location %}<div class="authors">{{ conf.location }}</div>{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty">{% trans "Ma'lumot yo'q." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% load i18n %}
+<article class="card{% if article.thumbnail_image %} card-thumb{% endif %}">
+    {% if article.thumbnail_image %}
+    <a href="{{ article.get_absolute_url }}" class="card-thumb-img"><img src="{{ article.thumbnail_image.url }}" alt=""></a>
+    {% endif %}
+    <div class="card-body">
+        <div class="badges">
+            <span class="badge badge-type">{{ article.get_article_type_display }}</span>
+            {% if article.is_open_access %}<span class="badge badge-oa">Open access</span>{% endif %}
+            {% if article.category %}<span class="tag">{{ article.category.name }}</span>{% endif %}
+        </div>
+        <h3><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h3>
+        <div class="authors">
+            {% for a in article.authors.all|slice:":3" %}{{ a.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% if article.authors.count > 3 %} {% trans "va boshqalar" %}{% endif %}
+        </div>
+        {% if article.abstract %}<p class="excerpt">{{ article.abstract|truncatewords:22 }}</p>{% endif %}
+        <div class="meta">
+            <span>{{ article.publication_date|date:"Y-m-d" }}</span>
+            <span>{{ article.views_count }} {% trans "ko'rish" %}</span>
+            {% if article.doi %}<span>DOI</span>{% endif %}
+        </div>
+    </div>
+</article>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ conference.title }} — {{ SITE_NAME }}{% endblock %}
+{% block og_title %}{{ conference.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a> / {{ conference.title|truncatewords:6 }}</div>
+        {% if conference.is_upcoming %}<span class="chip upcoming">{% trans "Kelayotgan" %}</span>{% else %}<span class="chip past">{% trans "Yakunlangan" %}</span>{% endif %}
+        <h1>{{ conference.title }}</h1>
+    </div>
+</div>
+
+<div class="container" style="padding:40px 20px;">
+<div class="detail-layout">
+    <div class="prose">
+        {% if conference.poster_image %}<img src="{{ conference.poster_image.url }}" alt="{{ conference.title }}" style="width:100%; border-radius:var(--radius); margin-bottom:24px;">{% endif %}
+        {% if conference.description %}<p>{{ conference.description|linebreaks }}</p>{% endif %}
+    </div>
+    <aside>
+        <div class="aside-box">
+            <h4>{% trans "Ma'lumot" %}</h4>
+            <p><strong>{% trans "Sana" %}:</strong><br>{{ conference.date_start|date:"d.m.Y" }}{% if conference.date_end %} — {{ conference.date_end|date:"d.m.Y" }}{% endif %}</p>
+            {% if conference.location %}<p><strong>{% trans "Manzil" %}:</strong><br>{{ conference.location }}</p>{% endif %}
+        </div>
+        {% if conference.program_pdf %}
+        <div class="aside-box">
+            <h4>{% trans "Dastur" %}</h4>
+            <a href="{{ conference.program_pdf.url }}" target="_blank" class="btn" style="width:100%; justify-content:center;">{% trans "Dasturni yuklab olish" %}</a>
+        </div>
+        {% endif %}
+        {% if conference.registration_url %}
+        <div class="aside-box">
+            <a href="{{ conference.registration_url }}" target="_blank" class="btn" style="width:100%; justify-content:center;">{% trans "Ro'yxatdan o'tish" %}</a>
+        </div>
+        {% endif %}
+    </aside>
+</div>
+</div>
+{% endblock %}

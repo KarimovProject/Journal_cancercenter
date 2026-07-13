@@ -1,0 +1,488 @@
+# EN translations for Oncoscience
+# Copyright (C) 2026
+#
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+
+msgid "Aloqa"
+msgstr "Contact"
+
+msgid "Annotatsiya"
+msgstr "Abstract"
+
+msgid "Aspirantura"
+msgstr "PhD Program"
+
+msgid "Barcha huquqlar himoyalangan."
+msgstr "All rights reserved."
+
+msgid "Barcha maqolalar ilmiy kengash tomonidan ko'rib chiqiladi va uch tilda (o'zbek, rus, ingliz) taqdim etiladi."
+msgstr "All articles are reviewed by the scientific council and presented in three languages (Uzbek, Russian, English)."
+
+msgid "Barcha maqolalar tahririyat va ilmiy kengash tomonidan retsenziyadan o'tkaziladi."
+msgstr "All articles undergo peer review by the editorial board and scientific council."
+
+msgid "Barcha muharrirlar"
+msgstr "All editors"
+
+msgid "Barchasi"
+msgstr "All"
+
+msgid "Berilgan shartlarga mos maqola topilmadi."
+msgstr "No articles found matching the given criteria."
+
+msgid "Biografiya"
+msgstr "Biography"
+
+msgid "Birinchi maqolangizni topshiring"
+msgstr "Submit your first article"
+
+msgid "Bo'lib o'tgan"
+msgstr "Past"
+
+msgid "Bo'limlar"
+msgstr "Sections"
+
+msgid "Bosh muharrir"
+msgstr "Editor-in-Chief"
+
+msgid "Bosh sahifa"
+msgstr "Home"
+
+msgid "Bu muallifning nashr etilgan maqolalari yo'q."
+msgstr "This author has no published articles."
+
+msgid "Bu sonda maqolalar yo'q."
+msgstr "No articles in this issue."
+
+msgid "Call for papers"
+msgstr "Call for papers"
+
+msgid "Chiqish"
+msgstr "Logout"
+
+msgid "Dastur"
+msgstr "Program"
+
+msgid "Dasturni yuklab olish"
+msgstr "Download program"
+
+msgid "E'lonlar, tadbirlar va jurnal faoliyatidagi o'zgarishlar."
+msgstr "Announcements, events, and changes in journal activities."
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Email manzilingiz"
+msgstr "Your email"
+
+msgid "Eng eski"
+msgstr "Oldest first"
+
+msgid "Eng yangi"
+msgstr "Newest first"
+
+msgid "Eslatma"
+msgstr "Note"
+
+msgid "Faol"
+msgstr "Active"
+
+msgid "Faol grantlar yo'q."
+msgstr "No active grants."
+
+msgid "Faol loyihalar"
+msgstr "Active projects"
+
+msgid "Fayl PDF yoki Word formatida bo'lishi kerak."
+msgstr "File must be in PDF or Word format."
+
+msgid "Filtrlash"
+msgstr "Filter"
+
+msgid "Grantlar"
+msgstr "Grants"
+
+msgid "Grantlar va ilmiy loyihalar"
+msgstr "Grants and research projects"
+
+msgid "Hisob ma'lumotlari"
+msgstr "Account details"
+
+msgid "Hisobingiz bormi?"
+msgstr "Already have an account?"
+
+msgid "Hisobingiz muvaffaqiyatli yaratildi!"
+msgstr "Your account has been created successfully!"
+
+msgid "Hisobingiz yo'qmi?"
+msgstr "No account?"
+
+msgid "Holat"
+msgstr "Status"
+
+msgid "Hozircha faol dasturlar yo'q."
+msgstr "No active programs yet."
+
+msgid "Hozircha maqolalar yo'q."
+msgstr "No articles yet."
+
+msgid "Hozircha nashr etilgan sonlar yo'q."
+msgstr "No published issues yet."
+
+msgid "Hozircha ochiq to'plamlar yo'q."
+msgstr "No open collections yet."
+
+msgid "Hozircha yangiliklar yo'q."
+msgstr "No updates yet."
+
+msgid "Ilmiy kafedralar"
+msgstr "Scientific departments"
+
+msgid "Ilmiy kengash"
+msgstr "Scientific council"
+
+msgid "Ilmiy maqolalar"
+msgstr "Scientific articles"
+
+msgid "Ilmiy yo'nalishlar"
+msgstr "Research areas"
+
+msgid "Indekslangan bazalar"
+msgstr "Indexed in"
+
+msgid "Iqtibos keltirish (APA)"
+msgstr "Cite (APA)"
+
+msgid "Jurnal haqida"
+msgstr "About the journal"
+
+msgid "Jurnal ko'rsatkichlari"
+msgstr "Journal metrics"
+
+msgid "Jurnal ma'lumoti"
+msgstr "Journal information"
+
+msgid "Jurnal navigatsiyasi"
+msgstr "Journal navigation"
+
+msgid "Jurnal soni"
+msgstr "Journal issue"
+
+msgid "Jurnal sonlari"
+msgstr "Journal issues"
+
+msgid "Jurnal sonlari arxivi"
+msgstr "Journal issue archive"
+
+msgid "Jurnal yangiliklari"
+msgstr "Journal updates"
+
+msgid "Jurnalning tahririyat va ilmiy kengash a'zolari."
+msgstr "Members of the editorial board and scientific council."
+
+msgid "Kafedralar"
+msgstr "Departments"
+
+msgid "Kafedralar hozircha kiritilmagan."
+msgstr "No departments added yet."
+
+msgid "Kalit so'zlar"
+msgstr "Keywords"
+
+msgid "Kalit soʻz yoki muallif boʻyicha qidirish..."
+msgstr "Search by keyword or author..."
+
+msgid "Kalit soʻz..."
+msgstr "Keyword..."
+
+msgid "Kelayotgan"
+msgstr "Upcoming"
+
+msgid "Kirish"
+msgstr "Login"
+
+msgid "Kirish turi"
+msgstr "Access type"
+
+msgid "Ko'p iqtiboslangan"
+msgstr "Most cited"
+
+msgid "Ko'p ko'rilgan"
+msgstr "Most viewed"
+
+msgid "Ko'rib chiqish jarayoni"
+msgstr "Review process"
+
+msgid "Ko'rish"
+msgstr "View"
+
+msgid "Konferensiyalar"
+msgstr "Conferences"
+
+msgid "Konferensiyalar va tadbirlar"
+msgstr "Conferences and events"
+
+msgid "Ma'lumot"
+msgstr "Information"
+
+msgid "Ma'lumot hozircha kiritilmagan."
+msgstr "No information added yet."
+
+msgid "Ma'lumot yo'q."
+msgstr "No data."
+
+msgid "Manzil"
+msgstr "Address"
+
+msgid "Maqola ko'rib chiqishga yuboriladi, natija 'Mening maqolalarim' bo'limida ko'rinadi."
+msgstr "The article is sent for review, the result will be visible in 'My articles' section."
+
+msgid "Maqola topshirish"
+msgstr "Submit article"
+
+msgid "Maqola topshirish formasi."
+msgstr "Article submission form."
+
+msgid "Maqola topshirish uchun hisob oching."
+msgstr "Create an account to submit articles."
+
+msgid "Maqola topshirish uchun tizimga kiring."
+msgstr "Log in to submit articles."
+
+msgid "Maqola uch tilda (o'zbek, rus, ingliz) sarlavha va annotatsiya bilan taqdim etilishi tavsiya etiladi. To'liq matn PDF yoki Word formatida bo'lishi kerak."
+msgstr "Articles should be submitted in three languages (Uzbek, Russian, English) with title and abstract. Full text must be in PDF or Word format."
+
+msgid "Maqola yuborish"
+msgstr "Submit manuscript"
+
+msgid "Maqola yuborish tartibi"
+msgstr "Submission guidelines"
+
+msgid "Maqola, muallif yoki kalit soʻz boʻyicha qidirish..."
+msgstr "Search by article, author or keyword..."
+
+msgid "Maqolalar"
+msgstr "Articles"
+
+msgid "Maqolalar onkologiya, radiologiya va tegishli tibbiy fanlar bo'yicha original ilmiy tadqiqotlar, sharhlar va klinik kuzatuvlarni qamrab olishi mumkin."
+msgstr "Articles may cover original research, reviews, and clinical observations in oncology, radiology, and related medical sciences."
+
+msgid "Maqolalarni yuborish uchun tahririyat bilan bog'laning:"
+msgstr "To submit articles, contact the editorial office:"
+
+msgid "Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi."
+msgstr "Your article has been received! The editorial board will notify you of the result after review."
+
+msgid "Maqolani tahrirlash"
+msgstr "Edit article"
+
+msgid "Maqolani topshirish"
+msgstr "Submit article"
+
+msgid "Markazning ilmiy kafedralari va ularning yo'nalishlari."
+msgstr "Scientific departments of the center and their research areas."
+
+msgid "Mening maqolalarim"
+msgstr "My articles"
+
+msgid "Muallif ma'lumotlari"
+msgstr "Author details"
+
+msgid "Mualliflar"
+msgstr "Authors"
+
+msgid "Mualliflar uchun"
+msgstr "For authors"
+
+msgid "Mualliflar uchun qoidalar"
+msgstr "Author guidelines"
+
+msgid "Muddat"
+msgstr "Deadline"
+
+msgid "Mudir"
+msgstr "Head"
+
+msgid "Nashr etilgan sonlar bo'yicha maqolalar to'plami."
+msgstr "Collection of articles by published issues."
+
+msgid "Nashr etilmagan (preview)"
+msgstr "Unpublished (preview)"
+
+msgid "Nashr sanasi"
+msgstr "Publication date"
+
+msgid "Nusxa olish"
+msgstr "Copy"
+
+msgid "Nusxalandi"
+msgstr "Copied"
+
+msgid "O'xshash maqolalar"
+msgstr "Related articles"
+
+msgid "Obuna bo'lish"
+msgstr "Subscribe"
+
+msgid "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar."
+msgstr "Open thematic collections — directions currently accepting submissions."
+
+msgid "Oncoscience — Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining retsenzlanadigan ilmiy nashri. Jurnal onkologiya, radiologiya, kimyoterapiya va tegishli sohalar bo'yicha original tadqiqotlar, klinik kuzatuvlar va ilmiy sharhlarni chop etadi."
+msgstr "Oncoscience — a peer-reviewed scientific journal of the Republican Specialized Scientific-Practical Medical Center of Oncology and Radiology. The journal publishes original research, clinical observations, and scientific reviews in oncology, radiology, chemotherapy, and related fields."
+
+msgid "Onkologiya va radiologiya ilmiy jurnali"
+msgstr "Scientific Journal of Oncology and Radiology"
+
+msgid "Onkologiya va radiologiya sohasidagi ilmiy nashrlar"
+msgstr "Scientific publications in oncology and radiology"
+
+msgid "Onkologiya va radiologiya sohasidagi retsenzlangan ilmiy nashrlar."
+msgstr "Peer-reviewed scientific publications in oncology and radiology."
+
+msgid "Ordinatura"
+msgstr "Residency"
+
+msgid "PDF yuklab olish"
+msgstr "Download PDF"
+
+msgid "Qidirish"
+msgstr "Search"
+
+msgid "Qidiruv"
+msgstr "Search"
+
+msgid "Rad etilgan"
+msgstr "Rejected"
+
+msgid "Rad etish sababi"
+msgstr "Rejection reason"
+
+msgid "Rahbar"
+msgstr "Principal investigator"
+
+msgid "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi."
+msgstr "Platform for scientific publications of the Republican Specialized Scientific-Practical Medical Center of Oncology and Radiology."
+
+msgid "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining maqolalari, konferensiyalari va ilmiy faoliyati."
+msgstr "Articles, conferences, and scientific activities of the Republican Specialized Scientific-Practical Medical Center of Oncology and Radiology."
+
+msgid "Ro'yxatdan o'ting"
+msgstr "Register"
+
+msgid "Ro'yxatdan o'tish"
+msgstr "Register"
+
+msgid "Rus va ingliz tilidagi tarjima tavsiya etiladi."
+msgstr "Translation into Russian and English is recommended."
+
+msgid "Sabab:"
+msgstr "Reason:"
+
+msgid "Sana"
+msgstr "Date"
+
+msgid "Sarlavha"
+msgstr "Title"
+
+msgid "Sarlavha va annotatsiya kamida o'zbek tilida bo'lishi shart."
+msgstr "Title and abstract must be at least in Uzbek."
+
+msgid "Siz hali maqola topshirmagansiz."
+msgstr "You have not submitted any articles yet."
+
+msgid "So'nggi maqolalar"
+msgstr "Latest articles"
+
+msgid "Sonlar"
+msgstr "Issues"
+
+msgid "Ta'lim"
+msgstr "Education"
+
+msgid "Tahrirlash"
+msgstr "Edit"
+
+msgid "Talablar"
+msgstr "Requirements"
+
+msgid "Talablar (PDF)"
+msgstr "Requirements (PDF)"
+
+msgid "Taʼlim"
+msgstr "Education"
+
+msgid "Tizimdan chiqdingiz."
+msgstr "You have been logged out."
+
+msgid "Tizimga kirish"
+msgstr "Sign in"
+
+msgid "To'liq matn"
+msgstr "Full text"
+
+msgid "To'plam maqolalari"
+msgstr "Collection articles"
+
+msgid "To'plamlar"
+msgstr "Collections"
+
+msgid "Topshirish muddati"
+msgstr "Submission deadline"
+
+msgid "Tozalash"
+msgstr "Clear"
+
+msgid "Toʻplamlar"
+msgstr "Collections"
+
+msgid "Xush kelibsiz, {}!"
+msgstr "Welcome, {}!"
+
+msgid "Yakunlangan"
+msgstr "Completed"
+
+msgid "Yakunlangan loyihalar"
+msgstr "Completed projects"
+
+msgid "Yangi maqola topshirish"
+msgstr "Submit new article"
+
+msgid "Yangi maqolalar va sonlar chiqqanda email orqali xabar oling."
+msgstr "Get notified by email about new articles and issues."
+
+msgid "Yangiliklar"
+msgstr "Updates"
+
+msgid "Yangiliklarga obuna bo'ling"
+msgstr "Subscribe to updates"
+
+msgid "Yil"
+msgstr "Year"
+
+msgid "Yo'nalish"
+msgstr "Direction"
+
+msgid "Yo'nalishlar"
+msgstr "Directions"
+
+msgid "b."
+msgstr "p."
+
+msgid "iqtibos"
+msgstr "cit."
+
+msgid "ko'rish"
+msgstr "views"
+
+msgid "maqola"
+msgstr "article"
+
+msgid "ta natija"
+msgstr "result(s)"
+
+msgid "va boshqalar"
+msgstr "et al."

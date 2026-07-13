@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ update.title }} — {{ SITE_NAME }}{% endblock %}
+{% block og_title %}{{ update.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / <a href="{% url 'journal:update_list' %}">{% trans "Yangiliklar" %}</a> / {{ update.title|truncatewords:6 }}</div>
+        <h1>{{ update.title }}</h1>
+        <p>{{ update.published_date|date:"d.m.Y" }}</p>
+    </div>
+</div>
+
+<div class="container" style="padding:40px 20px;">
+<div class="detail-layout">
+    <div class="prose">
+        {% if update.banner_image %}<img src="{{ update.banner_image.url }}" alt="{{ update.title }}" style="width:100%;border-radius:var(--radius);margin-bottom:24px;">{% endif %}
+        {{ update.content|linebreaks }}
+    </div>
+    <aside>{% include "journal/partials/_journal_nav.html" %}</aside>
+</div>
+</div>
+{% endblock %}

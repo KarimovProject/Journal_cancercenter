@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ page_title }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {{ page_title }}</div>
+        <h1>{{ page_title }}</h1>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+    {% if programs %}
+    {% for p in programs %}
+    <div class="card" style="margin-bottom:20px;">
+        <h3>{{ p.title }}</h3>
+        {% if p.deadline %}<div class="authors">{% trans "Muddat" %}: {{ p.deadline|date:"d.m.Y" }}</div>{% endif %}
+        {% if p.description %}<p class="excerpt">{{ p.description|linebreaks }}</p>{% endif %}
+        {% if p.requirements_pdf %}<a href="{{ p.requirements_pdf.url }}" target="_blank" class="btn btn-outline btn-sm" style="align-self:start;">{% trans "Talablar (PDF)" %}</a>{% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty">{% trans "Hozircha faol dasturlar yo'q." %}</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Jurnal yangiliklari" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Yangiliklar" %}</div>
+        <h1>{% trans "Jurnal yangiliklari" %}</h1>
+        <p>{% trans "E'lonlar, tadbirlar va jurnal faoliyatidagi o'zgarishlar." %}</p>
+    </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+<div class="list-layout">
+    <aside>{% include "journal/partials/_journal_nav.html" %}</aside>
+    <div>
+        {% if updates %}
+        <div class="grid grid-2">
+            {% for u in updates %}
+            <a class="card" href="{{ u.get_absolute_url }}" style="text-decoration:none;">
+                {% if u.banner_image %}<img src="{{ u.banner_image.url }}" alt="" style="width:100%;border-radius:8px;margin-bottom:12px;">{% endif %}
+                <div class="meta" style="border:0;padding:0;margin-bottom:8px;"><span>{{ u.published_date|date:"d.m.Y" }}</span></div>
+                <h3>{{ u.title }}</h3>
+                {% if u.content %}<p class="excerpt">{{ u.content|truncatewords:26 }}</p>{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">{% trans "Hozircha yangiliklar yo'q." %}</div>
+        {% endif %}
+    </div>
+</div>
+</div>
+{% endblock %}

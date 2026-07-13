@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Mening maqolalarim" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> /
+      {% trans "Mening maqolalarim" %}
+    </div>
+    <h1>{% trans "Mening maqolalarim" %}</h1>
+    <a href="{% url 'journal:submit_article' %}" class="btn btn-sm" style="margin-top:12px;">
+      {% trans "Yangi maqola topshirish" %}
+    </a>
+  </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+
+{% if articles %}
+  <table class="my-articles-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{% trans "Sarlavha" %}</th>
+        <th>{% trans "Holat" %}</th>
+        <th>{% trans "Sana" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for article in articles %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>
+          {{ article.title }}
+          {% if article.status == 'published' %}
+            — <a href="{{ article.get_absolute_url }}">{% trans "Ko'rish" %}</a>
+          {% elif article.status == 'draft' or article.status == 'rejected' %}
+            — <a href="{% url 'journal:edit_article' article.pk %}">{% trans "Tahrirlash" %}</a>
+          {% endif %}
+        </td>
+        <td>
+          <span class="status-badge status-{{ article.status }}">
+            {{ article.get_status_display }}
+          </span>
+          {% if article.status == 'rejected' and article.rejection_reason %}
+            <div class="rejection-reason">
+              <small>{% trans "Sabab:" %} {{ article.rejection_reason }}</small>
+            </div>
+          {% endif %}
+        </td>
+        <td>{{ article.created_at|date:"d.m.Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="empty-state">
+    <p>{% trans "Siz hali maqola topshirmagansiz." %}</p>
+    <a href="{% url 'journal:submit_article' %}" class="btn">{% trans "Birinchi maqolangizni topshiring" %}</a>
+  </div>
+{% endif %}
+
+</div>
+{% endblock %}

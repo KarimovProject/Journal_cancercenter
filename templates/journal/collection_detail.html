@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ collection.title }} — {{ SITE_NAME }}{% endblock %}
+{% block og_title %}{{ collection.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / <a href="{% url 'journal:collection_list' %}">{% trans "To'plamlar" %}</a> / {{ collection.title|truncatewords:6 }}</div>
+        <span class="chip {% if collection.is_open %}upcoming{% else %}past{% endif %}">{{ collection.get_status_display }}</span>
+        <h1>{{ collection.title }}</h1>
+        {% if collection.submission_deadline %}<p>{% trans "Topshirish muddati" %}: {{ collection.submission_deadline|date:"d.m.Y" }}</p>{% endif %}
+    </div>
+</div>
+
+<div class="container" style="padding:40px 20px;">
+<div class="detail-layout">
+    <div>
+        {% if collection.cover_image %}<img src="{{ collection.cover_image.url }}" alt="{{ collection.title }}" style="width:100%;border-radius:var(--radius);margin-bottom:24px;">{% endif %}
+        {% if collection.description %}<div class="prose">{{ collection.description|linebreaks }}</div>{% endif %}
+
+        {% if collection.is_open %}
+        <a class="btn" style="margin-top:20px;" href="{% if journal_info and journal_info.submit_url %}{{ journal_info.submit_url }}{% else %}{% url 'journal:for_authors' %}{% endif %}">{% trans "Maqola yuborish" %}</a>
+        {% endif %}
+
+        {% if articles %}
+        <div style="margin-top:40px;">
+            <div class="section-head"><h2>{% trans "To'plam maqolalari" %}</h2></div>
+            <div class="grid grid-2">
+                {% for article in articles %}{% include "journal/partials/_article_card.html" %}{% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <aside>{% include "journal/partials/_journal_nav.html" %}</aside>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% if is_edit %}{% trans "Maqolani tahrirlash" %}{% else %}{% trans "Maqola topshirish" %}{% endif %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> /
+      <a href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a> /
+      {% if is_edit %}{% trans "Maqolani tahrirlash" %}{% else %}{% trans "Maqola topshirish" %}{% endif %}
+    </div>
+    <h1>{% if is_edit %}{% trans "Maqolani tahrirlash" %}{% else %}{% trans "Maqola topshirish" %}{% endif %}</h1>
+  </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+  <div class="submit-form-wrap">
+    <div class="submit-info">
+      <h3>{% trans "Eslatma" %}</h3>
+      <ul>
+        <li>{% trans "Sarlavha va annotatsiya kamida o'zbek tilida bo'lishi shart." %}</li>
+        <li>{% trans "Rus va ingliz tilidagi tarjima tavsiya etiladi." %}</li>
+        <li>{% trans "Fayl PDF yoki Word formatida bo'lishi kerak." %}</li>
+        <li>{% trans "Maqola ko'rib chiqishga yuboriladi, natija 'Mening maqolalarim' bo'limida ko'rinadi." %}</li>
+      </ul>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="submit-form">
+      {% csrf_token %}
+
+      <div class="form-field">
+        <label>{{ form.title_uz.label }}</label>
+        {{ form.title_uz }}
+        {{ form.title_uz.errors }}
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field">
+          <label>{{ form.title_ru.label }}</label>
+          {{ form.title_ru }}
+          {{ form.title_ru.errors }}
+        </div>
+        <div class="form-field">
+          <label>{{ form.title_en.label }}</label>
+          {{ form.title_en }}
+          {{ form.title_en.errors }}
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.abstract_uz.label }}</label>
+        {{ form.abstract_uz }}
+        {{ form.abstract_uz.errors }}
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field">
+          <label>{{ form.abstract_ru.label }}</label>
+          {{ form.abstract_ru }}
+          {{ form.abstract_ru.errors }}
+        </div>
+        <div class="form-field">
+          <label>{{ form.abstract_en.label }}</label>
+          {{ form.abstract_en }}
+          {{ form.abstract_en.errors }}
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field">
+          <label>{{ form.article_type.label }}</label>
+          {{ form.article_type }}
+          {{ form.article_type.errors }}
+        </div>
+        <div class="form-field">
+          <label>{{ form.category.label }}</label>
+          {{ form.category }}
+          {{ form.category.errors }}
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.keywords_text.label }}</label>
+        {{ form.keywords_text }}
+        {{ form.keywords_text.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.issue_text.label }}</label>
+        {{ form.issue_text }}
+        {% if form.issue_text.help_text %}<small class="form-help">{{ form.issue_text.help_text }}</small>{% endif %}
+        {{ form.issue_text.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.doi.label }}</label>
+        {{ form.doi }}
+        {% if form.doi.help_text %}<small class="form-help">{{ form.doi.help_text }}</small>{% endif %}
+        {{ form.doi.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.thumbnail_image.label }}</label>
+        {{ form.thumbnail_image }}
+        {{ form.thumbnail_image.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.pdf_file.label }}</label>
+        {{ form.pdf_file }}
+        {{ form.pdf_file.errors }}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-block">{% trans "Maqolani topshirish" %}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
