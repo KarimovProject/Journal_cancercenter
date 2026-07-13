@@ -19,6 +19,39 @@
 
 <div class="container" style="padding:44px 20px;">
 
+{% if stats %}
+<div class="stats-dashboard">
+  <div class="stat-card">
+    <span class="stat-number">{{ stats.total }}</span>
+    <span class="stat-label">{% trans "Jami maqolalar" %}</span>
+  </div>
+  <div class="stat-card stat-published">
+    <span class="stat-number">{{ stats.published }}</span>
+    <span class="stat-label">{% trans "Chop etilgan" %}</span>
+  </div>
+  <div class="stat-card stat-draft">
+    <span class="stat-number">{{ stats.draft }}</span>
+    <span class="stat-label">{% trans "Qoralama" %}</span>
+  </div>
+  <div class="stat-card stat-review">
+    <span class="stat-number">{{ stats.review }}</span>
+    <span class="stat-label">{% trans "Ko'rib chiqilmoqda" %}</span>
+  </div>
+  <div class="stat-card stat-rejected">
+    <span class="stat-number">{{ stats.rejected }}</span>
+    <span class="stat-label">{% trans "Rad etilgan" %}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number">{{ stats.total_views }}</span>
+    <span class="stat-label">{% trans "Ko'rishlar" %}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number">{{ stats.total_citations }}</span>
+    <span class="stat-label">{% trans "Iqtiboslar" %}</span>
+  </div>
+</div>
+{% endif %}
+
 {% if articles %}
   <table class="my-articles-table">
     <thead>
@@ -37,7 +70,7 @@
           {{ article.title }}
           {% if article.status == 'published' %}
             — <a href="{{ article.get_absolute_url }}">{% trans "Ko'rish" %}</a>
-          {% elif article.status == 'draft' or article.status == 'rejected' %}
+          {% elif article.status == 'draft' or article.status == 'rejected' or article.status == 'review' %}
             — <a href="{% url 'journal:edit_article' article.pk %}">{% trans "Tahrirlash" %}</a>
           {% endif %}
         </td>

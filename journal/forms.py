@@ -99,6 +99,12 @@ class ArticleSubmissionForm(forms.ModelForm):
         label='Jurnal soni (ixtiyoriy)',
         help_text='Mavjud sondan tanlang yoki o\u02bbzingiz yozing. Format: Vol. X, No. Y, YYYY',
     )
+    co_authors = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': 'Har bir muallifni yangi qatorda yozing:\nAliyev Vali\nKarimova Saoda'}),
+        label='Qo\u02bbshimcha mualliflar (ixtiyoriy)',
+        help_text='Har bir muallif F.I.O.sini yangi qatorda yozing. Siz avtomatik birinchi muallif bo\u02bblasiz.',
+    )
 
     class Meta:
         model = Article
@@ -146,3 +152,37 @@ class ArticleSubmissionForm(forms.ModelForm):
         if not cleaned.get('pdf_file'):
             raise forms.ValidationError('PDF fayl yuklash majburiy.')
         return cleaned
+
+
+class AuthorProfileForm(forms.ModelForm):
+    """Form for users to edit their author profile."""
+
+    class Meta:
+        model = Author
+        fields = [
+            'full_name', 'academic_degree',
+            'affiliation_uz', 'affiliation_ru', 'affiliation_en',
+            'orcid_id', 'email', 'photo',
+        ]
+        widgets = {
+            'full_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'F.I.O.'}),
+            'academic_degree': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Masalan: t.f.d.'}),
+            'affiliation_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Ish joyi (uz)'}),
+            'affiliation_ru': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Ish joyi (ru)'}),
+            'affiliation_en': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Affiliation (en)'}),
+            'orcid_id': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '0000-0000-0000-0000'}),
+            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'email@example.com'}),
+            'photo': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['full_name'].label = 'F.I.O. *'
+        self.fields['academic_degree'].label = 'Ilmiy daraja'
+        self.fields['affiliation_uz'].label = 'Ish joyi/lavozimi (uz)'
+        self.fields['affiliation_ru'].label = 'Ish joyi/lavozimi (ru)'
+        self.fields['affiliation_en'].label = 'Ish joyi/lavozimi (en)'
+        self.fields['orcid_id'].label = 'ORCID iD'
+        self.fields['email'].label = 'Email'
+        self.fields['photo'].label = 'Rasm (ixtiyoriy)'
+        self.fields['photo'].required = False

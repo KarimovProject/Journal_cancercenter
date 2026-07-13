@@ -39,6 +39,7 @@
             {% if user.is_authenticated %}
                 <a class="btn btn-sm" href="{% url 'journal:submit_article' %}">{% trans "Maqola yuborish" %}</a>
                 <a class="btn btn-sm btn-outline" href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a>
+                <a class="btn btn-sm btn-outline" href="{% url 'journal:edit_profile' %}">{% trans "Profil" %}</a>
                 <form action="{% url 'journal:logout' %}" method="post" class="inline-form">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-sm btn-outline">{% trans "Chiqish" %}</button>

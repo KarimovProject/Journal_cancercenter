@@ -340,10 +340,24 @@ section { padding: 56px 0; }
 
 .status-badge { padding: 4px 10px; border-radius: 12px; font-size: .78rem; font-weight: 600; }
 .status-draft { background: #fff3cd; color: #856404; }
+.status-review { background: #cce5ff; color: #004085; }
 .status-published { background: #d4edda; color: #155724; }
 .status-rejected { background: #f8d7da; color: #721c24; }
 .status-archived { background: #e2e3e5; color: #383d41; }
 .rejection-reason { margin-top: 6px; padding: 8px 12px; background: #f8d7da; border-radius: var(--radius); color: #721c24; }
+
+.stats-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; margin-bottom: 32px; max-width: 900px; }
+.stat-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; text-align: center; }
+.stat-card .stat-number { display: block; font-size: 2rem; font-weight: 700; color: var(--ink); }
+.stat-card .stat-label { display: block; font-size: .8rem; color: var(--muted); margin-top: 4px; }
+.stat-card.stat-published { border-color: #155724; }
+.stat-card.stat-published .stat-number { color: #155724; }
+.stat-card.stat-draft { border-color: #856404; }
+.stat-card.stat-draft .stat-number { color: #856404; }
+.stat-card.stat-review { border-color: #004085; }
+.stat-card.stat-review .stat-number { color: #004085; }
+.stat-card.stat-rejected { border-color: #721c24; }
+.stat-card.stat-rejected .stat-number { color: #721c24; }
 
 .empty-state { text-align: center; padding: 60px 20px; }
 .empty-state p { color: var(--muted); margin-bottom: 20px; font-size: 1.05rem; }

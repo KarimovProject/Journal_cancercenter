@@ -157,6 +157,9 @@ msgstr "Indexed in"
 msgid "Iqtibos keltirish (APA)"
 msgstr "Cite (APA)"
 
+msgid "Jami maqolalar"
+msgstr "Total articles"
+
 msgid "Jurnal haqida"
 msgstr "About the journal"
 
@@ -214,11 +217,17 @@ msgstr "Most cited"
 msgid "Ko'p ko'rilgan"
 msgstr "Most viewed"
 
+msgid "Ko'rib chiqilmoqda"
+msgstr "Under review"
+
 msgid "Ko'rib chiqish jarayoni"
 msgstr "Review process"
 
 msgid "Ko'rish"
 msgstr "View"
+
+msgid "Ko'rishlar"
+msgstr "Views"
 
 msgid "Konferensiyalar"
 msgstr "Conferences"
@@ -349,6 +358,12 @@ msgstr "Residency"
 msgid "PDF yuklab olish"
 msgstr "Download PDF"
 
+msgid "Profil"
+msgstr "Profile"
+
+msgid "Profilni tahrirlash"
+msgstr "Edit profile"
+
 msgid "Qidirish"
 msgstr "Search"
 
@@ -384,6 +399,9 @@ msgstr "Reason:"
 
 msgid "Sana"
 msgstr "Date"
+
+msgid "Saqlash"
+msgstr "Save"
 
 msgid "Sarlavha"
 msgstr "Title"
@@ -474,9 +492,6 @@ msgstr "p."
 
 msgid "iqtibos"
 msgstr "cit."
-
-msgid "ko'rish"
-msgstr "views"
 
 msgid "maqola"
 msgstr "article"

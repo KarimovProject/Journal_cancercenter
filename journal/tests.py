@@ -331,3 +331,51 @@ class AuthAndSubmissionTests(TestCase):
         article.refresh_from_db()
         self.assertEqual(article.status, 'draft')
         self.assertEqual(article.rejection_reason, '')
+
+    def test_edit_profile_requires_login(self):
+        r = self.client.get(reverse('journal:edit_profile'))
+        self.assertEqual(r.status_code, 302)
+        self.assertIn('/kirish/', r.url)
+
+    def test_edit_profile_updates_author(self):
+        from journal.models import Author
+        user = User.objects.create_user('profileuser', password='Str0ngP@ss!')
+        Author.objects.create(user=user, full_name='Old Name')
+        self.client.login(username='profileuser', password='Str0ngP@ss!')
+        r = self.client.post(reverse('journal:edit_profile'), {
+            'full_name': 'New Name',
+            'academic_degree': 't.f.d.',
+            'affiliation_uz': 'Test kafedra',
+            'orcid_id': '0000-0000-0000-0000',
+            'email': 'test@example.com',
+        })
+        self.assertEqual(r.status_code, 302)
+        author = Author.objects.get(user=user)
+        self.assertEqual(author.full_name, 'New Name')
+        self.assertEqual(author.academic_degree, 't.f.d.')
+
+    def test_submit_with_co_authors(self):
+        from journal.models import Author
+        user = User.objects.create_user('coauthor', password='Str0ngP@ss!')
+        Author.objects.create(user=user, full_name='Main Author')
+        self.client.login(username='coauthor', password='Str0ngP@ss!')
+        pdf = SimpleUploadedFile('test.pdf', b'%PDF-1.4 test', content_type='application/pdf')
+        r = self.client.post(reverse('journal:submit_article'), {
+            'title_uz': 'Ko\'p mualliflik maqola',
+            'abstract_uz': 'Test',
+            'article_type': 'research',
+            'category': self.cat.pk,
+            'co_authors': 'Aliyev Vali\nKarimova Saoda',
+            'pdf_file': pdf,
+        })
+        self.assertEqual(r.status_code, 302)
+        article = Article.objects.filter(submitted_by=user).first()
+        self.assertIsNotNone(article)
+        self.assertEqual(article.authors.count(), 3)
+
+    def test_review_status_displayed(self):
+        user = User.objects.create_user('reviewuser', password='Str0ngP@ss!')
+        Article.objects.create(title_uz='Review', title_en='Rev', submitted_by=user, status='review')
+        self.client.login(username='reviewuser', password='Str0ngP@ss!')
+        r = self.client.get(reverse('journal:my_articles'))
+        self.assertContains(r, 'Ko\'rib chiqilmoqda')

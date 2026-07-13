@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
-from .forms import ArticleSubmissionForm, RegistrationForm
+from .forms import ArticleSubmissionForm, AuthorProfileForm, RegistrationForm
 from .filters import ArticleFilter
 from .models import (
     Article,
@@ -366,6 +366,17 @@ def submit_article(request):
             author = Author.objects.filter(user=request.user).first()
             if author:
                 article.authors.add(author)
+            # Process co-authors (one per line -> create/find Author objects)
+            co_authors_text = form.cleaned_data.get('co_authors', '')
+            if co_authors_text:
+                for line in co_authors_text.split('\n'):
+                    name = line.strip()
+                    if name:
+                        co_author, _created = Author.objects.get_or_create(
+                            full_name=name,
+                            defaults={'slug': name.lower().replace(' ', '-')[:280]},
+                        )
+                        article.authors.add(co_author)
             # Process keywords (comma-separated text -> Keyword objects)
             keywords_text = form.cleaned_data.get('keywords_text', '')
             if keywords_text:
@@ -391,16 +402,20 @@ def edit_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if article.submitted_by != request.user:
         raise Http404()
-    if article.status not in (Article.Status.DRAFT, Article.Status.REJECTED):
+    if article.status not in (Article.Status.DRAFT, Article.Status.REJECTED, Article.Status.REVIEW):
         messages.error(request, _('Chop etilgan maqolani tahrirlash mumkin emas.'))
         return redirect('journal:my_articles')
 
-    # Pre-fill keywords
+    # Pre-fill keywords and co-authors
     initial = {}
     if article.keywords.exists():
         initial['keywords_text'] = ', '.join(k.name for k in article.keywords.all())
     if article.issue:
         initial['issue_text'] = f'Vol. {article.issue.volume}, No. {article.issue.number}, {article.issue.year}'
+    # Co-authors: all authors except the current user's own profile
+    other_authors = article.authors.exclude(user=request.user)
+    if other_authors.exists():
+        initial['co_authors'] = '\n'.join(a.full_name for a in other_authors)
 
     if request.method == 'POST':
         form = ArticleSubmissionForm(request.POST, request.FILES, instance=article, initial=initial)
@@ -419,6 +434,22 @@ def edit_article(request, pk):
                     article.issue = issue_obj
 
             article.save()
+
+            # Re-link the user's own author profile
+            author = Author.objects.filter(user=request.user).first()
+            article.authors.set([author] if author else [])
+
+            # Process co-authors
+            co_authors_text = form.cleaned_data.get('co_authors', '')
+            if co_authors_text:
+                for line in co_authors_text.split('\n'):
+                    name = line.strip()
+                    if name:
+                        co_author, _created = Author.objects.get_or_create(
+                            full_name=name,
+                            defaults={'slug': name.lower().replace(' ', '-')[:280]},
+                        )
+                        article.authors.add(co_author)
 
             # Update keywords
             article.keywords.clear()
@@ -448,8 +479,41 @@ def edit_article(request, pk):
 @login_required(login_url='/ilm-fan/kirish/')
 def my_articles(request):
     articles = Article.objects.filter(submitted_by=request.user).order_by('-created_at')
+    stats = {
+        'total': articles.count(),
+        'published': articles.filter(status=Article.Status.PUBLISHED).count(),
+        'draft': articles.filter(status=Article.Status.DRAFT).count(),
+        'review': articles.filter(status=Article.Status.REVIEW).count(),
+        'rejected': articles.filter(status=Article.Status.REJECTED).count(),
+        'total_views': sum(a.views_count for a in articles),
+        'total_citations': sum(a.citation_count for a in articles),
+    }
     context = {
         'articles': articles,
+        'stats': stats,
         'meta_description': _('Mening maqolalarim.'),
     }
     return render(request, 'journal/my_articles.html', context)
+
+
+@login_required(login_url='/ilm-fan/kirish/')
+def edit_profile(request):
+    author = getattr(request.user, 'author_profile', None)
+    if not author:
+        author = Author.objects.create(user=request.user, full_name=request.user.get_full_name() or request.user.username)
+
+    if request.method == 'POST':
+        form = AuthorProfileForm(request.POST, request.FILES, instance=author)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Profilingiz yangilandi.'))
+            return redirect('journal:edit_profile')
+    else:
+        form = AuthorProfileForm(instance=author)
+
+    context = {
+        'form': form,
+        'author': author,
+        'meta_description': _('Profilni tahrirlash.'),
+    }
+    return render(request, 'journal/edit_profile.html', context)

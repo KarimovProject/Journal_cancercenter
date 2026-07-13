@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Profilni tahrirlash" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> /
+      <a href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a> /
+      {% trans "Profilni tahrirlash" %}
+    </div>
+    <h1>{% trans "Profilni tahrirlash" %}</h1>
+  </div>
+</div>
+
+<div class="container" style="padding:44px 20px;">
+  <div class="submit-form-wrap">
+
+    {% if author.photo %}
+    <div style="margin-bottom:24px; text-align:center;">
+      <img src="{{ author.photo.url }}" alt="{{ author.full_name }}"
+           style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid var(--line);">
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="submit-form">
+      {% csrf_token %}
+
+      <div class="form-field">
+        <label>{{ form.full_name.label }}</label>
+        {{ form.full_name }}
+        {{ form.full_name.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.academic_degree.label }}</label>
+        {{ form.academic_degree }}
+        {{ form.academic_degree.errors }}
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.affiliation_uz.label }}</label>
+        {{ form.affiliation_uz }}
+        {{ form.affiliation_uz.errors }}
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field">
+          <label>{{ form.affiliation_ru.label }}</label>
+          {{ form.affiliation_ru }}
+          {{ form.affiliation_ru.errors }}
+        </div>
+        <div class="form-field">
+          <label>{{ form.affiliation_en.label }}</label>
+          {{ form.affiliation_en }}
+          {{ form.affiliation_en.errors }}
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-field">
+          <label>{{ form.orcid_id.label }}</label>
+          {{ form.orcid_id }}
+          {{ form.orcid_id.errors }}
+        </div>
+        <div class="form-field">
+          <label>{{ form.email.label }}</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>{{ form.photo.label }}</label>
+        {{ form.photo }}
+        {{ form.photo.errors }}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-block">{% trans "Saqlash" %}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

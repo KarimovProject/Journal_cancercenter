@@ -172,6 +172,7 @@ class Article(TimeStampedModel):
 
     class Status(models.TextChoices):
         DRAFT = 'draft', _('Qoralama')
+        REVIEW = 'review', _('Ko\'rib chiqilmoqda')
         PUBLISHED = 'published', _('Chop etilgan')
         REJECTED = 'rejected', _('Rad etilgan')
         ARCHIVED = 'archived', _('Arxivlangan')

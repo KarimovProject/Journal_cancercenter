@@ -33,4 +33,5 @@ urlpatterns = [
     path('maqola-yuborish/', views.submit_article, name='submit_article'),
     path('maqola-tahrirlash/<int:pk>/', views.edit_article, name='edit_article'),
     path('mening-maqolalarim/', views.my_articles, name='my_articles'),
+    path('profil/', views.edit_profile, name='edit_profile'),
 ]

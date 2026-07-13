@@ -157,6 +157,9 @@ msgstr "Индексируется в базах"
 msgid "Iqtibos keltirish (APA)"
 msgstr "Цитирование (APA)"
 
+msgid "Jami maqolalar"
+msgstr "Всего статей"
+
 msgid "Jurnal haqida"
 msgstr "О журнале"
 
@@ -214,11 +217,17 @@ msgstr "Наиболее цитируемые"
 msgid "Ko'p ko'rilgan"
 msgstr "Наиболее просматриваемые"
 
+msgid "Ko'rib chiqilmoqda"
+msgstr "На рассмотрении"
+
 msgid "Ko'rib chiqish jarayoni"
 msgstr "Процесс рецензирования"
 
 msgid "Ko'rish"
 msgstr "Просмотр"
+
+msgid "Ko'rishlar"
+msgstr "Просмотры"
 
 msgid "Konferensiyalar"
 msgstr "Конференции"
@@ -349,6 +358,12 @@ msgstr "Ординатура"
 msgid "PDF yuklab olish"
 msgstr "Скачать PDF"
 
+msgid "Profil"
+msgstr "Профиль"
+
+msgid "Profilni tahrirlash"
+msgstr "Редактировать профиль"
+
 msgid "Qidirish"
 msgstr "Поиск"
 
@@ -385,6 +400,9 @@ msgstr "Причина:"
 msgid "Sana"
 msgstr "Дата"
 
+msgid "Saqlash"
+msgstr "Сохранить"
+
 msgid "Sarlavha"
 msgstr "Заголовок"
 
@@ -417,9 +435,6 @@ msgstr "Образование"
 
 msgid "Tizimdan chiqdingiz."
 msgstr "Вы вышли из системы."
-
-msgid "Tizimga kirish"
-msgstr "Вход в систему"
 
 msgid "To'liq matn"
 msgstr "Полный текст"

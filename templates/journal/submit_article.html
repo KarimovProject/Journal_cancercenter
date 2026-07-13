@@ -88,6 +88,13 @@
       </div>
 
       <div class="form-field">
+        <label>{{ form.co_authors.label }}</label>
+        {{ form.co_authors }}
+        {% if form.co_authors.help_text %}<small class="form-help">{{ form.co_authors.help_text }}</small>{% endif %}
+        {{ form.co_authors.errors }}
+      </div>
+
+      <div class="form-field">
         <label>{{ form.issue_text.label }}</label>
         {{ form.issue_text }}
         {% if form.issue_text.help_text %}<small class="form-help">{{ form.issue_text.help_text }}</small>{% endif %}
