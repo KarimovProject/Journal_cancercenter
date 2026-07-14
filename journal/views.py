@@ -186,9 +186,13 @@ def article_detail(request, slug):
 def author_detail(request, slug):
     author = get_object_or_404(Author, slug=slug)
     articles = _published_articles().filter(authors=author)
+    total_views = sum(a.views_count for a in articles)
+    total_citations = sum(a.citation_count for a in articles)
     context = {
         'author': author,
         'articles': articles,
+        'total_views': total_views,
+        'total_citations': total_citations,
         'meta_description': f'{author.full_name} — {author.affiliation}'.strip(' —'),
     }
     return render(request, 'journal/author_detail.html', context)

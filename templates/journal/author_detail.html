@@ -7,20 +7,26 @@
 <div class="page-header">
     <div class="container">
         <div class="breadcrumb"><a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> / {% trans "Mualliflar" %} / {{ author.full_name }}</div>
-        <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
-            {% if author.photo %}<img src="{{ author.photo.url }}" alt="{{ author.full_name }}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;">{% endif %}
+        <div class="author-hero">
+            {% if author.photo %}<img src="{{ author.photo.url }}" alt="{{ author.full_name }}" class="author-hero-img">{% else %}<div class="author-hero-avatar">{{ author.full_name|slice:":1" }}</div>{% endif %}
             <div>
                 <h1>{{ author.full_name }}</h1>
-                {% if author.affiliation %}<p>{{ author.affiliation }}</p>{% endif %}
-                {% if author.orcid_id %}<p><a href="https://orcid.org/{{ author.orcid_id }}" target="_blank" rel="noopener">ORCID: {{ author.orcid_id }}</a></p>{% endif %}
+                {% if author.academic_degree %}<div class="author-degree">{{ author.academic_degree }}</div>{% endif %}
+                {% if author.affiliation %}<p class="author-aff">{{ author.affiliation }}</p>{% endif %}
+                {% if author.orcid_id %}<a href="https://orcid.org/{{ author.orcid_id }}" target="_blank" rel="noopener" class="author-orcid">ORCID: {{ author.orcid_id }}</a>{% endif %}
+                <div class="author-stats">
+                    <div><div class="num">{{ articles.count }}</div><div class="lbl">{% trans "Maqolalar" %}</div></div>
+                    <div><div class="num">{{ total_views }}</div><div class="lbl">{% trans "Ko'rishlar" %}</div></div>
+                    <div><div class="num">{{ total_citations }}</div><div class="lbl">{% trans "Iqtiboslar" %}</div></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container" style="padding:40px 20px;">
+<div class="container" style="padding:40px 24px;">
     {% if author.bio %}
-    <div class="prose" style="margin-bottom:40px;">
+    <div class="prose" style="margin-bottom:44px;">
         <h2>{% trans "Biografiya" %}</h2>
         <p>{{ author.bio|linebreaks }}</p>
     </div>

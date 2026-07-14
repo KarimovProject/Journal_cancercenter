@@ -454,6 +454,9 @@ msgstr "Очистить"
 msgid "Toʻplamlar"
 msgstr "Коллекции"
 
+msgid "Ulashish"
+msgstr "Поделиться"
+
 msgid "Xush kelibsiz, {}!"
 msgstr "Добро пожаловать, {}!"
 

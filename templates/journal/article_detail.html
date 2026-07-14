@@ -4,7 +4,7 @@
 {% block title %}{{ article.title }} — {{ SITE_NAME }}{% endblock %}
 {% block og_type %}article{% endblock %}
 {% block og_title %}{{ article.title }}{% endblock %}
-{% block og_image %}{% if article.category %}{% endif %}{% endblock %}
+{% block og_image %}{% if article.thumbnail_image %}<meta property="og:image" content="{{ SITE_DOMAIN }}{{ article.thumbnail_image.url }}">{% endif %}{% endblock %}
 
 {% block extra_head %}
 <meta name="citation_title" content="{{ article.title }}">
@@ -26,7 +26,7 @@
         <div class="badges">
             <span class="badge badge-type">{{ article.get_article_type_display }}</span>
             {% if article.is_open_access %}<span class="badge badge-oa">Open access</span>{% endif %}
-            {% if article.category %}<span class="tag" style="background:var(--brand-light);color:var(--brand-dark);padding:4px 12px;border-radius:20px;font-size:.8rem;font-weight:600;">{{ article.category.name }}</span>{% endif %}
+            {% if article.category %}<span class="tag">{{ article.category.name }}</span>{% endif %}
             {% if not article.is_published %}<span class="chip past">{% trans "Nashr etilmagan (preview)" %}</span>{% endif %}
         </div>
         <h1 class="article-title">{{ article.title }}</h1>
@@ -34,12 +34,19 @@
             {% for a in article.authors.all %}<a href="{{ a.get_absolute_url }}">{{ a.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
         </div>
         <div class="article-meta-bar">
-            <span>{% trans "Nashr sanasi" %}: {{ article.publication_date|date:"d.m.Y" }}</span>
-            {% if article.issue %}<span>{{ article.issue }}</span>{% endif %}
-            {% if article.pages %}<span>{% trans "b." %} {{ article.pages }}</span>{% endif %}
-            <span>{{ article.views_count }} {% trans "ko'rish" %}</span>
-            {% if article.citation_count %}<span>{{ article.citation_count }} {% trans "iqtibos" %}</span>{% endif %}
+            <span>&#128197; {{ article.publication_date|date:"d.m.Y" }}</span>
+            {% if article.issue %}<span>&#128218; {{ article.issue }}</span>{% endif %}
+            {% if article.pages %}<span>&#128196; {% trans "b." %} {{ article.pages }}</span>{% endif %}
+            <span>&#128065; {{ article.views_count }} {% trans "ko'rish" %}</span>
+            {% if article.citation_count %}<span>&#128218; {{ article.citation_count }} {% trans "iqtibos" %}</span>{% endif %}
         </div>
+
+        {% if article.doi %}
+        <div class="doi-badge">
+            <span class="doi-label">DOI</span>
+            <a href="https://doi.org/{{ article.doi }}" target="_blank" rel="noopener">{{ article.doi }}</a>
+        </div>
+        {% endif %}
 
         <div class="abstract-block">
             {% if article.abstract %}
@@ -55,10 +62,29 @@
             {% endif %}
         </div>
 
+        <div class="article-actions-bar">
+            {% if article.pdf_file %}
+            <a href="{{ article.pdf_file.url }}" target="_blank" class="btn">
+                &#128190; {% trans "PDF yuklab olish" %}
+            </a>
+            {% endif %}
+            <div class="share-buttons">
+                <span class="share-label">{% trans "Ulashish" %}:</span>
+                <a href="https://twitter.com/intent/tweet?text={{ article.title|urlencode }}&url={{ SITE_DOMAIN }}{{ article.get_absolute_url }}"
+                   target="_blank" rel="noopener" class="share-btn" aria-label="Twitter/X">&#120143;</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ SITE_DOMAIN }}{{ article.get_absolute_url }}"
+                   target="_blank" rel="noopener" class="share-btn" aria-label="LinkedIn">in</a>
+                <a href="https://t.me/share/url?url={{ SITE_DOMAIN }}{{ article.get_absolute_url }}&text={{ article.title|urlencode }}"
+                   target="_blank" rel="noopener" class="share-btn" aria-label="Telegram">&#9993;</a>
+                <button class="share-btn" onclick="navigator.clipboard.writeText('{{ SITE_DOMAIN }}{{ article.get_absolute_url }}'); this.innerText='✓'"
+                        aria-label="{% trans 'Havolani nusxalash' %}">&#128279;</button>
+            </div>
+        </div>
+
         {% if related_articles %}
-        <div style="margin-top:44px;">
-            <h2 style="font-family:'Lora',serif;">{% trans "O'xshash maqolalar" %}</h2>
-            <div class="grid grid-2" style="margin-top:16px;">
+        <div style="margin-top:48px;">
+            <div class="section-head"><h2>{% trans "O'xshash maqolalar" %}</h2></div>
+            <div class="grid grid-2">
                 {% for article in related_articles %}{% include "journal/partials/_article_card.html" %}{% endfor %}
             </div>
         </div>
@@ -67,25 +93,39 @@
 
     <aside>
         {% if article.pdf_file %}
-        <div class="aside-box">
+        <div class="aside-box aside-pdf">
             <h4>{% trans "To'liq matn" %}</h4>
-            <a href="{{ article.pdf_file.url }}" target="_blank" class="btn" style="width:100%; justify-content:center;">{% trans "PDF yuklab olish" %}</a>
-        </div>
-        {% endif %}
-
-        {% if article.doi %}
-        <div class="aside-box">
-            <h4>DOI</h4>
-            <a href="https://doi.org/{{ article.doi }}" target="_blank" rel="noopener">{{ article.doi }}</a>
+            <a href="{{ article.pdf_file.url }}" target="_blank" class="btn btn-block">
+                &#128190; {% trans "PDF yuklab olish" %}
+            </a>
         </div>
         {% endif %}
 
         <div class="aside-box">
-            <h4>{% trans "Iqtibos keltirish (APA)" %}</h4>
-            <div class="cite-box" id="citation">{{ article.citation_apa }}</div>
-            <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%; justify-content:center;"
+            <h4>{% trans "Iqtibos keltirish" %}</h4>
+            <div class="cite-tabs">
+                <button class="cite-tab active" data-format="apa" onclick="switchCite(this,'apa')">APA</button>
+                <button class="cite-tab" data-format="bibtex" onclick="switchCite(this,'bibtex')">BibTeX</button>
+                <button class="cite-tab" data-format="ris" onclick="switchCite(this,'ris')">RIS</button>
+            </div>
+            <div class="cite-box" id="cite-apa">{{ article.citation_apa }}</div>
+            <div class="cite-box" id="cite-bibtex" style="display:none;">@article&#123;oncoscience_{{ article.pk }},
+  title = &#123;{{ article.title }}&#125;,
+  author = &#123;{% for a in article.authors.all %}{{ a.full_name }}{% if not forloop.last %} and {% endif %}{% endfor %}&#125;,
+  journal = &#123;Oncoscience&#125;,
+  year = &#123;{{ article.year }}&#125;,
+{% if article.doi %}  doi = &#123;{{ article.doi }}&#125;,{% endif %}
+&#125;</div>
+            <div class="cite-box" id="cite-ris" style="display:none;">TY  - JOUR
+TI  - {{ article.title }}
+{% for a in article.authors.all %}AU  - {{ a.full_name }}
+{% endfor %}PY  - {{ article.year }}
+JO  - Oncoscience
+{% if article.doi %}DO  - {{ article.doi }}{% endif %}
+ER  -</div>
+            <button class="btn btn-outline btn-sm btn-block" style="margin-top:10px;"
                     data-copied-label="{% trans 'Nusxalandi' %}"
-                    onclick="navigator.clipboard.writeText(document.getElementById('citation').innerText); this.innerText=this.dataset.copiedLabel;">
+                    onclick="copyCitation(this)">
                 {% trans "Nusxa olish" %}
             </button>
         </div>
@@ -94,9 +134,12 @@
         <div class="aside-box">
             <h4>{% trans "Mualliflar" %}</h4>
             {% for a in article.authors.all %}
-            <div style="margin-bottom:12px;">
-                <a href="{{ a.get_absolute_url }}" style="font-weight:600;">{{ a.full_name }}</a>
-                {% if a.affiliation %}<div style="color:var(--muted);font-size:.85rem;">{{ a.affiliation }}</div>{% endif %}
+            <div class="aside-author">
+                {% if a.photo %}<img src="{{ a.photo.url }}" alt="{{ a.full_name }}" class="aside-author-img">{% else %}<div class="aside-author-avatar">{{ a.full_name|slice:":1" }}</div>{% endif %}
+                <div>
+                    <a href="{{ a.get_absolute_url }}" class="aside-author-name">{{ a.full_name }}</a>
+                    {% if a.affiliation %}<div class="aside-author-aff">{{ a.affiliation }}</div>{% endif %}
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -106,4 +149,20 @@
     </aside>
 </div>
 </div>
+
+<script>
+function switchCite(btn, fmt) {
+    document.querySelectorAll('.cite-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.cite-box').forEach(c => c.style.display = 'none');
+    document.getElementById('cite-' + fmt).style.display = 'block';
+}
+function copyCitation(btn) {
+    const visible = document.querySelector('.cite-box:not([style*="display:none"]):not([style*="display: none"])');
+    const text = visible ? visible.innerText : document.getElementById('cite-apa').innerText;
+    navigator.clipboard.writeText(text.trim());
+    btn.innerText = btn.dataset.copiedLabel;
+    setTimeout(() => btn.innerText = '{% trans "Nusxa olish" %}', 2000);
+}
+</script>
 {% endblock %}
