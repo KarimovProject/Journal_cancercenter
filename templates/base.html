@@ -626,6 +626,18 @@
     .supp-file:last-child{border-bottom:0}
     .supp-file:hover{color:var(--brand)}
 
+    /* Submission form: sections + dynamic formsets */
+    .form-section-title{font-family:var(--serif);font-size:1.15rem;font-weight:600;margin:34px 0 6px;padding-top:20px;border-top:1px solid var(--line);color:var(--brand-dark)}
+    .formset{display:flex;flex-direction:column;gap:14px;margin:12px 0}
+    .formset-row{padding:14px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg-soft)}
+    .formset-grid{display:grid;grid-template-columns:70px 1fr 1fr;gap:12px;align-items:start}
+    .formset-cell label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:4px}
+    .form-input-sm{max-width:70px}
+    .formset-del{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:.85rem;color:#c0392b;cursor:pointer}
+    .btn-outline{background:transparent;border:1px dashed var(--brand);color:var(--brand);padding:9px 16px;font-size:.9rem;margin-top:4px}
+    .btn-outline:hover{background:var(--brand-light)}
+    @media(max-width:640px){.formset-grid{grid-template-columns:1fr}}
+
     /* Error pages */
     .error-page{text-align:center;padding:100px 24px}
     .error-page .code{font-family:var(--serif);font-size:6rem;font-weight:600;color:var(--brand);line-height:1;margin:0}

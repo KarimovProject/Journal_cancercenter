@@ -68,6 +68,25 @@
         </div>
       </div>
 
+      <div class="form-section-title">{% trans "To'liq matn" %}</div>
+      <p class="form-help">{% trans "Maqolaning to'liq matnini shu yerga kiriting. Kamida o'zbek tilida tavsiya etiladi." %}</p>
+
+      <div class="form-field">
+        <label>{{ form.full_text_uz.label }}</label>
+        {{ form.full_text_uz }}
+        {{ form.full_text_uz.errors }}
+      </div>
+      <div class="form-field">
+        <label>{{ form.full_text_ru.label }}</label>
+        {{ form.full_text_ru }}
+        {{ form.full_text_ru.errors }}
+      </div>
+      <div class="form-field">
+        <label>{{ form.full_text_en.label }}</label>
+        {{ form.full_text_en }}
+        {{ form.full_text_en.errors }}
+      </div>
+
       <div class="form-row-2">
         <div class="form-field">
           <label>{{ form.article_type.label }}</label>
@@ -120,12 +139,125 @@
         {{ form.pdf_file.errors }}
       </div>
 
+      <div class="form-section-title">{% trans "Etika va moliyalashtirish" %}</div>
+      <div class="form-field">
+        <label>{{ form.funding_statement_uz.label }}</label>
+        {{ form.funding_statement_uz }}
+      </div>
+      <div class="form-field">
+        <label>{{ form.ethics_statement_uz.label }}</label>
+        {{ form.ethics_statement_uz }}
+      </div>
+      <div class="form-field">
+        <label>{{ form.conflict_of_interest_uz.label }}</label>
+        {{ form.conflict_of_interest_uz }}
+      </div>
+
+      {# ---------- References ---------- #}
+      <div class="form-section-title">{% trans "Adabiyotlar ro'yxati" %}</div>
+      {{ ref_fs.management_form }}
+      <div class="formset" id="ref-formset" data-prefix="ref">
+        {% for f in ref_fs %}
+        <div class="formset-row">
+          {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ f.order.label_tag }}{{ f.order }}</div>
+            <div class="formset-cell formset-grow">{{ f.citation_text.label_tag }}{{ f.citation_text }}</div>
+            <div class="formset-cell formset-grow">{{ f.doi_or_url.label_tag }}{{ f.doi_or_url }}</div>
+          </div>
+          {% if f.instance.pk %}<label class="formset-del">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <template id="ref-empty">
+        <div class="formset-row">
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ ref_fs.empty_form.order.label_tag }}{{ ref_fs.empty_form.order }}</div>
+            <div class="formset-cell formset-grow">{{ ref_fs.empty_form.citation_text.label_tag }}{{ ref_fs.empty_form.citation_text }}</div>
+            <div class="formset-cell formset-grow">{{ ref_fs.empty_form.doi_or_url.label_tag }}{{ ref_fs.empty_form.doi_or_url }}</div>
+          </div>
+        </div>
+      </template>
+      <button type="button" class="btn btn-outline btn-add-row" data-target="ref">+ {% trans "Adabiyot qo'shish" %}</button>
+
+      {# ---------- Figures ---------- #}
+      <div class="form-section-title">{% trans "Rasmlar" %}</div>
+      {{ fig_fs.management_form }}
+      <div class="formset" id="fig-formset" data-prefix="fig">
+        {% for f in fig_fs %}
+        <div class="formset-row">
+          {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ f.order.label_tag }}{{ f.order }}</div>
+            <div class="formset-cell formset-grow">{{ f.image.label_tag }}{{ f.image }}</div>
+            <div class="formset-cell formset-grow">{{ f.caption_uz.label_tag }}{{ f.caption_uz }}</div>
+          </div>
+          {% if f.instance.pk %}<label class="formset-del">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <template id="fig-empty">
+        <div class="formset-row">
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ fig_fs.empty_form.order.label_tag }}{{ fig_fs.empty_form.order }}</div>
+            <div class="formset-cell formset-grow">{{ fig_fs.empty_form.image.label_tag }}{{ fig_fs.empty_form.image }}</div>
+            <div class="formset-cell formset-grow">{{ fig_fs.empty_form.caption_uz.label_tag }}{{ fig_fs.empty_form.caption_uz }}</div>
+          </div>
+        </div>
+      </template>
+      <button type="button" class="btn btn-outline btn-add-row" data-target="fig">+ {% trans "Rasm qo'shish" %}</button>
+
+      {# ---------- Supplementary files ---------- #}
+      <div class="form-section-title">{% trans "Qo'shimcha materiallar" %}</div>
+      {{ supp_fs.management_form }}
+      <div class="formset" id="supp-formset" data-prefix="supp">
+        {% for f in supp_fs %}
+        <div class="formset-row">
+          {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ f.order.label_tag }}{{ f.order }}</div>
+            <div class="formset-cell formset-grow">{{ f.file.label_tag }}{{ f.file }}</div>
+            <div class="formset-cell formset-grow">{{ f.title_uz.label_tag }}{{ f.title_uz }}</div>
+          </div>
+          {% if f.instance.pk %}<label class="formset-del">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <template id="supp-empty">
+        <div class="formset-row">
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ supp_fs.empty_form.order.label_tag }}{{ supp_fs.empty_form.order }}</div>
+            <div class="formset-cell formset-grow">{{ supp_fs.empty_form.file.label_tag }}{{ supp_fs.empty_form.file }}</div>
+            <div class="formset-cell formset-grow">{{ supp_fs.empty_form.title_uz.label_tag }}{{ supp_fs.empty_form.title_uz }}</div>
+          </div>
+        </div>
+      </template>
+      <button type="button" class="btn btn-outline btn-add-row" data-target="supp">+ {% trans "Fayl qo'shish" %}</button>
+
       {% if form.non_field_errors %}
         <div class="form-errors">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <button type="submit" class="btn btn-block">{% trans "Maqolani topshirish" %}</button>
+      <button type="submit" class="btn btn-block" style="margin-top:24px;">{% trans "Maqolani topshirish" %}</button>
     </form>
   </div>
 </div>
+
+{{ form.media }}
+<script>
+document.querySelectorAll('.btn-add-row').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var prefix = btn.dataset.target;
+    var container = document.getElementById(prefix + '-formset');
+    var tmpl = document.getElementById(prefix + '-empty').innerHTML;
+    var totalInput = document.getElementById('id_' + prefix + '-TOTAL_FORMS');
+    var index = parseInt(totalInput.value, 10);
+    var html = tmpl.replace(/__prefix__/g, index);
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = html.trim();
+    container.appendChild(wrapper.firstChild);
+    totalInput.value = index + 1;
+  });
+});
+</script>
 {% endblock %}

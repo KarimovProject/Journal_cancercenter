@@ -16,7 +16,14 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
-from .forms import ArticleSubmissionForm, AuthorProfileForm, RegistrationForm
+from .forms import (
+    ArticleFigureFormSet,
+    ArticleSubmissionForm,
+    ArticleSupplementaryFileFormSet,
+    AuthorProfileForm,
+    ReferenceFormSet,
+    RegistrationForm,
+)
 from .filters import ArticleFilter
 from .models import (
     Article,
@@ -406,61 +413,77 @@ def logout_view(request):
 # Article submission
 # ---------------------------------------------------------------------------
 
+def _link_issue_from_text(article, issue_text):
+    """Parse "Vol. 5, No. 2, 2025" and link/create the matching Issue."""
+    issue_text = (issue_text or '').strip()
+    if not issue_text:
+        return
+    import re
+    m = re.match(r'Vol\.?\s*(\d+).*?No\.?\s*(\d+).*?(\d{4})', issue_text, re.IGNORECASE)
+    if m:
+        vol, num, yr = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        issue_obj, _created = Issue.objects.get_or_create(volume=vol, number=num, year=yr)
+        article.issue = issue_obj
+
+
+def _apply_co_authors(article, co_authors_text):
+    for line in (co_authors_text or '').split('\n'):
+        name = line.strip()
+        if name:
+            co_author, _created = Author.objects.get_or_create(
+                full_name=name,
+                defaults={'slug': name.lower().replace(' ', '-')[:280]},
+            )
+            article.authors.add(co_author)
+
+
+def _apply_keywords(article, keywords_text):
+    from .models import Keyword
+    for kw in (keywords_text or '').split(','):
+        kw = kw.strip()
+        if kw:
+            keyword_obj, _created = Keyword.objects.get_or_create(name=kw)
+            article.keywords.add(keyword_obj)
+
+
 @login_required(login_url='/ilm-fan/kirish/')
 def submit_article(request):
     if request.method == 'POST':
         form = ArticleSubmissionForm(request.POST, request.FILES)
-        if form.is_valid():
+        ref_fs = ReferenceFormSet(request.POST, prefix='ref', instance=form.instance)
+        fig_fs = ArticleFigureFormSet(request.POST, request.FILES, prefix='fig', instance=form.instance)
+        supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=form.instance)
+
+        if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
             article = form.save(commit=False)
             article.submitted_by = request.user
             article.status = Article.Status.DRAFT
-
-            # Parse issue_text (e.g. "Vol. 5, No. 2, 2025") and link/create Issue
-            issue_text = form.cleaned_data.get('issue_text', '').strip()
-            if issue_text:
-                import re
-                m = re.match(
-                    r'Vol\.?\s*(\d+).*?No\.?\s*(\d+).*?(\d{4})',
-                    issue_text, re.IGNORECASE,
-                )
-                if m:
-                    vol, num, yr = int(m.group(1)), int(m.group(2)), int(m.group(3))
-                    issue_obj, _created = Issue.objects.get_or_create(
-                        volume=vol, number=num, year=yr,
-                    )
-                    article.issue = issue_obj
-
+            _link_issue_from_text(article, form.cleaned_data.get('issue_text', ''))
             article.save()
-            # Auto-link the user's author profile as an author of this article
+
             author = Author.objects.filter(user=request.user).first()
             if author:
                 article.authors.add(author)
-            # Process co-authors (one per line -> create/find Author objects)
-            co_authors_text = form.cleaned_data.get('co_authors', '')
-            if co_authors_text:
-                for line in co_authors_text.split('\n'):
-                    name = line.strip()
-                    if name:
-                        co_author, _created = Author.objects.get_or_create(
-                            full_name=name,
-                            defaults={'slug': name.lower().replace(' ', '-')[:280]},
-                        )
-                        article.authors.add(co_author)
-            # Process keywords (comma-separated text -> Keyword objects)
-            keywords_text = form.cleaned_data.get('keywords_text', '')
-            if keywords_text:
-                from .models import Keyword
-                for kw in keywords_text.split(','):
-                    kw = kw.strip()
-                    if kw:
-                        keyword_obj, _created = Keyword.objects.get_or_create(name=kw)
-                        article.keywords.add(keyword_obj)
+            _apply_co_authors(article, form.cleaned_data.get('co_authors', ''))
+            _apply_keywords(article, form.cleaned_data.get('keywords_text', ''))
+
+            for fs in (ref_fs, fig_fs, supp_fs):
+                fs.instance = article
+                fs.save()
+
             messages.success(request, _('Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi.'))
             return redirect('journal:my_articles')
     else:
         form = ArticleSubmissionForm()
+        ref_fs = ReferenceFormSet(prefix='ref', instance=Article())
+        fig_fs = ArticleFigureFormSet(prefix='fig', instance=Article())
+        supp_fs = ArticleSupplementaryFileFormSet(prefix='supp', instance=Article())
+
     context = {
         'form': form,
+        'ref_fs': ref_fs,
+        'fig_fs': fig_fs,
+        'supp_fs': supp_fs,
         'meta_description': _('Maqola topshirish formasi.'),
     }
     return render(request, 'journal/submit_article.html', context)
@@ -488,56 +511,41 @@ def edit_article(request, pk):
 
     if request.method == 'POST':
         form = ArticleSubmissionForm(request.POST, request.FILES, instance=article, initial=initial)
-        if form.is_valid():
+        ref_fs = ReferenceFormSet(request.POST, prefix='ref', instance=article)
+        fig_fs = ArticleFigureFormSet(request.POST, request.FILES, prefix='fig', instance=article)
+        supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=article)
+
+        if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
             article = form.save(commit=False)
             article.status = Article.Status.DRAFT
             article.rejection_reason = ''
-
-            issue_text = form.cleaned_data.get('issue_text', '').strip()
-            if issue_text:
-                import re
-                m = re.match(r'Vol\.?\s*(\d+).*?No\.?\s*(\d+).*?(\d{4})', issue_text, re.IGNORECASE)
-                if m:
-                    vol, num, yr = int(m.group(1)), int(m.group(2)), int(m.group(3))
-                    issue_obj, _created = Issue.objects.get_or_create(volume=vol, number=num, year=yr)
-                    article.issue = issue_obj
-
+            _link_issue_from_text(article, form.cleaned_data.get('issue_text', ''))
             article.save()
 
-            # Re-link the user's own author profile
+            # Re-link the user's own author profile, then co-authors.
             author = Author.objects.filter(user=request.user).first()
             article.authors.set([author] if author else [])
+            _apply_co_authors(article, form.cleaned_data.get('co_authors', ''))
 
-            # Process co-authors
-            co_authors_text = form.cleaned_data.get('co_authors', '')
-            if co_authors_text:
-                for line in co_authors_text.split('\n'):
-                    name = line.strip()
-                    if name:
-                        co_author, _created = Author.objects.get_or_create(
-                            full_name=name,
-                            defaults={'slug': name.lower().replace(' ', '-')[:280]},
-                        )
-                        article.authors.add(co_author)
-
-            # Update keywords
             article.keywords.clear()
-            keywords_text = form.cleaned_data.get('keywords_text', '')
-            if keywords_text:
-                from .models import Keyword
-                for kw in keywords_text.split(','):
-                    kw = kw.strip()
-                    if kw:
-                        keyword_obj, _created = Keyword.objects.get_or_create(name=kw)
-                        article.keywords.add(keyword_obj)
+            _apply_keywords(article, form.cleaned_data.get('keywords_text', ''))
+
+            for fs in (ref_fs, fig_fs, supp_fs):
+                fs.save()
 
             messages.success(request, _('Maqola yangilandi va qayta ko\'rib chiqishga yuborildi.'))
             return redirect('journal:my_articles')
     else:
         form = ArticleSubmissionForm(instance=article, initial=initial)
+        ref_fs = ReferenceFormSet(prefix='ref', instance=article)
+        fig_fs = ArticleFigureFormSet(prefix='fig', instance=article)
+        supp_fs = ArticleSupplementaryFileFormSet(prefix='supp', instance=article)
 
     context = {
         'form': form,
+        'ref_fs': ref_fs,
+        'fig_fs': fig_fs,
+        'supp_fs': supp_fs,
         'article': article,
         'is_edit': True,
         'meta_description': _('Maqolani tahrirlash.'),

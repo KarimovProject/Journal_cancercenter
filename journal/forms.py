@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import inlineformset_factory
+from tinymce.widgets import TinyMCE
 
-from .models import Article, Author
+from .models import Article, ArticleFigure, ArticleSupplementaryFile, Author, Reference
 
 
 class RegistrationForm(forms.Form):
@@ -111,7 +113,9 @@ class ArticleSubmissionForm(forms.ModelForm):
         fields = [
             'title_uz', 'title_ru', 'title_en',
             'abstract_uz', 'abstract_ru', 'abstract_en',
+            'full_text_uz', 'full_text_ru', 'full_text_en',
             'article_type', 'category',
+            'funding_statement_uz', 'conflict_of_interest_uz', 'ethics_statement_uz',
             'doi', 'thumbnail_image', 'pdf_file',
         ]
         widgets = {
@@ -121,8 +125,14 @@ class ArticleSubmissionForm(forms.ModelForm):
             'abstract_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Annotatsiya (uz)'}),
             'abstract_ru': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Annotatsiya (ru)'}),
             'abstract_en': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Annotatsiya (en)'}),
+            'full_text_uz': TinyMCE(attrs={'class': 'form-input'}),
+            'full_text_ru': TinyMCE(attrs={'class': 'form-input'}),
+            'full_text_en': TinyMCE(attrs={'class': 'form-input'}),
             'article_type': forms.Select(attrs={'class': 'form-input'}),
             'category': forms.Select(attrs={'class': 'form-input'}),
+            'funding_statement_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Ushbu tadqiqot ... tomonidan moliyalashtirilgan.'}),
+            'conflict_of_interest_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Mualliflar manfaatlar to\u02bbqnashuvi yo\u02bbqligini bildiradilar.'}),
+            'ethics_statement_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Tadqiqot etika komissiyasi tomonidan tasdiqlangan.'}),
             'doi': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '10.1234/oncoscience.2025.01.005'}),
             'thumbnail_image': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
             'pdf_file': forms.FileInput(attrs={'class': 'form-input', 'accept': '.pdf,.doc,.docx'}),
@@ -144,6 +154,17 @@ class ArticleSubmissionForm(forms.ModelForm):
         self.fields['pdf_file'].label = 'PDF fayl *'
         self.fields['doi'].required = False
         self.fields['thumbnail_image'].required = False
+        self.fields['full_text_uz'].label = 'To\u02bbliq matn (uz)'
+        self.fields['full_text_ru'].label = 'To\u02bbliq matn (ru)'
+        self.fields['full_text_en'].label = 'To\u02bbliq matn (en)'
+        self.fields['full_text_uz'].required = False
+        self.fields['full_text_ru'].required = False
+        self.fields['full_text_en'].required = False
+        self.fields['funding_statement_uz'].label = 'Moliyalashtirish (ixtiyoriy)'
+        self.fields['conflict_of_interest_uz'].label = 'Manfaatlar to\u02bbqnashuvi (ixtiyoriy)'
+        self.fields['ethics_statement_uz'].label = 'Etika bayonoti (ixtiyoriy)'
+        for name in ('funding_statement_uz', 'conflict_of_interest_uz', 'ethics_statement_uz'):
+            self.fields[name].required = False
 
     def clean(self):
         cleaned = super().clean()
@@ -186,3 +207,47 @@ class AuthorProfileForm(forms.ModelForm):
         self.fields['email'].label = 'Email'
         self.fields['photo'].label = 'Rasm (ixtiyoriy)'
         self.fields['photo'].required = False
+
+
+# ---------------------------------------------------------------------------
+# Inline formsets — author-submitted references, figures, supplementary files
+# ---------------------------------------------------------------------------
+
+ReferenceFormSet = inlineformset_factory(
+    Article,
+    Reference,
+    fields=('order', 'citation_text', 'doi_or_url'),
+    widgets={
+        'order': forms.NumberInput(attrs={'class': 'form-input form-input-sm', 'min': 0}),
+        'citation_text': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Muallif(lar), sarlavha, jurnal, yil, sahifalar.'}),
+        'doi_or_url': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'DOI yoki havola (ixtiyoriy)'}),
+    },
+    extra=1,
+    can_delete=True,
+)
+
+ArticleFigureFormSet = inlineformset_factory(
+    Article,
+    ArticleFigure,
+    fields=('order', 'image', 'caption_uz'),
+    widgets={
+        'order': forms.NumberInput(attrs={'class': 'form-input form-input-sm', 'min': 0}),
+        'image': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
+        'caption_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Tagyozuv (ixtiyoriy)'}),
+    },
+    extra=1,
+    can_delete=True,
+)
+
+ArticleSupplementaryFileFormSet = inlineformset_factory(
+    Article,
+    ArticleSupplementaryFile,
+    fields=('order', 'file', 'title_uz'),
+    widgets={
+        'order': forms.NumberInput(attrs={'class': 'form-input form-input-sm', 'min': 0}),
+        'file': forms.FileInput(attrs={'class': 'form-input'}),
+        'title_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Fayl nomi'}),
+    },
+    extra=1,
+    can_delete=True,
+)

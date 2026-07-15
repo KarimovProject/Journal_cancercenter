@@ -7,7 +7,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
+msgid "Adabiyot qo'shish"
+msgstr "Добавить источник"
+
 msgid "Adabiyotlar"
+msgstr "Список литературы"
+
+msgid "Adabiyotlar ro'yxati"
 msgstr "Список литературы"
 
 msgid "Aloqa"
@@ -97,6 +103,9 @@ msgstr "Примечание"
 msgid "Etika bayonoti"
 msgstr "Этическое заявление"
 
+msgid "Etika va moliyalashtirish"
+msgstr "Этика и финансирование"
+
 msgid "Faol"
 msgstr "Активные"
 
@@ -108,6 +117,9 @@ msgstr "Активные проекты"
 
 msgid "Fayl PDF yoki Word formatida bo'lishi kerak."
 msgstr "Файл должен быть в формате PDF или Word."
+
+msgid "Fayl qo'shish"
+msgstr "Добавить файл"
 
 msgid "Filtrlash"
 msgstr "Фильтр"
@@ -313,6 +325,9 @@ msgstr "Редактировать статью"
 msgid "Maqolani topshirish"
 msgstr "Подать статью"
 
+msgid "Maqolaning to'liq matnini shu yerga kiriting. Kamida o'zbek tilida tavsiya etiladi."
+msgstr "Введите полный текст статьи здесь. Рекомендуется хотя бы на узбекском языке."
+
 msgid "Markazning ilmiy kafedralari va ularning yo'nalishlari."
 msgstr "Научные кафедры центра и их направления."
 
@@ -357,6 +372,9 @@ msgstr "Копировать"
 
 msgid "Nusxalandi"
 msgstr "Скопировано"
+
+msgid "O'chirish"
+msgstr "Удалить"
 
 msgid "O'xshash maqolalar"
 msgstr "Похожие статьи"
@@ -417,6 +435,9 @@ msgstr "Руководитель"
 
 msgid "Rasm"
 msgstr "Рисунок"
+
+msgid "Rasm qo'shish"
+msgstr "Добавить рисунок"
 
 msgid "Rasmlar"
 msgstr "Рисунки"
