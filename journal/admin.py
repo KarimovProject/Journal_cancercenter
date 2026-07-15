@@ -1,7 +1,11 @@
+from django import forms
 from django.contrib import admin
+from tinymce.widgets import TinyMCE
 
 from .models import (
     Article,
+    ArticleFigure,
+    ArticleSupplementaryFile,
     Author,
     Category,
     Collection,
@@ -15,6 +19,7 @@ from .models import (
     Keyword,
     NewsletterSubscription,
     PostgraduateProgram,
+    Reference,
     ScientificDepartment,
     StaticPage,
 )
@@ -54,20 +59,60 @@ class IssueAdmin(admin.ModelAdmin):
     search_fields = ('volume', 'number', 'year', 'title_uz')
 
 
+class ArticleAdminForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = '__all__'
+        widgets = {
+            'full_text_uz': TinyMCE(),
+            'full_text_ru': TinyMCE(),
+            'full_text_en': TinyMCE(),
+        }
+
+
+class ArticleFigureInline(admin.TabularInline):
+    model = ArticleFigure
+    extra = 1
+    fields = ('order', 'image', 'caption_uz', 'caption_ru', 'caption_en')
+
+
+class ReferenceInline(admin.TabularInline):
+    model = Reference
+    extra = 1
+    fields = ('order', 'citation_text', 'doi_or_url')
+
+
+class SupplementaryFileInline(admin.TabularInline):
+    model = ArticleSupplementaryFile
+    extra = 1
+    fields = ('order', 'file', 'title_uz', 'title_ru', 'title_en')
+
+
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
+    form = ArticleAdminForm
+    inlines = (ArticleFigureInline, ReferenceInline, SupplementaryFileInline)
     list_display = ('title_uz', 'status', 'article_type', 'is_open_access', 'category', 'submitted_by', 'publication_date', 'views_count', 'citation_count')
     list_filter = ('status', 'article_type', 'is_open_access', 'category', 'issue', 'submitted_by', 'publication_date')
     search_fields = ('title_uz', 'title_ru', 'title_en', 'abstract_uz', 'doi')
-    autocomplete_fields = ('authors', 'keywords', 'category', 'issue')
+    autocomplete_fields = ('authors', 'keywords', 'category', 'issue', 'corresponding_author')
     prepopulated_fields = {'slug': ('title_en',)}
     date_hierarchy = 'publication_date'
     readonly_fields = ('views_count', 'created_at', 'updated_at', 'submitted_by')
     list_editable = ('status', 'article_type', 'is_open_access')
     fieldsets = (
-        (None, {'fields': ('status', 'article_type', 'is_open_access', 'slug', 'category', 'issue', 'authors', 'keywords')}),
+        (None, {'fields': ('status', 'article_type', 'is_open_access', 'slug', 'category', 'issue', 'authors', 'corresponding_author', 'keywords')}),
         ('Sarlavha', {'fields': ('title_uz', 'title_ru', 'title_en')}),
         ('Annotatsiya', {'fields': ('abstract_uz', 'abstract_ru', 'abstract_en')}),
+        ('To\'liq matn', {'fields': ('full_text_uz', 'full_text_ru', 'full_text_en'), 'classes': ('collapse',)}),
+        ('Etika va moliyalashtirish', {
+            'fields': (
+                'funding_statement_uz', 'funding_statement_ru', 'funding_statement_en',
+                'conflict_of_interest_uz', 'conflict_of_interest_ru', 'conflict_of_interest_en',
+                'ethics_statement_uz', 'ethics_statement_ru', 'ethics_statement_en',
+            ),
+            'classes': ('collapse',),
+        }),
         ('Fayl va metama\'lumot', {'fields': ('pdf_file', 'thumbnail_image', 'doi', 'pages', 'publication_date', 'citation_count')}),
         ('Statistika', {'fields': ('views_count', 'created_at', 'updated_at')}),
         ('Topshiruv', {'fields': ('submitted_by', 'rejection_reason')}),
@@ -155,10 +200,10 @@ class JournalUpdateAdmin(admin.ModelAdmin):
 
 @admin.register(NewsletterSubscription)
 class NewsletterSubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('email', 'is_active', 'created_at')
-    list_filter = ('is_active', 'created_at')
+    list_display = ('email', 'is_confirmed', 'is_active', 'created_at')
+    list_filter = ('is_confirmed', 'is_active', 'created_at')
     search_fields = ('email',)
-    readonly_fields = ('created_at',)
+    readonly_fields = ('created_at', 'confirm_token')
 
 
 @admin.register(JournalInfo)

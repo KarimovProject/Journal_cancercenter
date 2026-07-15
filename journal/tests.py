@@ -379,3 +379,104 @@ class AuthAndSubmissionTests(TestCase):
         self.client.login(username='reviewuser', password='Str0ngP@ss!')
         r = self.client.get(reverse('journal:my_articles'))
         self.assertContains(r, 'Ko\'rib chiqilmoqda')
+
+
+class Phase2ContentTests(TestCase):
+    def setUp(self):
+        self.article = Article.objects.create(
+            title_uz='To\'liq matnli maqola', title_en='Full Text Article',
+            abstract_uz='Annotatsiya', status='published',
+            full_text_uz='<p>Kirish qismi matni.</p>',
+            funding_statement_uz='Grant #123 tomonidan moliyalashtirilgan.',
+            ethics_statement_uz='Etika komissiyasi roziligi olingan.',
+        )
+
+    def test_full_text_rendered(self):
+        r = self.client.get(self.article.get_absolute_url())
+        self.assertContains(r, 'Kirish qismi matni')
+        self.assertContains(r, "To'liq matn")
+
+    def test_statements_rendered(self):
+        r = self.client.get(self.article.get_absolute_url())
+        self.assertContains(r, 'Grant #123')
+        self.assertContains(r, 'Etika komissiyasi')
+
+    def test_references_rendered(self):
+        from journal.models import Reference
+        Reference.objects.create(
+            article=self.article, order=1,
+            citation_text='Smith J. Cancer research. 2020.', doi_or_url='10.1000/xyz',
+        )
+        r = self.client.get(self.article.get_absolute_url())
+        self.assertContains(r, 'Smith J. Cancer research')
+        self.assertContains(r, 'Adabiyotlar')
+
+    def test_has_full_text_property(self):
+        self.assertTrue(self.article.has_full_text)
+        empty = Article.objects.create(title_uz='Bo\'sh', title_en='Empty')
+        self.assertFalse(empty.has_full_text)
+
+
+class NewsletterDoubleOptInTests(TestCase):
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+
+    def test_subscribe_creates_unconfirmed(self):
+        r = self.client.post(reverse('journal:newsletter_subscribe'), {'email': 'new@example.com'})
+        self.assertEqual(r.status_code, 302)
+        sub = NewsletterSubscription.objects.get(email='new@example.com')
+        self.assertFalse(sub.is_confirmed)
+        self.assertTrue(sub.confirm_token)
+
+    def test_confirm_activates_subscription(self):
+        self.client.post(reverse('journal:newsletter_subscribe'), {'email': 'confirm@example.com'})
+        sub = NewsletterSubscription.objects.get(email='confirm@example.com')
+        r = self.client.get(reverse('journal:newsletter_confirm', args=[sub.confirm_token]))
+        self.assertEqual(r.status_code, 302)
+        sub.refresh_from_db()
+        self.assertTrue(sub.is_confirmed)
+        self.assertEqual(sub.confirm_token, '')
+
+    def test_confirm_invalid_token(self):
+        r = self.client.get(reverse('journal:newsletter_confirm', args=['badtoken']))
+        self.assertEqual(r.status_code, 302)
+
+    def test_rate_limit_blocks_excess(self):
+        for i in range(5):
+            self.client.post(reverse('journal:newsletter_subscribe'), {'email': f'u{i}@example.com'})
+        # 6th request should be rate limited (no new subscription created)
+        self.client.post(reverse('journal:newsletter_subscribe'), {'email': 'blocked@example.com'})
+        self.assertFalse(NewsletterSubscription.objects.filter(email='blocked@example.com').exists())
+
+
+class SeoTests(TestCase):
+    def setUp(self):
+        Article.objects.create(title_uz='SEO maqola', title_en='SEO Article', status='published')
+
+    def test_sitemap_accessible(self):
+        r = self.client.get('/sitemap.xml')
+        self.assertEqual(r.status_code, 200)
+        self.assertIn('application/xml', r['Content-Type'])
+
+    def test_rss_feed_accessible(self):
+        r = self.client.get('/rss/')
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'SEO maqola')
+
+    def test_robots_txt(self):
+        r = self.client.get('/robots.txt')
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'Sitemap:')
+
+    def test_scholar_meta_tags(self):
+        article = Article.objects.first()
+        r = self.client.get(article.get_absolute_url())
+        self.assertContains(r, 'citation_title')
+        self.assertContains(r, 'citation_language')
+
+
+class ErrorPageTests(TestCase):
+    def test_404_page(self):
+        r = self.client.get('/ilm-fan/maqolalar/mavjud-emas-slug/')
+        self.assertEqual(r.status_code, 404)

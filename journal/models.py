@@ -196,6 +196,27 @@ class Article(TimeStampedModel):
     abstract_ru = models.TextField(_('Annotatsiya (ru)'), blank=True)
     abstract_en = models.TextField(_('Annotatsiya (en)'), blank=True)
 
+    # To'liq matn (HTML) — WYSIWYG orqali tahrirlanadi.
+    full_text_uz = models.TextField(_('To\'liq matn (uz)'), blank=True)
+    full_text_ru = models.TextField(_('To\'liq matn (ru)'), blank=True)
+    full_text_en = models.TextField(_('To\'liq matn (en)'), blank=True)
+
+    # Etika va moliyalashtirish bo'limlari.
+    funding_statement_uz = models.TextField(_('Moliyalashtirish (uz)'), blank=True)
+    funding_statement_ru = models.TextField(_('Moliyalashtirish (ru)'), blank=True)
+    funding_statement_en = models.TextField(_('Moliyalashtirish (en)'), blank=True)
+    conflict_of_interest_uz = models.TextField(_('Manfaatlar to\'qnashuvi (uz)'), blank=True)
+    conflict_of_interest_ru = models.TextField(_('Manfaatlar to\'qnashuvi (ru)'), blank=True)
+    conflict_of_interest_en = models.TextField(_('Manfaatlar to\'qnashuvi (en)'), blank=True)
+    ethics_statement_uz = models.TextField(_('Etika bayonoti (uz)'), blank=True)
+    ethics_statement_ru = models.TextField(_('Etika bayonoti (ru)'), blank=True)
+    ethics_statement_en = models.TextField(_('Etika bayonoti (en)'), blank=True)
+
+    corresponding_author = models.ForeignKey(
+        Author, related_name='corresponding_articles', on_delete=models.SET_NULL,
+        null=True, blank=True, verbose_name=_('Mas\'ul muallif'),
+    )
+
     keywords = models.ManyToManyField(Keyword, related_name='articles', blank=True, verbose_name=_('Kalit so\'zlar'))
 
     category = models.ForeignKey(
@@ -262,6 +283,26 @@ class Article(TimeStampedModel):
         return translated(self, 'abstract')
 
     @property
+    def full_text(self):
+        return translated(self, 'full_text')
+
+    @property
+    def has_full_text(self):
+        return bool(self.full_text_uz or self.full_text_ru or self.full_text_en)
+
+    @property
+    def funding_statement(self):
+        return translated(self, 'funding_statement')
+
+    @property
+    def conflict_of_interest(self):
+        return translated(self, 'conflict_of_interest')
+
+    @property
+    def ethics_statement(self):
+        return translated(self, 'ethics_statement')
+
+    @property
     def is_published(self):
         return self.status == self.Status.PUBLISHED
 
@@ -287,6 +328,86 @@ class Article(TimeStampedModel):
         if self.doi:
             cite += f' https://doi.org/{self.doi}'
         return cite.strip()
+
+
+class ArticleFigure(models.Model):
+    """Maqola ichidagi rasm (rasm fayli + tagyozuv)."""
+
+    article = models.ForeignKey(
+        Article, related_name='figures', on_delete=models.CASCADE, verbose_name=_('Maqola'),
+    )
+    image = models.ImageField(_('Rasm'), upload_to='articles/figures/%Y/%m/')
+    caption_uz = models.CharField(_('Tagyozuv (uz)'), max_length=500, blank=True)
+    caption_ru = models.CharField(_('Tagyozuv (ru)'), max_length=500, blank=True)
+    caption_en = models.CharField(_('Tagyozuv (en)'), max_length=500, blank=True)
+    order = models.PositiveIntegerField(_('Tartib raqami'), default=0)
+
+    class Meta:
+        verbose_name = _('Maqola rasmi')
+        verbose_name_plural = _('Maqola rasmlari')
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f'{self.article.title_uz} — rasm {self.order}'
+
+    @property
+    def caption(self):
+        return translated(self, 'caption')
+
+
+class Reference(models.Model):
+    """Adabiyot / iqtibos (maqola oxiridagi raqamlangan ro'yxat)."""
+
+    article = models.ForeignKey(
+        Article, related_name='references', on_delete=models.CASCADE, verbose_name=_('Maqola'),
+    )
+    order = models.PositiveIntegerField(_('Tartib raqami'), default=0)
+    citation_text = models.TextField(
+        _('Iqtibos matni'),
+        help_text=_('To\'liq: muallif(lar), sarlavha, jurnal, yil, sahifalar.'),
+    )
+    doi_or_url = models.CharField(_('DOI yoki havola'), max_length=300, blank=True)
+
+    class Meta:
+        verbose_name = _('Adabiyot')
+        verbose_name_plural = _('Adabiyotlar ro\'yxati')
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f'[{self.order}] {self.citation_text[:60]}'
+
+    @property
+    def link(self):
+        if not self.doi_or_url:
+            return ''
+        if self.doi_or_url.startswith('http'):
+            return self.doi_or_url
+        return f'https://doi.org/{self.doi_or_url}'
+
+
+class ArticleSupplementaryFile(models.Model):
+    """Qo'shimcha material (asosiy PDF'dan tashqari fayllar)."""
+
+    article = models.ForeignKey(
+        Article, related_name='supplementary_files', on_delete=models.CASCADE, verbose_name=_('Maqola'),
+    )
+    file = models.FileField(_('Fayl'), upload_to='articles/supplementary/%Y/%m/')
+    title_uz = models.CharField(_('Nomi (uz)'), max_length=300)
+    title_ru = models.CharField(_('Nomi (ru)'), max_length=300, blank=True)
+    title_en = models.CharField(_('Nomi (en)'), max_length=300, blank=True)
+    order = models.PositiveIntegerField(_('Tartib'), default=0)
+
+    class Meta:
+        verbose_name = _('Qo\'shimcha material')
+        verbose_name_plural = _('Qo\'shimcha materiallar')
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.title_uz
+
+    @property
+    def title(self):
+        return translated(self, 'title')
 
 
 class EditorialBoardMember(models.Model):
@@ -645,6 +766,8 @@ class NewsletterSubscription(models.Model):
 
     email = models.EmailField(_('Email'), unique=True)
     is_active = models.BooleanField(_('Faol'), default=True)
+    is_confirmed = models.BooleanField(_('Tasdiqlangan'), default=False)
+    confirm_token = models.CharField(_('Tasdiqlash tokeni'), max_length=64, blank=True)
     created_at = models.DateTimeField(_('Obuna sanasi'), auto_now_add=True)
 
     class Meta:
@@ -654,6 +777,11 @@ class NewsletterSubscription(models.Model):
 
     def __str__(self):
         return self.email
+
+    @staticmethod
+    def generate_token():
+        import secrets
+        return secrets.token_urlsafe(32)[:64]
 
 
 class JournalInfo(models.Model):

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}500 — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container error-page">
+    <p class="code">500</p>
+    <h1>{% trans "Serverda xatolik" %}</h1>
+    <p>{% trans "Kechirasiz, kutilmagan xatolik yuz berdi. Iltimos, birozdan so'ng qayta urinib ko'ring." %}</p>
+    <a href="{% url 'journal:home' %}" class="btn">{% trans "Bosh sahifaga qaytish" %}</a>
+</div>
+{% endblock %}

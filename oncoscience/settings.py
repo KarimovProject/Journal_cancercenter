@@ -74,6 +74,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
+    'tinymce',
+    'django.contrib.sitemaps',
     # Local
     'journal',
 ]
@@ -245,6 +247,24 @@ EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
 # Public site domain used to build absolute URLs for SEO/Open Graph tags.
 SITE_DOMAIN = os.getenv('SITE_DOMAIN', 'http://localhost:8000')
 SITE_NAME = os.getenv('SITE_NAME', 'Oncoscience')
+
+# TinyMCE — WYSIWYG editor for article full text in the admin.
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 500,
+    'menubar': 'edit view insert format tools table',
+    'plugins': (
+        'advlist autolink lists link image charmap preview anchor '
+        'searchreplace visualblocks code fullscreen insertdatetime media '
+        'table code help wordcount'
+    ),
+    'toolbar': (
+        'undo redo | blocks | bold italic underline | '
+        'alignleft aligncenter alignright alignjustify | '
+        'bullist numlist outdent indent | link image table | '
+        'removeformat code fullscreen help'
+    ),
+    'branding': False,
+}
 
 # Security hardening (activated in production when DEBUG is off).
 if not DEBUG:

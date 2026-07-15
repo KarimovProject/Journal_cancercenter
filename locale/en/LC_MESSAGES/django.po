@@ -7,6 +7,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
+msgid "Adabiyotlar"
+msgstr "References"
+
 msgid "Aloqa"
 msgstr "Contact"
 
@@ -52,6 +55,9 @@ msgstr "Editor-in-Chief"
 msgid "Bosh sahifa"
 msgstr "Home"
 
+msgid "Bosh sahifaga qaytish"
+msgstr "Back to home"
+
 msgid "Bu muallifning nashr etilgan maqolalari yo'q."
 msgstr "This author has no published articles."
 
@@ -87,6 +93,9 @@ msgstr "Newest first"
 
 msgid "Eslatma"
 msgstr "Note"
+
+msgid "Etika bayonoti"
+msgstr "Ethics statement"
 
 msgid "Faol"
 msgstr "Active"
@@ -160,6 +169,9 @@ msgstr "Cite (APA)"
 msgid "Jami maqolalar"
 msgstr "Total articles"
 
+msgid "Juda ko'p urinish. Iltimos, birozdan so'ng qayta urining."
+msgstr "Too many attempts. Please try again later."
+
 msgid "Jurnal haqida"
 msgstr "About the journal"
 
@@ -202,6 +214,12 @@ msgstr "Search by keyword or author..."
 msgid "Kalit soʻz..."
 msgstr "Keyword..."
 
+msgid "Kechirasiz, kutilmagan xatolik yuz berdi. Iltimos, birozdan so'ng qayta urinib ko'ring."
+msgstr "Sorry, an unexpected error occurred. Please try again later."
+
+msgid "Kechirasiz, siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan."
+msgstr "Sorry, the page you are looking for does not exist or has been moved."
+
 msgid "Kelayotgan"
 msgstr "Upcoming"
 
@@ -243,6 +261,9 @@ msgstr "No information added yet."
 
 msgid "Ma'lumot yo'q."
 msgstr "No data."
+
+msgid "Manfaatlar to'qnashuvi"
+msgstr "Conflict of interest"
 
 msgid "Manzil"
 msgstr "Address"
@@ -295,8 +316,14 @@ msgstr "Submit article"
 msgid "Markazning ilmiy kafedralari va ularning yo'nalishlari."
 msgstr "Scientific departments of the center and their research areas."
 
+msgid "Mas'ul muallif"
+msgstr "Corresponding author"
+
 msgid "Mening maqolalarim"
 msgstr "My articles"
+
+msgid "Moliyalashtirish"
+msgstr "Funding"
 
 msgid "Muallif ma'lumotlari"
 msgstr "Author details"
@@ -337,6 +364,9 @@ msgstr "Related articles"
 msgid "Obuna bo'lish"
 msgstr "Subscribe"
 
+msgid "Obunangiz tasdiqlandi! Yangi maqolalar haqida xabar beramiz."
+msgstr "Your subscription is confirmed! We will notify you about new articles."
+
 msgid "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar."
 msgstr "Open thematic collections — directions currently accepting submissions."
 
@@ -370,6 +400,12 @@ msgstr "Search"
 msgid "Qidiruv"
 msgstr "Search"
 
+msgid "Qo'shimcha materiallar"
+msgstr "Supplementary materials"
+
+msgid "RSS lenta"
+msgstr "RSS feed"
+
 msgid "Rad etilgan"
 msgstr "Rejected"
 
@@ -378,6 +414,12 @@ msgstr "Rejection reason"
 
 msgid "Rahbar"
 msgstr "Principal investigator"
+
+msgid "Rasm"
+msgstr "Figure"
+
+msgid "Rasmlar"
+msgstr "Figures"
 
 msgid "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi."
 msgstr "Platform for scientific publications of the Republican Specialized Scientific-Practical Medical Center of Oncology and Radiology."
@@ -397,6 +439,9 @@ msgstr "Translation into Russian and English is recommended."
 msgid "Sabab:"
 msgstr "Reason:"
 
+msgid "Sahifa topilmadi"
+msgstr "Page not found"
+
 msgid "Sana"
 msgstr "Date"
 
@@ -408,6 +453,9 @@ msgstr "Title"
 
 msgid "Sarlavha va annotatsiya kamida o'zbek tilida bo'lishi shart."
 msgstr "Title and abstract must be at least in Uzbek."
+
+msgid "Serverda xatolik"
+msgstr "Server error"
 
 msgid "Siz hali maqola topshirmagansiz."
 msgstr "You have not submitted any articles yet."
@@ -429,6 +477,12 @@ msgstr "Requirements"
 
 msgid "Talablar (PDF)"
 msgstr "Requirements (PDF)"
+
+msgid "Tasdiqlash havolasi emailingizga yuborildi. Iltimos, pochtangizni tekshiring."
+msgstr "A confirmation link has been sent to your email. Please check your inbox."
+
+msgid "Tasdiqlash havolasi yaroqsiz yoki muddati o'tgan."
+msgstr "The confirmation link is invalid or has expired."
 
 msgid "Taʼlim"
 msgstr "Education"

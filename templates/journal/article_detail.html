@@ -10,8 +10,20 @@
 <meta name="citation_title" content="{{ article.title }}">
 {% for a in article.authors.all %}<meta name="citation_author" content="{{ a.full_name }}">{% endfor %}
 <meta name="citation_publication_date" content="{{ article.publication_date|date:'Y/m/d' }}">
+<meta name="citation_journal_title" content="{{ SITE_NAME }}">
+{% if article.issue %}<meta name="citation_volume" content="{{ article.issue.volume }}">
+<meta name="citation_issue" content="{{ article.issue.number }}">{% endif %}
+{% if article.pages %}<meta name="citation_firstpage" content="{{ article.pages }}">{% endif %}
+{% if article.abstract %}<meta name="citation_abstract" content="{{ article.abstract|striptags|truncatewords:60 }}">{% endif %}
+{% if article.keywords.all %}<meta name="citation_keywords" content="{% for kw in article.keywords.all %}{{ kw.name }}{% if not forloop.last %}; {% endif %}{% endfor %}">{% endif %}
+<meta name="citation_language" content="{{ LANGUAGE_CODE }}">
 {% if article.doi %}<meta name="citation_doi" content="{{ article.doi }}">{% endif %}
 {% if article.pdf_file %}<meta name="citation_pdf_url" content="{{ SITE_DOMAIN }}{{ article.pdf_file.url }}">{% endif %}
+<link rel="canonical" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
+<link rel="alternate" hreflang="uz" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
+<link rel="alternate" hreflang="ru" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
+<link rel="alternate" hreflang="en" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
+<link rel="alternate" hreflang="x-default" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
 {% endblock %}
 
 {% block content %}
@@ -62,6 +74,50 @@
             {% endif %}
         </div>
 
+        {% if article.has_full_text %}
+        <div class="full-text prose">
+            <h2>{% trans "To'liq matn" %}</h2>
+            {{ article.full_text|safe }}
+        </div>
+        {% endif %}
+
+        {% if article.figures.all %}
+        <div class="figures-block">
+            <h2>{% trans "Rasmlar" %}</h2>
+            {% for fig in article.figures.all %}
+            <figure class="article-figure">
+                <img src="{{ fig.image.url }}" alt="{{ fig.caption }}" loading="lazy">
+                {% if fig.caption %}<figcaption><strong>{% trans "Rasm" %} {{ forloop.counter }}.</strong> {{ fig.caption }}</figcaption>{% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if article.funding_statement or article.conflict_of_interest or article.ethics_statement %}
+        <div class="statements-block">
+            {% if article.ethics_statement %}
+            <div class="statement"><h3>{% trans "Etika bayonoti" %}</h3><p>{{ article.ethics_statement|linebreaks }}</p></div>
+            {% endif %}
+            {% if article.funding_statement %}
+            <div class="statement"><h3>{% trans "Moliyalashtirish" %}</h3><p>{{ article.funding_statement|linebreaks }}</p></div>
+            {% endif %}
+            {% if article.conflict_of_interest %}
+            <div class="statement"><h3>{% trans "Manfaatlar to'qnashuvi" %}</h3><p>{{ article.conflict_of_interest|linebreaks }}</p></div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if article.references.all %}
+        <div class="references-block">
+            <h2>{% trans "Adabiyotlar" %}</h2>
+            <ol class="reference-list">
+                {% for ref in article.references.all %}
+                <li>{{ ref.citation_text }}{% if ref.link %} <a href="{{ ref.link }}" target="_blank" rel="noopener">{{ ref.doi_or_url }}</a>{% endif %}</li>
+                {% endfor %}
+            </ol>
+        </div>
+        {% endif %}
+
         <div class="article-actions-bar">
             {% if article.pdf_file %}
             <a href="{{ article.pdf_file.url }}" target="_blank" class="btn">
@@ -98,6 +154,32 @@
             <a href="{{ article.pdf_file.url }}" target="_blank" class="btn btn-block">
                 &#128190; {% trans "PDF yuklab olish" %}
             </a>
+        </div>
+        {% endif %}
+
+        {% if article.supplementary_files.all %}
+        <div class="aside-box">
+            <h4>{% trans "Qo'shimcha materiallar" %}</h4>
+            {% for supp in article.supplementary_files.all %}
+            <a href="{{ supp.file.url }}" target="_blank" rel="noopener" class="supp-file">
+                &#128206; {{ supp.title }}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if article.corresponding_author %}
+        <div class="aside-box">
+            <h4>{% trans "Mas'ul muallif" %}</h4>
+            <a href="{{ article.corresponding_author.get_absolute_url }}" class="aside-author-name">{{ article.corresponding_author.full_name }}</a>
+            {% if article.corresponding_author.email %}<div class="aside-author-aff"><a href="mailto:{{ article.corresponding_author.email }}">{{ article.corresponding_author.email }}</a></div>{% endif %}
+        </div>
+        {% endif %}
+
+        {% if article.doi %}
+        <div class="aside-box">
+            <h4>DOI</h4>
+            <a href="https://doi.org/{{ article.doi }}" target="_blank" rel="noopener">{{ article.doi }}</a>
         </div>
         {% endif %}
 

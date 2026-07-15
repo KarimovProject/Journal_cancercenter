@@ -1,8 +1,11 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.db.models import F, Q
@@ -34,6 +37,22 @@ from .models import (
 )
 
 PUBLISHED = Article.Status.PUBLISHED
+
+
+def _rate_limited(request, key_prefix, limit=5, window=3600):
+    """Simple IP-based rate limiter backed by the cache.
+
+    Returns True if the caller has exceeded ``limit`` requests within
+    ``window`` seconds for the given ``key_prefix``.
+    """
+    ip = request.META.get('HTTP_X_FORWARDED_FOR', '')
+    ip = ip.split(',')[0].strip() if ip else request.META.get('REMOTE_ADDR', 'unknown')
+    cache_key = f'ratelimit:{key_prefix}:{ip}'
+    count = cache.get(cache_key, 0)
+    if count >= limit:
+        return True
+    cache.set(cache_key, count + 1, window)
+    return False
 
 
 def _published_articles():
@@ -72,20 +91,61 @@ def home(request):
 
 @require_POST
 def newsletter_subscribe(request):
-    """'Sign up for alerts' — emailni bazaga saqlaydi (1-bosqich)."""
+    """'Sign up for alerts' — double opt-in orqali email tasdiqlash."""
     email = (request.POST.get('email') or '').strip().lower()
     next_url = request.POST.get('next') or reverse('journal:home')
+
+    if _rate_limited(request, 'newsletter', limit=5, window=3600):
+        messages.error(request, _('Juda ko\'p urinish. Iltimos, birozdan so\'ng qayta urining.'))
+        return redirect(next_url)
+
     try:
         validate_email(email)
     except ValidationError:
         messages.error(request, _("Iltimos, to'g'ri email manzil kiriting."))
         return redirect(next_url)
-    _obj, created = NewsletterSubscription.objects.get_or_create(email=email)
-    if created:
-        messages.success(request, _('Obuna qabul qilindi! Yangi maqolalar haqida xabar beramiz.'))
-    else:
+
+    obj, created = NewsletterSubscription.objects.get_or_create(email=email)
+    if obj.is_confirmed:
         messages.info(request, _('Bu email allaqachon obuna bo\'lgan.'))
+        return redirect(next_url)
+
+    # (Re)generate token and send confirmation email.
+    obj.confirm_token = NewsletterSubscription.generate_token()
+    obj.is_active = False
+    obj.save(update_fields=['confirm_token', 'is_active'])
+
+    site_name = getattr(settings, 'SITE_NAME', 'Oncoscience')
+    site_domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
+    confirm_url = f"{site_domain}{reverse('journal:newsletter_confirm', args=[obj.confirm_token])}"
+    send_mail(
+        f'[{site_name}] Obunani tasdiqlang',
+        (
+            f'Assalomu alaykum,\n\n'
+            f'{site_name} yangiliklariga obuna bo\'lish uchun quyidagi havolani bosing:\n'
+            f'{confirm_url}\n\n'
+            f'Agar bu siz bo\'lmasangiz, ushbu xatni e\'tiborsiz qoldiring.'
+        ),
+        settings.DEFAULT_FROM_EMAIL,
+        [email],
+        fail_silently=True,
+    )
+    messages.success(request, _('Tasdiqlash havolasi emailingizga yuborildi. Iltimos, pochtangizni tekshiring.'))
     return redirect(next_url)
+
+
+def newsletter_confirm(request, token):
+    """Confirm a newsletter subscription via the emailed token."""
+    obj = NewsletterSubscription.objects.filter(confirm_token=token).first()
+    if not obj:
+        messages.error(request, _('Tasdiqlash havolasi yaroqsiz yoki muddati o\'tgan.'))
+        return redirect('journal:home')
+    obj.is_confirmed = True
+    obj.is_active = True
+    obj.confirm_token = ''
+    obj.save(update_fields=['is_confirmed', 'is_active', 'confirm_token'])
+    messages.success(request, _('Obunangiz tasdiqlandi! Yangi maqolalar haqida xabar beramiz.'))
+    return redirect('journal:home')
 
 
 def update_list(request):
@@ -159,7 +219,9 @@ def article_list(request):
 
 def article_detail(request, slug):
     article = get_object_or_404(
-        Article.objects.select_related('category', 'issue').prefetch_related('authors', 'keywords'),
+        Article.objects
+        .select_related('category', 'issue', 'corresponding_author')
+        .prefetch_related('authors', 'keywords', 'figures', 'references', 'supplementary_files'),
         slug=slug,
     )
     if not article.is_published and not request.user.is_staff:
@@ -304,6 +366,9 @@ def register_view(request):
     if request.user.is_authenticated:
         return redirect('journal:home')
     if request.method == 'POST':
+        if _rate_limited(request, 'register', limit=10, window=3600):
+            messages.error(request, _('Juda ko\'p urinish. Iltimos, birozdan so\'ng qayta urining.'))
+            return render(request, 'journal/auth/register.html', {'form': RegistrationForm()})
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
@@ -521,3 +586,15 @@ def edit_profile(request):
         'meta_description': _('Profilni tahrirlash.'),
     }
     return render(request, 'journal/edit_profile.html', context)
+
+
+# ---------------------------------------------------------------------------
+# Error handlers
+# ---------------------------------------------------------------------------
+
+def custom_404(request, exception=None):
+    return render(request, 'journal/404.html', status=404)
+
+
+def custom_500(request):
+    return render(request, 'journal/500.html', status=500)

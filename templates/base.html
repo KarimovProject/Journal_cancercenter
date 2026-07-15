@@ -597,6 +597,57 @@
     /* Theme toggle button */
     .theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:transparent;cursor:pointer;font-size:1rem;color:var(--muted);transition:.18s;flex-shrink:0}
     .theme-toggle:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+
+    /* ============================================================
+       ARTICLE FULL TEXT, FIGURES, STATEMENTS, REFERENCES
+       ============================================================ */
+    .full-text{margin-top:40px;padding-top:32px;border-top:1px solid var(--line);max-width:none}
+    .full-text h2{font-family:var(--serif);font-size:1.5rem;margin:0 0 16px}
+    .full-text img{border-radius:var(--radius-sm);margin:20px 0}
+    .full-text table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.92rem}
+    .full-text th,.full-text td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+    .full-text th{background:var(--bg-soft);font-weight:600}
+    .figures-block{margin-top:40px}
+    .figures-block h2{font-family:var(--serif);font-size:1.5rem;margin:0 0 20px}
+    .article-figure{margin:0 0 28px;padding:0}
+    .article-figure img{width:100%;border:1px solid var(--line);border-radius:var(--radius-sm)}
+    .article-figure figcaption{font-size:.9rem;color:var(--muted);margin-top:10px;line-height:1.6}
+    .statements-block{margin-top:40px;padding:24px 26px;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius)}
+    .statements-block .statement{margin-bottom:18px}
+    .statements-block .statement:last-child{margin-bottom:0}
+    .statements-block h3{font-size:1rem;font-weight:700;margin:0 0 6px;color:var(--brand-dark)}
+    .statements-block p{font-size:.92rem;color:var(--ink-soft);margin:0}
+    .references-block{margin-top:40px}
+    .references-block h2{font-family:var(--serif);font-size:1.5rem;margin:0 0 16px}
+    .reference-list{padding-left:24px;margin:0}
+    .reference-list li{font-size:.92rem;color:var(--ink-soft);line-height:1.7;margin-bottom:12px;padding-left:6px}
+    .reference-list li a{color:var(--brand);word-break:break-all}
+    .supp-file{display:block;padding:9px 0;font-size:.9rem;color:var(--ink);border-bottom:1px solid var(--line)}
+    .supp-file:last-child{border-bottom:0}
+    .supp-file:hover{color:var(--brand)}
+
+    /* Error pages */
+    .error-page{text-align:center;padding:100px 24px}
+    .error-page .code{font-family:var(--serif);font-size:6rem;font-weight:600;color:var(--brand);line-height:1;margin:0}
+    .error-page h1{font-size:1.8rem;margin:16px 0 10px}
+    .error-page p{color:var(--muted);margin:0 0 28px}
+
+    /* ============================================================
+       PRINT STYLESHEET
+       ============================================================ */
+    @media print{
+        .site-header,.site-footer,.header-actions,.header-nav-bar,.breadcrumb,
+        .article-actions-bar,.share-buttons,aside,.related-articles,.theme-toggle,
+        .nav-toggle,.hero-search,.alerts-signup,.pagination{display:none!important}
+        body{background:#fff;color:#000;font-size:11pt}
+        .detail-layout{display:block;grid-template-columns:1fr}
+        .container{max-width:100%;padding:0}
+        a{color:#000;text-decoration:none}
+        .article-title{font-size:20pt}
+        .full-text,.references-block,.figures-block{page-break-inside:avoid}
+        .doi-badge{border:1px solid #ccc}
+        @page{margin:2cm}
+    }
     </style>
 </head>
 <body>
@@ -701,6 +752,7 @@
         <div>
             <h4>{% trans "Ma'lumot" %}</h4>
             <a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a>
+            <a href="/rss/">{% trans "RSS lenta" %}</a>
             <a href="https://cancercenter.uz" target="_blank" rel="noopener">cancercenter.uz</a>
         </div>
     </div>

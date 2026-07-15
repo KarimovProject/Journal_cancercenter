@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}404 — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container error-page">
+    <p class="code">404</p>
+    <h1>{% trans "Sahifa topilmadi" %}</h1>
+    <p>{% trans "Kechirasiz, siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan." %}</p>
+    <a href="{% url 'journal:home' %}" class="btn">{% trans "Bosh sahifaga qaytish" %}</a>
+</div>
+{% endblock %}
