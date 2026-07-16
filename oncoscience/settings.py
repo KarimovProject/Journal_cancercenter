@@ -29,14 +29,19 @@ def env_bool(name, default=False):
     return val.strip().lower() in ('1', 'true', 'yes', 'on')
 
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    'SECRET_KEY',
-    'django-insecure-chaz#r&ik^pt&pla1+9%lt-e6!($#x2qgphgu*i834t2x%=@6s',
-)
+from django.core.exceptions import ImproperlyConfigured
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env_bool('DEBUG', True)
+DEBUG = env_bool('DEBUG', False)
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-chaz#r&ik^pt&pla1+9%lt-e6!($#x2qgphgu*i834t2x%=@6s'
+    else:
+        raise ImproperlyConfigured("The SECRET_KEY setting must not be empty in production.")
+
 
 ALLOWED_HOSTS = [
     h.strip()
@@ -64,6 +69,7 @@ if DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -275,3 +281,78 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Jazzmin Admin Panel Customization
+JAZZMIN_SETTINGS = {
+    "site_title": "Oncoscience Admin",
+    "site_header": "Oncoscience",
+    "site_brand": "Oncoscience Admin",
+    "site_logo": "images/logo.png",  # Adjust if logo path is different
+    "login_logo": None,
+    "welcome_sign": "Oncoscience Boshqaruv Paneliga Xush Kelibsiz",
+    "copyright": "Oncoscience Journal",
+    "search_model": ["journal.Article", "auth.User"],
+    "user_avatar": None,
+    "topmenu_links": [
+        {"name": "Bosh sahifa", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Saytni ko'rish", "url": "/", "new_window": True},
+        {"model": "journal.Article"},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "journal.Article": "fas fa-book-open",
+        "journal.Author": "fas fa-user-graduate",
+        "journal.Review": "fas fa-check-double",
+        "journal.Issue": "fas fa-folder-open",
+        "journal.Category": "fas fa-tags",
+        "journal.EditorialBoardMember": "fas fa-user-tie",
+        "journal.JournalUpdate": "fas fa-newspaper",
+        "journal.Grant": "fas fa-hand-holding-usd",
+        "journal.Conference": "fas fa-microphone-alt",
+        "journal.StaticPage": "fas fa-file-alt",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    "related_modal_active": False,
+    "custom_css": None,
+    "custom_js": None,
+    "show_ui_builder": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "pulse",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}

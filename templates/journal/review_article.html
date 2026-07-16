@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Maqolani Taqrizlash" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <div class="breadcrumb" style="margin-bottom: 24px;">
+        <a href="{% url 'journal:reviewer_dashboard' %}">{% trans "Taqrizchi Paneli" %}</a> /
+        {% trans "Maqolani taqrizlash" %}
+    </div>
+
+    <div class="grid grid-2" style="grid-template-columns: 2fr 1fr; gap: 30px;">
+        <div class="main-col">
+            <h1 style="font-size:1.8rem; margin-bottom:10px;">{{ article.title_uz }}</h1>
+            <div class="badges" style="margin-bottom:20px;">
+                <span class="badge badge-type">{{ article.get_article_type_display }}</span>
+                {% if article.category %}<span class="tag">{{ article.category.name }}</span>{% endif %}
+            </div>
+
+            <div class="abstract-block" style="margin-bottom:30px;">
+                <h2>{% trans "Annotatsiya" %}</h2>
+                <p>{{ article.abstract_uz|linebreaks }}</p>
+            </div>
+
+            {% if article.full_text_uz %}
+            <div class="full-text prose" style="margin-bottom:30px;">
+                <h2>{% trans "To'liq matn" %}</h2>
+                {{ article.full_text_uz|safe }}
+            </div>
+            {% endif %}
+
+            {% if article.figures.all %}
+            <div class="figures-block" style="margin-bottom:30px;">
+                <h2>{% trans "Rasmlar" %}</h2>
+                {% for fig in article.figures.all %}
+                <figure class="article-figure">
+                    <img src="{{ fig.image.url }}" alt="{{ fig.caption }}" loading="lazy">
+                    {% if fig.caption %}<figcaption><strong>{% trans "Rasm" %} {{ forloop.counter }}.</strong> {{ fig.caption }}</figcaption>{% endif %}
+                </figure>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if article.references.all %}
+            <div class="references-block" style="margin-bottom:30px;">
+                <h2>{% trans "Adabiyotlar" %}</h2>
+                <ol class="reference-list">
+                    {% for ref in article.references.all %}
+                    <li>{{ ref.citation_text }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            {% endif %}
+        </div>
+
+        <aside class="side-col">
+            <div class="aside-box" style="position: sticky; top: 100px;">
+                <h2 style="font-size:1.3rem; margin:0 0 20px; color:var(--brand-dark);">{% trans "Taqriz yuborish" %}</h2>
+                
+                {% if article.pdf_file %}
+                <div style="margin-bottom:20px;">
+                    <a href="{{ article.pdf_file.url }}" target="_blank" class="btn btn-outline btn-block" style="text-align:center;">
+                        &#128190; {% trans "PDF shaklida o'qish" %}
+                    </a>
+                </div>
+                {% endif %}
+
+                <form method="post" action="" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                    <div class="formset" style="margin-bottom: 16px;">
+                        <label for="{{ field.id_for_label }}" style="display:block; font-weight:600; margin-bottom:6px;">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div style="font-size:0.8rem; color:var(--muted); margin-top:4px;">{{ field.help_text }}</div>{% endif %}
+                        {% if field.errors %}
+                        <div style="color:#b3261e; font-size:0.85rem; margin-top:4px;">{{ field.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-block" style="margin-top:20px;">{% trans "Taqrizni saqlash" %}</button>
+                </form>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

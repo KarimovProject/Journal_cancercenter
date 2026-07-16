@@ -24,9 +24,25 @@
 <link rel="alternate" hreflang="ru" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
 <link rel="alternate" hreflang="en" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
 <link rel="alternate" hreflang="x-default" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
+<style>
+.reading-progress-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 4px; z-index: 1000; background: transparent;
+}
+.reading-progress-bar {
+    height: 100%; background: var(--brand); width: 0%; transition: width 0.1s ease;
+}
+.cite-download-links {
+    margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;
+}
+.cite-download-links a {
+    font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); transition: background 0.2s;
+}
+.cite-download-links a:hover { background: var(--bg-soft); color: var(--brand); border-color: var(--brand); text-decoration: none; }
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="reading-progress-container"><div class="reading-progress-bar" id="readingProgress"></div></div>
 <div class="container">
 <div class="breadcrumb" style="padding-top:24px;">
     <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> /
@@ -187,29 +203,27 @@
             <h4>{% trans "Iqtibos keltirish" %}</h4>
             <div class="cite-tabs">
                 <button class="cite-tab active" data-format="apa" onclick="switchCite(this,'apa')">APA</button>
-                <button class="cite-tab" data-format="bibtex" onclick="switchCite(this,'bibtex')">BibTeX</button>
-                <button class="cite-tab" data-format="ris" onclick="switchCite(this,'ris')">RIS</button>
+                <button class="cite-tab" data-format="mla" onclick="switchCite(this,'mla')">MLA</button>
+                <button class="cite-tab" data-format="harvard" onclick="switchCite(this,'harvard')">Harvard</button>
+                <button class="cite-tab" data-format="vancouver" onclick="switchCite(this,'vancouver')">Vancouver</button>
             </div>
             <div class="cite-box" id="cite-apa">{{ article.citation_apa }}</div>
-            <div class="cite-box" id="cite-bibtex" style="display:none;">@article&#123;oncoscience_{{ article.pk }},
-  title = &#123;{{ article.title }}&#125;,
-  author = &#123;{% for a in article.authors.all %}{{ a.full_name }}{% if not forloop.last %} and {% endif %}{% endfor %}&#125;,
-  journal = &#123;Oncoscience&#125;,
-  year = &#123;{{ article.year }}&#125;,
-{% if article.doi %}  doi = &#123;{{ article.doi }}&#125;,{% endif %}
-&#125;</div>
-            <div class="cite-box" id="cite-ris" style="display:none;">TY  - JOUR
-TI  - {{ article.title }}
-{% for a in article.authors.all %}AU  - {{ a.full_name }}
-{% endfor %}PY  - {{ article.year }}
-JO  - Oncoscience
-{% if article.doi %}DO  - {{ article.doi }}{% endif %}
-ER  -</div>
+            <div class="cite-box" id="cite-mla" style="display:none;">{{ article.citation_mla }}</div>
+            <div class="cite-box" id="cite-harvard" style="display:none;">{{ article.citation_harvard }}</div>
+            <div class="cite-box" id="cite-vancouver" style="display:none;">{{ article.citation_vancouver }}</div>
             <button class="btn btn-outline btn-sm btn-block" style="margin-top:10px;"
                     data-copied-label="{% trans 'Nusxalandi' %}"
                     onclick="copyCitation(this)">
                 {% trans "Nusxa olish" %}
             </button>
+            <div class="cite-download-links">
+                <span style="font-size:0.85rem;color:var(--muted);width:100%;">{% trans "Yuklab olish:" %}</span>
+                <a href="{% url 'journal:download_citation' article.slug 'ris' %}">RIS</a>
+                <a href="{% url 'journal:download_citation' article.slug 'apa' %}">APA</a>
+                <a href="{% url 'journal:download_citation' article.slug 'mla' %}">MLA</a>
+                <a href="{% url 'journal:download_citation' article.slug 'harvard' %}">Harvard</a>
+                <a href="{% url 'journal:download_citation' article.slug 'vancouver' %}">Vancouver</a>
+            </div>
         </div>
 
         {% if article.authors.all %}
@@ -246,5 +260,13 @@ function copyCitation(btn) {
     btn.innerText = btn.dataset.copiedLabel;
     setTimeout(() => btn.innerText = '{% trans "Nusxa olish" %}', 2000);
 }
+// Reading progress bar
+window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    const pb = document.getElementById("readingProgress");
+    if(pb) pb.style.width = scrolled + "%";
+});
 </script>
 {% endblock %}

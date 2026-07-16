@@ -20,6 +20,7 @@ from .models import (
     NewsletterSubscription,
     PostgraduateProgram,
     Reference,
+    Review,
     ScientificDepartment,
     StaticPage,
 )
@@ -117,6 +118,14 @@ class ArticleAdmin(admin.ModelAdmin):
         ('Statistika', {'fields': ('views_count', 'created_at', 'updated_at')}),
         ('Topshiruv', {'fields': ('submitted_by', 'rejection_reason')}),
     )
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('article', 'reviewer', 'decision', 'created_at')
+    list_filter = ('decision', 'created_at')
+    search_fields = ('article__title_uz', 'reviewer__username', 'reviewer__first_name', 'reviewer__last_name')
+    raw_id_fields = ('article', 'reviewer')
 
 
 @admin.register(EditorialBoardMember)

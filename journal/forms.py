@@ -1,9 +1,13 @@
+import bleach
+import re
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from tinymce.widgets import TinyMCE
 
-from .models import Article, ArticleFigure, ArticleSupplementaryFile, Author, Reference
+from .models import Article, ArticleFigure, ArticleSupplementaryFile, Author, Reference, Issue, Keyword, Review
 
 
 class RegistrationForm(forms.Form):
@@ -63,10 +67,13 @@ class RegistrationForm(forms.Form):
         cleaned = super().clean()
         p1 = cleaned.get('password1')
         p2 = cleaned.get('password2')
-        if p1 and p2 and p1 != p2:
-            raise forms.ValidationError('Parollar mos kelmadi.')
-        if p1 and len(p1) < 8:
-            raise forms.ValidationError('Parol kamida 8 ta belgidan iborat boʻlishi kerak.')
+        if p1 and p2:
+            if p1 != p2:
+                raise forms.ValidationError('Parollar mos kelmadi.')
+            try:
+                validate_password(p1)
+            except ValidationError as e:
+                self.add_error('password1', e)
         return cleaned
 
     def save(self):
@@ -172,7 +179,65 @@ class ArticleSubmissionForm(forms.ModelForm):
             raise forms.ValidationError('Oʻzbek tilidagi sarlavha majburiy.')
         if not cleaned.get('pdf_file'):
             raise forms.ValidationError('PDF fayl yuklash majburiy.')
+
+        allowed_tags = bleach.ALLOWED_TAGS + [
+            'p', 'br', 'span', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'a', 'img', 'div'
+        ]
+        allowed_attrs = {
+            '*': ['class', 'style'],
+            'a': ['href', 'title', 'target'],
+            'img': ['src', 'alt', 'width', 'height']
+        }
+        for lang in ['uz', 'ru', 'en']:
+            field_name = f'full_text_{lang}'
+            val = cleaned.get(field_name)
+            if val:
+                cleaned[field_name] = bleach.clean(
+                    val,
+                    tags=allowed_tags,
+                    attributes=allowed_attrs,
+                    styles=['text-align', 'color', 'background-color', 'font-size', 'font-weight']
+                )
+
         return cleaned
+
+    def save_m2m_custom(self, article, user, is_edit=False):
+        issue_text = (self.cleaned_data.get('issue_text') or '').strip()
+        if issue_text:
+            m = re.match(r'Vol\.?\s*(\d+).*?No\.?\s*(\d+).*?(\d{4})', issue_text, re.IGNORECASE)
+            if m:
+                vol, num, yr = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                issue_obj, _created = Issue.objects.get_or_create(volume=vol, number=num, year=yr)
+                article.issue = issue_obj
+                article.save(update_fields=['issue'])
+
+        if is_edit:
+            author = Author.objects.filter(user=user).first()
+            article.authors.set([author] if author else [])
+        else:
+            author = Author.objects.filter(user=user).first()
+            if author:
+                article.authors.add(author)
+
+        co_authors_text = self.cleaned_data.get('co_authors', '')
+        for line in co_authors_text.split('\n'):
+            name = line.strip()
+            if name:
+                co_author, _created = Author.objects.get_or_create(
+                    full_name=name,
+                    defaults={'slug': name.lower().replace(' ', '-')[:280]},
+                )
+                article.authors.add(co_author)
+
+        if is_edit:
+            article.keywords.clear()
+        keywords_text = self.cleaned_data.get('keywords_text', '')
+        for kw in keywords_text.split(','):
+            kw = kw.strip()
+            if kw:
+                keyword_obj, _created = Keyword.objects.get_or_create(name=kw)
+                article.keywords.add(keyword_obj)
 
 
 class AuthorProfileForm(forms.ModelForm):
@@ -207,6 +272,26 @@ class AuthorProfileForm(forms.ModelForm):
         self.fields['email'].label = 'Email'
         self.fields['photo'].label = 'Rasm (ixtiyoriy)'
         self.fields['photo'].required = False
+
+
+class ReviewForm(forms.ModelForm):
+    """Form for reviewers to submit their review."""
+    class Meta:
+        model = Review
+        fields = ['decision', 'comments_for_author', 'comments_for_editor']
+        widgets = {
+            'decision': forms.Select(attrs={'class': 'form-input'}),
+            'comments_for_author': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Muallifga yoziladigan izohlar (qanday kamchiliklar bor, nimalarni to\u02bbg\u02bbrilash kerak)...'}),
+            'comments_for_editor': forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': 'Faqat tahririyat uchun maxfiy izohlar...'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['decision'].label = 'Xulosa *'
+        self.fields['comments_for_author'].label = 'Muallif uchun izohlar (Majburiy emas)'
+        self.fields['comments_for_author'].required = False
+        self.fields['comments_for_editor'].label = 'Muharrir uchun xufyona izohlar (Majburiy emas)'
+        self.fields['comments_for_editor'].required = False
 
 
 # ---------------------------------------------------------------------------

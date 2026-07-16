@@ -8,13 +8,15 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
+from django.db import transaction
 from django.db.models import F, Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
+from ipware import get_client_ip
 
 from .forms import (
     ArticleFigureFormSet,
@@ -39,6 +41,7 @@ from .models import (
     JournalUpdate,
     NewsletterSubscription,
     PostgraduateProgram,
+    Review,
     ScientificDepartment,
     StaticPage,
 )
@@ -47,13 +50,9 @@ PUBLISHED = Article.Status.PUBLISHED
 
 
 def _rate_limited(request, key_prefix, limit=5, window=3600):
-    """Simple IP-based rate limiter backed by the cache.
-
-    Returns True if the caller has exceeded ``limit`` requests within
-    ``window`` seconds for the given ``key_prefix``.
-    """
-    ip = request.META.get('HTTP_X_FORWARDED_FOR', '')
-    ip = ip.split(',')[0].strip() if ip else request.META.get('REMOTE_ADDR', 'unknown')
+    """Simple IP-based rate limiter backed by the cache."""
+    client_ip, is_routable = get_client_ip(request)
+    ip = client_ip or 'unknown'
     cache_key = f'ratelimit:{key_prefix}:{ip}'
     count = cache.get(cache_key, 0)
     if count >= limit:
@@ -252,6 +251,25 @@ def article_detail(request, slug):
     return render(request, 'journal/article_detail.html', context)
 
 
+def download_citation(request, slug, format):
+    article = get_object_or_404(Article, slug=slug)
+    if format == 'ris':
+        content = article.citation_ris()
+        content_type = 'application/x-research-info-systems'
+        ext = 'ris'
+    else:
+        method = getattr(article, f"citation_{format}", None)
+        if not method:
+            raise Http404("Citation format not supported.")
+        content = method()
+        content_type = 'text/plain; charset=utf-8'
+        ext = 'txt'
+        
+    response = HttpResponse(content, content_type=content_type)
+    response['Content-Disposition'] = f'attachment; filename="citation_{article.slug}.{ext}"'
+    return response
+
+
 def author_detail(request, slug):
     author = get_object_or_404(Author, slug=slug)
     articles = _published_articles().filter(authors=author)
@@ -413,39 +431,6 @@ def logout_view(request):
 # Article submission
 # ---------------------------------------------------------------------------
 
-def _link_issue_from_text(article, issue_text):
-    """Parse "Vol. 5, No. 2, 2025" and link/create the matching Issue."""
-    issue_text = (issue_text or '').strip()
-    if not issue_text:
-        return
-    import re
-    m = re.match(r'Vol\.?\s*(\d+).*?No\.?\s*(\d+).*?(\d{4})', issue_text, re.IGNORECASE)
-    if m:
-        vol, num, yr = int(m.group(1)), int(m.group(2)), int(m.group(3))
-        issue_obj, _created = Issue.objects.get_or_create(volume=vol, number=num, year=yr)
-        article.issue = issue_obj
-
-
-def _apply_co_authors(article, co_authors_text):
-    for line in (co_authors_text or '').split('\n'):
-        name = line.strip()
-        if name:
-            co_author, _created = Author.objects.get_or_create(
-                full_name=name,
-                defaults={'slug': name.lower().replace(' ', '-')[:280]},
-            )
-            article.authors.add(co_author)
-
-
-def _apply_keywords(article, keywords_text):
-    from .models import Keyword
-    for kw in (keywords_text or '').split(','):
-        kw = kw.strip()
-        if kw:
-            keyword_obj, _created = Keyword.objects.get_or_create(name=kw)
-            article.keywords.add(keyword_obj)
-
-
 @login_required(login_url='/ilm-fan/kirish/')
 def submit_article(request):
     if request.method == 'POST':
@@ -455,21 +440,17 @@ def submit_article(request):
         supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=form.instance)
 
         if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
-            article = form.save(commit=False)
-            article.submitted_by = request.user
-            article.status = Article.Status.DRAFT
-            _link_issue_from_text(article, form.cleaned_data.get('issue_text', ''))
-            article.save()
+            with transaction.atomic():
+                article = form.save(commit=False)
+                article.submitted_by = request.user
+                article.status = Article.Status.DRAFT
+                article.save()
 
-            author = Author.objects.filter(user=request.user).first()
-            if author:
-                article.authors.add(author)
-            _apply_co_authors(article, form.cleaned_data.get('co_authors', ''))
-            _apply_keywords(article, form.cleaned_data.get('keywords_text', ''))
+                form.save_m2m_custom(article, request.user)
 
-            for fs in (ref_fs, fig_fs, supp_fs):
-                fs.instance = article
-                fs.save()
+                for fs in (ref_fs, fig_fs, supp_fs):
+                    fs.instance = article
+                    fs.save()
 
             messages.success(request, _('Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi.'))
             return redirect('journal:my_articles')
@@ -494,8 +475,8 @@ def edit_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if article.submitted_by != request.user:
         raise Http404()
-    if article.status not in (Article.Status.DRAFT, Article.Status.REJECTED, Article.Status.REVIEW):
-        messages.error(request, _('Chop etilgan maqolani tahrirlash mumkin emas.'))
+    if article.status not in (Article.Status.DRAFT, Article.Status.REJECTED):
+        messages.error(request, _('Koʻrib chiqilayotgan yoki chop etilgan maqolani tahrirlash mumkin emas.'))
         return redirect('journal:my_articles')
 
     # Pre-fill keywords and co-authors
@@ -516,22 +497,16 @@ def edit_article(request, pk):
         supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=article)
 
         if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
-            article = form.save(commit=False)
-            article.status = Article.Status.DRAFT
-            article.rejection_reason = ''
-            _link_issue_from_text(article, form.cleaned_data.get('issue_text', ''))
-            article.save()
+            with transaction.atomic():
+                article = form.save(commit=False)
+                article.status = Article.Status.DRAFT
+                article.rejection_reason = ''
+                article.save()
 
-            # Re-link the user's own author profile, then co-authors.
-            author = Author.objects.filter(user=request.user).first()
-            article.authors.set([author] if author else [])
-            _apply_co_authors(article, form.cleaned_data.get('co_authors', ''))
+                form.save_m2m_custom(article, request.user, is_edit=True)
 
-            article.keywords.clear()
-            _apply_keywords(article, form.cleaned_data.get('keywords_text', ''))
-
-            for fs in (ref_fs, fig_fs, supp_fs):
-                fs.save()
+                for fs in (ref_fs, fig_fs, supp_fs):
+                    fs.save()
 
             messages.success(request, _('Maqola yangilandi va qayta ko\'rib chiqishga yuborildi.'))
             return redirect('journal:my_articles')
@@ -594,6 +569,45 @@ def edit_profile(request):
         'meta_description': _('Profilni tahrirlash.'),
     }
     return render(request, 'journal/edit_profile.html', context)
+
+
+# ---------------------------------------------------------------------------
+# Peer Review
+# ---------------------------------------------------------------------------
+
+@login_required(login_url='/ilm-fan/kirish/')
+def reviewer_dashboard(request):
+    reviews = Review.objects.filter(reviewer=request.user).select_related('article')
+    pending_reviews = reviews.filter(decision=Review.Decision.PENDING)
+    completed_reviews = reviews.exclude(decision=Review.Decision.PENDING)
+    
+    context = {
+        'pending_reviews': pending_reviews,
+        'completed_reviews': completed_reviews,
+        'meta_description': _('Taqrizchi paneli.'),
+    }
+    return render(request, 'journal/reviewer_dashboard.html', context)
+
+@login_required(login_url='/ilm-fan/kirish/')
+def review_article(request, pk):
+    review = get_object_or_404(Review, pk=pk, reviewer=request.user)
+    from .forms import ReviewForm
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Taqriz muvaffaqiyatli saqlandi!'))
+            return redirect('journal:reviewer_dashboard')
+    else:
+        form = ReviewForm(instance=review)
+        
+    context = {
+        'review': review,
+        'article': review.article,
+        'form': form,
+        'meta_description': _('Maqolani taqrizlash.'),
+    }
+    return render(request, 'journal/review_article.html', context)
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Taqrizchi Paneli" %} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 0;">
+    <h1 style="font-size:2rem;margin-bottom:20px;color:var(--brand-dark);">{% trans "Taqrizchi Paneli" %}</h1>
+    <p style="color:var(--muted);margin-bottom:30px;">{% trans "Sizga biriktirilgan maqolalar (Double-blind formatida, ya'ni mualliflar yashirilgan)." %}</p>
+
+    <div class="tabs" style="margin-bottom:24px;">
+        <a href="#pending" class="active" onclick="switchTab(this, 'pending'); return false;">{% trans "Kutilayotgan taqrizlar" %} ({{ pending_reviews.count }})</a>
+        <a href="#completed" onclick="switchTab(this, 'completed'); return false;">{% trans "Tugallangan" %} ({{ completed_reviews.count }})</a>
+    </div>
+
+    <div id="tab-pending">
+        {% if pending_reviews %}
+            <div class="grid grid-2">
+                {% for review in pending_reviews %}
+                <div class="card" style="padding: 24px; border-left: 4px solid var(--accent);">
+                    <h3 style="margin: 0 0 10px; font-size:1.1rem;">{{ review.article.title_uz }}</h3>
+                    <p style="color:var(--muted); font-size:0.9rem; margin-bottom: 16px;">{{ review.article.abstract_uz|truncatewords:20 }}</p>
+                    <a href="{% url 'journal:review_article' review.pk %}" class="btn">{% trans "Taqrizlashni boshlash" %}</a>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state" style="padding: 40px; text-align: center; border: 1px dashed var(--line); border-radius: 12px;">
+                <p>{% trans "Kutilayotgan maqolalar yo'q." %}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="tab-completed" style="display:none;">
+        {% if completed_reviews %}
+            <div class="grid grid-2">
+                {% for review in completed_reviews %}
+                <div class="card" style="padding: 24px; border-left: 4px solid var(--brand);">
+                    <h3 style="margin: 0 0 10px; font-size:1.1rem;">{{ review.article.title_uz }}</h3>
+                    <p style="color:var(--muted); font-size:0.9rem; margin-bottom: 8px;"><strong>{% trans "Xulosa:" %}</strong> {{ review.get_decision_display }}</p>
+                    <a href="{% url 'journal:review_article' review.pk %}" class="btn btn-outline" style="padding: 6px 12px;">{% trans "Ko'rish/Tahrirlash" %}</a>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state" style="padding: 40px; text-align: center; border: 1px dashed var(--line); border-radius: 12px;">
+                <p>{% trans "Tugallangan taqrizlar mavjud emas." %}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function switchTab(el, tabName) {
+    document.querySelectorAll('.tabs a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-pending').style.display = 'none';
+    document.getElementById('tab-completed').style.display = 'none';
+    document.getElementById('tab-' + tabName).style.display = 'block';
+}
+</script>
+{% endblock %}

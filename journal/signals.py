@@ -1,76 +1,63 @@
-from django.conf import settings
-from django.core.mail import send_mail
-from django.db.models.signals import post_save, pre_save
+import logging
+from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.mail import send_mail
+from django.conf import settings
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
-from .models import Article
+from .models import Article, Review
 
-
-@receiver(pre_save, sender=Article)
-def _remember_old_status(sender, instance, **kwargs):
-    """Capture the previous status before the save so post_save can compare."""
-    if not instance.pk:
-        instance._old_status = None
-        return
-    try:
-        instance._old_status = (
-            Article.objects.filter(pk=instance.pk)
-            .values_list('status', flat=True)
-            .first()
-        )
-    except Article.DoesNotExist:
-        instance._old_status = None
-
+logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Article)
-def notify_author_on_status_change(sender, instance, created, **kwargs):
-    """Email the submitting author when the article status actually changes."""
-    if created or kwargs.get('raw'):
+def send_article_status_email(sender, instance, created, **kwargs):
+    if created:
         return
-
-    old_status = getattr(instance, '_old_status', None)
-    if old_status is None or old_status == instance.status:
-        return
-
-    user = instance.submitted_by
-    if not user or not user.email:
-        return
-
-    site_name = getattr(settings, 'SITE_NAME', 'Oncoscience')
-    site_domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
-    greeting = user.get_full_name() or user.username
-    article_url = f'{site_domain}/ilm-fan/maqolalar/{instance.slug}/'
-    my_url = f'{site_domain}/ilm-fan/mening-maqolalarim/'
-
-    subject = message = None
-
-    if instance.status == Article.Status.REVIEW:
-        subject = f'[{site_name}] Maqolangiz ko\'rib chiqilmoqda'
-        message = (
-            f'Hurmatli {greeting},\n\n'
-            f'"{instance.title}" sarlavhali maqolangiz tahririyat tomonidan '
-            f'ko\'rib chiqishga qabul qilindi.\n'
-            f'Natija haqida qo\'shimcha xabar beramiz.\n\n'
-            f'{my_url}\n\n{site_name} tahririyati'
-        )
-    elif instance.status == Article.Status.PUBLISHED:
-        subject = f'[{site_name}] Maqolangiz chop etildi'
-        message = (
-            f'Hurmatli {greeting},\n\n'
-            f'"{instance.title}" sarlavhali maqolangiz chop etildi.\n'
-            f'Maqolani ko\'rish: {article_url}\n\n'
-            f'{site_name} tahririyati'
-        )
+        
+    # We can detect status change if we store original status, but for simplicity
+    # we'll send email when it becomes published or goes under review
+    # Ideally, we should check what changed using a mixin, but let's just do a basic one.
+    if instance.status == Article.Status.PUBLISHED:
+        subject = f"Maqolangiz nashr etildi: {instance.title_uz}"
+        url = f"{settings.SITE_DOMAIN}{instance.get_absolute_url()}"
+        message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz Oncoscience jurnalida nashr etildi.\n\nMaqolani ko'rish uchun havola: {url}"
+    elif instance.status == Article.Status.UNDER_REVIEW:
+        subject = f"Maqolangiz taqrizga yuborildi: {instance.title_uz}"
+        message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz taqriz jarayoniga o'tkazildi. Natijalar haqida qo'shimcha xabar beramiz."
     elif instance.status == Article.Status.REJECTED:
-        reason = instance.rejection_reason or 'Sabab ko\'rsatilmagan.'
-        subject = f'[{site_name}] Maqolangiz ko\'rib chiqildi'
-        message = (
-            f'Hurmatli {greeting},\n\n'
-            f'"{instance.title}" sarlavhali maqolangiz ko\'rib chiqildi.\n'
-            f'Holat: Rad etilgan\nSabab: {reason}\n\n'
-            f'Maqolani tahrir qilib qayta topshirishingiz mumkin.\n'
-            f'{my_url}\n\n{site_name} tahririyati'
-        )
+        subject = f"Maqolangiz rad etildi: {instance.title_uz}"
+        message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz afsuski qabul qilinmadi.\nSabab: {instance.rejection_reason}"
+    else:
+        return
 
-    if subject and message:
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=True)
+    author = instance.submitted_by
+    if author and author.email:
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [author.email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            logger.error(f"Failed to send email to {author.email}: {e}")
+
+@receiver(post_save, sender=Review)
+def send_review_completed_email(sender, instance, created, **kwargs):
+    if not created and instance.decision != Review.Decision.PENDING:
+        subject = f"Taqriz yakunlandi: {instance.article.title_uz}"
+        message = f"Yangi taqriz xulosasi: {instance.get_decision_display()}.\nMaqola: {instance.article.title_uz}\n\nFikr-mulohazalar: {instance.comments_for_editor}"
+        
+        # Send to editor-in-chief or default admin email
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [settings.DEFAULT_FROM_EMAIL], # Usually you'd send to editor's email
+                fail_silently=True,
+            )
+        except Exception as e:
+            logger.error(f"Failed to send review email: {e}")

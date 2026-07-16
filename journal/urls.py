@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('maqolalar/', views.article_list, name='article_list'),
     path('maqolalar/<slug:slug>/', views.article_detail, name='article_detail'),
+    path('maqolalar/<slug:slug>/iqtibos/<str:format>/', views.download_citation, name='download_citation'),
     path('mualliflar/<slug:slug>/', views.author_detail, name='author_detail'),
     path('sonlar/', views.issue_list, name='issue_list'),
     path('sonlar/<int:pk>/', views.issue_detail, name='issue_detail'),
@@ -35,4 +36,7 @@ urlpatterns = [
     path('maqola-tahrirlash/<int:pk>/', views.edit_article, name='edit_article'),
     path('mening-maqolalarim/', views.my_articles, name='my_articles'),
     path('profil/', views.edit_profile, name='edit_profile'),
+    # Reviewer dashboard
+    path('taqriz-paneli/', views.reviewer_dashboard, name='reviewer_dashboard'),
+    path('taqriz-qilish/<int:pk>/', views.review_article, name='review_article'),
 ]

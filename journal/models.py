@@ -329,6 +329,107 @@ class Article(TimeStampedModel):
             cite += f' https://doi.org/{self.doi}'
         return cite.strip()
 
+    def citation_mla(self):
+        names = [a.full_name for a in self.authors.all()]
+        if len(names) > 2:
+            author_str = f"{names[0]}, et al."
+        elif len(names) == 2:
+            author_str = f"{names[0]}, and {names[1]}."
+        elif names:
+            author_str = f"{names[0]}."
+        else:
+            author_str = ""
+        cite = f'{author_str} "{self.title}." Oncoscience'
+        if self.issue:
+            cite += f', vol. {self.issue.volume}, no. {self.issue.number}'
+        if self.year:
+            cite += f', {self.year}'
+        if self.pages:
+            cite += f', pp. {self.pages}'
+        cite += '.'
+        if self.doi:
+            cite += f' https://doi.org/{self.doi}'
+        return cite.strip()
+
+    def citation_harvard(self):
+        names = [a.full_name for a in self.authors.all()]
+        author_str = ' and '.join(names) if names else ''
+        year = self.year or ''
+        cite = f"{author_str} ({year}) '{self.title}', Oncoscience"
+        if self.issue:
+            cite += f', {self.issue.volume}({self.issue.number})'
+        if self.pages:
+            cite += f', pp. {self.pages}.'
+        else:
+            cite += '.'
+        if self.doi:
+            cite += f' Available at: https://doi.org/{self.doi}.'
+        return cite.strip()
+
+    def citation_vancouver(self):
+        names = [a.full_name for a in self.authors.all()]
+        author_str = ', '.join(names) if names else ''
+        cite = f"{author_str}. {self.title}. Oncoscience."
+        if self.year:
+            cite += f" {self.year};"
+        if self.issue:
+            cite += f"{self.issue.volume}({self.issue.number})"
+        if self.pages:
+            cite += f":{self.pages}."
+        else:
+            cite += "."
+        return cite.strip()
+
+    def citation_ris(self):
+        lines = [
+            "TY  - JOUR",
+            f"T1  - {self.title}",
+            "JO  - Oncoscience"
+        ]
+        for a in self.authors.all():
+            lines.append(f"AU  - {a.full_name}")
+        if self.year:
+            lines.append(f"PY  - {self.year}")
+        if self.issue:
+            lines.append(f"VL  - {self.issue.volume}")
+            lines.append(f"IS  - {self.issue.number}")
+        if self.pages:
+            sp, _, ep = self.pages.partition('-')
+            if sp: lines.append(f"SP  - {sp.strip()}")
+            if ep: lines.append(f"EP  - {ep.strip()}")
+        if self.abstract:
+            lines.append(f"AB  - {self.abstract}")
+        if self.doi:
+            lines.append(f"DO  - {self.doi}")
+            lines.append(f"UR  - https://doi.org/{self.doi}")
+        lines.append("ER  - ")
+        return "\n".join(lines)
+
+
+class Review(TimeStampedModel):
+    """Taqrizchilar uchun peer-review xulosalari."""
+
+    class Decision(models.TextChoices):
+        ACCEPT = 'accept', _('Qabul qilish')
+        REVISE = 'revise', _('Qayta ishlash')
+        REJECT = 'reject', _('Rad etish')
+        PENDING = 'pending', _('Kutilmoqda')
+
+    article = models.ForeignKey(Article, related_name='reviews', on_delete=models.CASCADE, verbose_name=_('Maqola'))
+    reviewer = models.ForeignKey('auth.User', related_name='assigned_reviews', on_delete=models.CASCADE, verbose_name=_('Taqrizchi'))
+    decision = models.CharField(_('Xulosa'), max_length=20, choices=Decision.choices, default=Decision.PENDING)
+    comments_for_author = models.TextField(_('Muallif uchun izohlar'), blank=True)
+    comments_for_editor = models.TextField(_('Muharrir uchun xufyona izohlar'), blank=True)
+
+    class Meta:
+        verbose_name = _('Taqriz')
+        verbose_name_plural = _('Taqrizlar')
+        ordering = ['-created_at']
+        unique_together = ('article', 'reviewer')
+
+    def __str__(self):
+        return f"{self.article.title_uz} - {self.reviewer.username}"
+
 
 class ArticleFigure(models.Model):
     """Maqola ichidagi rasm (rasm fayli + tagyozuv)."""
