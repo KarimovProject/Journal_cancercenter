@@ -45,18 +45,37 @@ def send_article_status_email(sender, instance, created, **kwargs):
             logger.error(f"Failed to send email to {author.email}: {e}")
 
 @receiver(post_save, sender=Review)
-def send_review_completed_email(sender, instance, created, **kwargs):
-    if not created and instance.decision != Review.Decision.PENDING:
+def send_review_emails(sender, instance, created, **kwargs):
+    if created:
+        # Taqrizchiga maqola biriktirilganda xat yuborish
+        subject = f"Sizga taqriz uchun maqola biriktirildi"
+        site_domain = getattr(settings, 'SITE_DOMAIN', 'http://127.0.0.1:8000')
+        url = f"{site_domain}{reverse('journal:reviewer_dashboard')}"
+        message = f"Hurmatli {instance.reviewer.get_full_name() or instance.reviewer.username},\n\nSizga '{instance.article.title_uz}' nomli maqola taqriz uchun biriktirildi.\nIltimos, saytga kirib 'Taqrizchi Paneli' orqali maqola bilan tanishing va o'z xulosangizni yuboring.\n\nHavola: {url}"
+        
+        if instance.reviewer.email:
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [instance.reviewer.email],
+                    fail_silently=True,
+                )
+            except Exception as e:
+                logger.error(f"Failed to send assignment email: {e}")
+                
+    elif instance.decision != Review.Decision.PENDING:
+        # Taqrizchi xulosasini saqlaganda muharrirga xat yuborish
         subject = f"Taqriz yakunlandi: {instance.article.title_uz}"
         message = f"Yangi taqriz xulosasi: {instance.get_decision_display()}.\nMaqola: {instance.article.title_uz}\n\nFikr-mulohazalar: {instance.comments_for_editor}"
         
-        # Send to editor-in-chief or default admin email
         try:
             send_mail(
                 subject,
                 message,
                 settings.DEFAULT_FROM_EMAIL,
-                [settings.DEFAULT_FROM_EMAIL], # Usually you'd send to editor's email
+                [settings.DEFAULT_FROM_EMAIL],
                 fail_silently=True,
             )
         except Exception as e:
