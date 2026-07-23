@@ -287,7 +287,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "Oncoscience Admin",
     "site_header": "Oncoscience",
     "site_brand": "Oncoscience Admin",
-    "site_logo": "images/logo.png",  # Adjust if logo path is different
+    "site_logo": None,
     "login_logo": None,
     "welcome_sign": "Oncoscience Boshqaruv Paneliga Xush Kelibsiz",
     "copyright": "Oncoscience Journal",
