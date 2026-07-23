@@ -180,7 +180,7 @@ class ArticleSubmissionForm(forms.ModelForm):
         if not cleaned.get('pdf_file'):
             raise forms.ValidationError('PDF fayl yuklash majburiy.')
 
-        allowed_tags = bleach.ALLOWED_TAGS + [
+        allowed_tags = list(bleach.ALLOWED_TAGS) + [
             'p', 'br', 'span', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
             'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'a', 'img', 'div'
         ]
