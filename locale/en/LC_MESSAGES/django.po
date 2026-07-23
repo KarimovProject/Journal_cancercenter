@@ -172,6 +172,9 @@ msgstr "Scientific articles"
 msgid "Ilmiy yo'nalishlar"
 msgstr "Research areas"
 
+msgid "Ilmiy-amaliy jurnal"
+msgstr "Scientific and practical journal"
+
 msgid "Indekslangan bazalar"
 msgstr "Indexed in"
 

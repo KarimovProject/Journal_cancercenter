@@ -172,6 +172,9 @@ msgstr "Научные статьи"
 msgid "Ilmiy yo'nalishlar"
 msgstr "Научные направления"
 
+msgid "Ilmiy-amaliy jurnal"
+msgstr "Научно-практический журнал"
+
 msgid "Indekslangan bazalar"
 msgstr "Индексируется в базах"
 

@@ -4,6 +4,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCALE_DIR = os.path.join(BASE_DIR, 'locale')
 
 RU = {
+    "Ilmiy-amaliy jurnal": "Научно-практический журнал",
     "Aloqa": "Контакты",
     "Annotatsiya": "Аннотация",
     "Aspirantura": "Аспирантура",
@@ -199,6 +200,7 @@ RU = {
 }
 
 EN = {
+    "Ilmiy-amaliy jurnal": "Scientific and practical journal",
     "Aloqa": "Contact",
     "Annotatsiya": "Abstract",
     "Aspirantura": "PhD Program",
