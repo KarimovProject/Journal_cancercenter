@@ -1,4 +1,4 @@
 #!/bin/bash
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput
-exec gunicorn --bind 0.0.0.0:8000 --workers 3 oncoscience.wsgi:application
+exec gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 oncoscience.wsgi:application
