@@ -1,0 +1,32 @@
+name: K3s CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Copy code to app directory
+        run: |
+          rsync -avz --exclude='.git' --exclude='env' --exclude='myvenv' --exclude='__pycache__' ./ /home/satosylv/Journal_cancercenter/
+
+      - name: Build Docker Image
+        run: |
+          cd /home/satosylv/Journal_cancercenter
+          sudo docker build -t oncoscience-web:latest .
+          
+      - name: Import Image to K3s Containerd
+        run: |
+          cd /home/satosylv/Journal_cancercenter
+          sudo docker save oncoscience-web:latest | sudo k3s ctr images import -
+          
+      - name: Restart Deployment
+        run: |
+          sudo k3s kubectl rollout restart deployment/oncoscience-web

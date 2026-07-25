@@ -356,3 +356,6 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
+
+CSRF_TRUSTED_ORIGINS = ['https://journal.abdullatif.uz', 'http://journal.abdullatif.uz']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
