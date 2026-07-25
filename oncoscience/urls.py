@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -29,7 +30,7 @@ from journal.sitemaps import sitemaps
 def robots_txt(request):
     lines = [
         'User-agent: *',
-        'Disallow: /admin/',
+        f"Disallow: /{os.getenv('ADMIN_URL_PATH', 'boshqaruv-markazi/')}",
         'Disallow: /ilm-fan/mening-maqolalarim/',
         'Disallow: /ilm-fan/profil/',
         'Disallow: /ilm-fan/maqola-yuborish/',
@@ -41,7 +42,7 @@ def robots_txt(request):
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/ilm-fan/', permanent=False)),
-    path('admin/', admin.site.urls),
+    path(os.getenv('ADMIN_URL_PATH', 'boshqaruv-markazi/'), admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
     path('api/', include('journal.api_urls')),
