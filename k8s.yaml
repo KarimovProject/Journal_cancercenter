@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oncoscience-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oncoscience-web
+  labels:
+    app: oncoscience-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oncoscience-web
+  template:
+    metadata:
+      labels:
+        app: oncoscience-web
+    spec:
+      initContainers:
+      - name: init-data
+        image: busybox
+        command: ['sh', '-c', 'touch /data/db.sqlite3 && mkdir -p /data/media /data/staticfiles']
+        volumeMounts:
+        - name: oncoscience-data
+          mountPath: /data
+      containers:
+      - name: oncoscience-web
+        image: oncoscience-web:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: oncoscience-secrets
+            optional: true
+        volumeMounts:
+        - name: oncoscience-data
+          mountPath: /app/db.sqlite3
+          subPath: db.sqlite3
+        - name: oncoscience-data
+          mountPath: /app/media
+          subPath: media
+        - name: oncoscience-data
+          mountPath: /app/staticfiles
+          subPath: staticfiles
+      volumes:
+      - name: oncoscience-data
+        persistentVolumeClaim:
+          claimName: oncoscience-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oncoscience-service
+spec:
+  selector:
+    app: oncoscience-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oncoscience-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: journal.abdullatif.uz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: oncoscience-service
+            port:
+              number: 80

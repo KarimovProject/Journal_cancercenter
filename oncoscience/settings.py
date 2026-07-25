@@ -359,3 +359,5 @@ JAZZMIN_UI_TWEAKS = {
 
 CSRF_TRUSTED_ORIGINS = ['https://journal.abdullatif.uz', 'http://journal.abdullatif.uz']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+EMAIL_TIMEOUT = 5
