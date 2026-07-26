@@ -13,6 +13,9 @@ msgstr "0000-0000-0000-0000"
 msgid "10.1234/oncoscience.2025.01.005"
 msgstr "10.1234/oncoscience.2025.01.005"
 
+msgid "Adabiyot"
+msgstr "Reference"
+
 msgid "Adabiyot qo'shish"
 msgstr "Add reference"
 
@@ -22,8 +25,14 @@ msgstr "References"
 msgid "Adabiyotlar ro'yxati"
 msgstr "References"
 
+msgid "Admin tomonidan rad etilganda yoziladi."
+msgstr "Filled in when rejected by admin."
+
 msgid "Affiliation (en)"
 msgstr "Affiliation (en)"
+
+msgid "Afisha"
+msgstr "Poster"
 
 msgid "Aloqa"
 msgstr "Contact"
@@ -40,8 +49,23 @@ msgstr "Abstract (ru)"
 msgid "Annotatsiya (uz)"
 msgstr "Abstract (uz)"
 
+msgid "Arxivlangan"
+msgstr "Archived"
+
+msgid "Asosiy sayt Doctor ID (ixtiyoriy)"
+msgstr "Main site Doctor ID (optional)"
+
 msgid "Aspirantura"
 msgstr "PhD Program"
+
+msgid "Aspirantura/Ordinatura"
+msgstr "Postgraduate/Residency"
+
+msgid "Aspirantura/Ordinatura dasturi"
+msgstr "Postgraduate/Residency program"
+
+msgid "Banner rasm"
+msgstr "Banner image"
 
 msgid "Barcha huquqlar himoyalangan."
 msgstr "All rights reserved."
@@ -64,6 +88,15 @@ msgstr "No articles found matching the given criteria."
 msgid "Biografiya"
 msgstr "Biography"
 
+msgid "Biografiya (en)"
+msgstr "Biography (en)"
+
+msgid "Biografiya (ru)"
+msgstr "Biography (ru)"
+
+msgid "Biografiya (uz)"
+msgstr "Biography (uz)"
+
 msgid "Birinchi maqolangizni topshiring"
 msgstr "Submit your first article"
 
@@ -81,6 +114,12 @@ msgstr "Home"
 
 msgid "Bosh sahifaga qaytish"
 msgstr "Back to home"
+
+msgid "Boshlanish sanasi"
+msgstr "Start date"
+
+msgid "Boshqa"
+msgstr "Other"
 
 msgid "Bu email allaqachon roʻyxatdan oʻtgan."
 msgstr "This email is already registered."
@@ -100,11 +139,23 @@ msgstr "Call for papers"
 msgid "Chiqish"
 msgstr "Logout"
 
+msgid "Chop etilgan"
+msgstr "Published"
+
+msgid "DOI"
+msgstr "DOI"
+
+msgid "DOI yoki havola"
+msgstr "DOI or link"
+
 msgid "DOI yoki havola (ixtiyoriy)"
 msgstr "DOI or link (optional)"
 
 msgid "Dastur"
 msgstr "Program"
+
+msgid "Dastur (PDF)"
+msgstr "Program (PDF)"
 
 msgid "Dasturni yuklab olish"
 msgstr "Download program"
@@ -133,6 +184,15 @@ msgstr "Note"
 msgid "Etika bayonoti"
 msgstr "Ethics statement"
 
+msgid "Etika bayonoti (en)"
+msgstr "Ethics statement (en)"
+
+msgid "Etika bayonoti (ru)"
+msgstr "Ethics statement (ru)"
+
+msgid "Etika bayonoti (uz)"
+msgstr "Ethics statement (uz)"
+
 msgid "Etika va moliyalashtirish"
 msgstr "Ethics and funding"
 
@@ -154,6 +214,9 @@ msgstr "Active projects"
 msgid "Faqat tahririyat uchun maxfiy izohlar..."
 msgstr "Secret comments for editorial board only..."
 
+msgid "Fayl"
+msgstr "File"
+
 msgid "Fayl PDF yoki Word formatida bo'lishi kerak."
 msgstr "File must be in PDF or Word format."
 
@@ -166,14 +229,23 @@ msgstr "Add file"
 msgid "Filtrlash"
 msgstr "Filter"
 
+msgid "Foydalanuvchi"
+msgstr "User"
+
 msgid "Foydalanuvchi nomi *"
 msgstr "Username *"
+
+msgid "Grant"
+msgstr "Grant"
 
 msgid "Grantlar"
 msgstr "Grants"
 
 msgid "Grantlar va ilmiy loyihalar"
 msgstr "Grants and research projects"
+
+msgid "Har bir bazani yangi qatorga yozing (Google Scholar, Scopus, ...)."
+msgstr "Enter each database on a new line (Google Scholar, Scopus, ...)."
 
 msgid "Har bir muallif F.I.O.sini yangi qatorda yozing. Siz avtomatik birinchi muallif boʻlasiz."
 msgstr "Write each author's full name on a new line. You will automatically be the first author."
@@ -215,6 +287,12 @@ msgstr "No open collections yet."
 msgid "Hozircha yangiliklar yo'q."
 msgstr "No updates yet."
 
+msgid "ISSN (Online)"
+msgstr "ISSN (Online)"
+
+msgid "ISSN (Print)"
+msgstr "ISSN (Print)"
+
 msgid "Ilmiy daraja"
 msgstr "Academic degree"
 
@@ -239,6 +317,12 @@ msgstr "Indexed in"
 msgid "Iqtibos keltirish (APA)"
 msgstr "Cite (APA)"
 
+msgid "Iqtibos matni"
+msgstr "Citation text"
+
+msgid "Iqtiboslar soni"
+msgstr "Number of citations"
+
 msgid "Ish joyi (ru)"
 msgstr "Affiliation (ru)"
 
@@ -247,6 +331,15 @@ msgstr "Affiliation (uz)"
 
 msgid "Ish joyi / Afiliatsiya *"
 msgstr "Affiliation *"
+
+msgid "Ish joyi/lavozimi (en)"
+msgstr "Affiliation/position (en)"
+
+msgid "Ish joyi/lavozimi (ru)"
+msgstr "Affiliation/position (ru)"
+
+msgid "Ish joyi/lavozimi (uz)"
+msgstr "Affiliation/position (uz)"
 
 msgid "Jami maqolalar"
 msgstr "Total articles"
@@ -278,17 +371,29 @@ msgstr "Journal issues"
 msgid "Jurnal sonlari arxivi"
 msgstr "Journal issue archive"
 
+msgid "Jurnal yangiligi"
+msgstr "Journal news"
+
 msgid "Jurnal yangiliklari"
 msgstr "Journal updates"
 
 msgid "Jurnalning tahririyat va ilmiy kengash a'zolari."
 msgstr "Members of the editorial board and scientific council."
 
+msgid "Kafedra"
+msgstr "Department"
+
+msgid "Kafedra mudiri"
+msgstr "Head of Department"
+
 msgid "Kafedralar"
 msgstr "Departments"
 
 msgid "Kafedralar hozircha kiritilmagan."
 msgstr "No departments added yet."
+
+msgid "Kalit"
+msgstr "Key"
 
 msgid "Kalit so'zlar"
 msgstr "Keywords"
@@ -308,14 +413,26 @@ msgstr "Sorry, an unexpected error occurred. Please try again later."
 msgid "Kechirasiz, siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan."
 msgstr "Sorry, the page you are looking for does not exist or has been moved."
 
+msgid "Kelajakda REST API orqali sinxronlash uchun tashqi ID."
+msgstr "External ID for synchronization via REST API in the future."
+
 msgid "Kelayotgan"
 msgstr "Upcoming"
+
+msgid "Kichik rasm"
+msgstr "Thumbnail"
 
 msgid "Kirish"
 msgstr "Login"
 
 msgid "Kirish turi"
 msgstr "Access type"
+
+msgid "Klinik kuzatuv"
+msgstr "Clinical observation"
+
+msgid "Klinik sinov"
+msgstr "Clinical trial"
 
 msgid "Ko'p iqtiboslangan"
 msgstr "Most cited"
@@ -335,11 +452,29 @@ msgstr "View"
 msgid "Ko'rishlar"
 msgstr "Views"
 
+msgid "Konferensiya"
+msgstr "Conference"
+
 msgid "Konferensiyalar"
 msgstr "Conferences"
 
 msgid "Konferensiyalar va tadbirlar"
 msgstr "Conferences and events"
+
+msgid "Kutilmoqda"
+msgstr "Pending"
+
+msgid "Lavozim (en)"
+msgstr "Position (en)"
+
+msgid "Lavozim (ru)"
+msgstr "Position (ru)"
+
+msgid "Lavozim (uz)"
+msgstr "Position (uz)"
+
+msgid "Loyiha rahbarlari"
+msgstr "Project leaders"
 
 msgid "Ma'lumot"
 msgstr "Information"
@@ -356,8 +491,26 @@ msgstr "Conflict of interest"
 msgid "Manzil"
 msgstr "Address"
 
+msgid "Manzil (en)"
+msgstr "Address (en)"
+
+msgid "Manzil (ru)"
+msgstr "Address (ru)"
+
+msgid "Manzil (uz)"
+msgstr "Address (uz)"
+
+msgid "Maqola"
+msgstr "Article"
+
 msgid "Maqola ko'rib chiqishga yuboriladi, natija 'Mening maqolalarim' bo'limida ko'rinadi."
 msgstr "The article is sent for review, the result will be visible in 'My articles' section."
+
+msgid "Maqola rasmi"
+msgstr "Article image"
+
+msgid "Maqola rasmlari"
+msgstr "Article images"
 
 msgid "Maqola topshirish"
 msgstr "Submit article"
@@ -371,11 +524,17 @@ msgstr "Create an account to submit articles."
 msgid "Maqola topshirish uchun tizimga kiring."
 msgstr "Log in to submit articles."
 
+msgid "Maqola turi"
+msgstr "Article type"
+
 msgid "Maqola uch tilda (o'zbek, rus, ingliz) sarlavha va annotatsiya bilan taqdim etilishi tavsiya etiladi. To'liq matn PDF yoki Word formatida bo'lishi kerak."
 msgstr "Articles should be submitted in three languages (Uzbek, Russian, English) with title and abstract. Full text must be in PDF or Word format."
 
 msgid "Maqola yuborish"
 msgstr "Submit manuscript"
+
+msgid "Maqola yuborish havolasi"
+msgstr "Article submission link"
 
 msgid "Maqola yuborish tartibi"
 msgstr "Submission guidelines"
@@ -416,6 +575,15 @@ msgstr "E.g.: Vol. 5, No. 2, 2025"
 msgid "Masalan: t.f.d."
 msgstr "E.g.: Ph.D."
 
+msgid "Matn (en)"
+msgstr "Text (en)"
+
+msgid "Matn (ru)"
+msgstr "Text (ru)"
+
+msgid "Matn (uz)"
+msgstr "Text (uz)"
+
 msgid "Mavjud sondan tanlang yoki oʻzingiz yozing. Format: Vol. X, No. Y, YYYY"
 msgstr "Choose from an existing issue or write your own. Format: Vol. X, No. Y, YYYY"
 
@@ -425,8 +593,26 @@ msgstr "My articles"
 msgid "Moliyalashtirish"
 msgstr "Funding"
 
+msgid "Moliyalashtirish (en)"
+msgstr "Funding (en)"
+
+msgid "Moliyalashtirish (ru)"
+msgstr "Funding (ru)"
+
+msgid "Moliyalashtirish (uz)"
+msgstr "Funding (uz)"
+
+msgid "Moliyalashtiruvchi"
+msgstr "Sponsor"
+
+msgid "Muallif"
+msgstr "Author"
+
 msgid "Muallif ma'lumotlari"
 msgstr "Author details"
+
+msgid "Muallif uchun izohlar"
+msgstr "Comments for the author"
 
 msgid "Muallif(lar), sarlavha, jurnal, yil, sahifalar."
 msgstr "Author(s), title, journal, year, pages."
@@ -452,6 +638,15 @@ msgstr "Deadline"
 msgid "Mudir"
 msgstr "Head"
 
+msgid "Muharrir maqolasi"
+msgstr "Editorial"
+
+msgid "Muharrir uchun xufyona izohlar"
+msgstr "Confidential comments for the editor"
+
+msgid "Muqova"
+msgstr "Cover"
+
 msgid "Nashr etilgan sonlar bo'yicha maqolalar to'plami."
 msgstr "Collection of articles by published issues."
 
@@ -460,6 +655,18 @@ msgstr "Unpublished (preview)"
 
 msgid "Nashr sanasi"
 msgstr "Publication date"
+
+msgid "Nomi (en)"
+msgstr "Name (en)"
+
+msgid "Nomi (ru)"
+msgstr "Name (ru)"
+
+msgid "Nomi (uz)"
+msgstr "Name (uz)"
+
+msgid "Number (son)"
+msgstr "Number"
 
 msgid "Nusxa olish"
 msgstr "Copy"
@@ -479,8 +686,23 @@ msgstr "ORCID iD"
 msgid "Obuna bo'lish"
 msgstr "Subscribe"
 
+msgid "Obuna sanasi"
+msgstr "Subscription date"
+
+msgid "Obunachi"
+msgstr "Subscriber"
+
+msgid "Obunachilar (alerts)"
+msgstr "Subscribers (alerts)"
+
 msgid "Obunangiz tasdiqlandi! Yangi maqolalar haqida xabar beramiz."
 msgstr "Your subscription is confirmed! We will notify you about new articles."
+
+msgid "Ochiq kirish"
+msgstr "Open access"
+
+msgid "Ochiq kirishli jurnal"
+msgstr "Open access journal"
 
 msgid "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar."
 msgstr "Open thematic collections — directions currently accepting submissions."
@@ -500,8 +722,14 @@ msgstr "Peer-reviewed scientific publications in oncology and radiology."
 msgid "Ordinatura"
 msgstr "Residency"
 
+msgid "Original tadqiqot"
+msgstr "Original research"
+
 msgid "Oʻzbek tilidagi sarlavha majburiy."
 msgstr "Uzbek title is mandatory."
+
+msgid "PDF fayl"
+msgstr "PDF file"
 
 msgid "PDF fayl yuklash majburiy."
 msgstr "PDF file upload is mandatory."
@@ -524,14 +752,29 @@ msgstr "Profile"
 msgid "Profilni tahrirlash"
 msgstr "Edit profile"
 
+msgid "Qabul ochiq"
+msgstr "Admission open"
+
+msgid "Qabul qilish"
+msgstr "Accept"
+
+msgid "Qayta ishlash"
+msgstr "Revise"
+
 msgid "Qidirish"
 msgstr "Search"
 
 msgid "Qidiruv"
 msgstr "Search"
 
+msgid "Qiymat"
+msgstr "Value"
+
 msgid "Qo'shimcha materiallar"
 msgstr "Supplementary materials"
+
+msgid "Qoralama"
+msgstr "Draft"
 
 msgid "Qoʻshimcha mualliflar (ixtiyoriy)"
 msgstr "Co-authors (optional)"
@@ -541,6 +784,9 @@ msgstr "RSS feed"
 
 msgid "Rad etilgan"
 msgstr "Rejected"
+
+msgid "Rad etish"
+msgstr "Reject"
 
 msgid "Rad etish sababi"
 msgstr "Rejection reason"
@@ -578,6 +824,9 @@ msgstr "Reason:"
 msgid "Sahifa topilmadi"
 msgstr "Page not found"
 
+msgid "Sahifalar"
+msgstr "Pages"
+
 msgid "Sana"
 msgstr "Date"
 
@@ -602,8 +851,14 @@ msgstr "Title and abstract must be at least in Uzbek."
 msgid "Serverda xatolik"
 msgstr "Server error"
 
+msgid "Sharh maqola"
+msgstr "Review article"
+
 msgid "Siz hali maqola topshirmagansiz."
 msgstr "You have not submitted any articles yet."
+
+msgid "Slug"
+msgstr "Slug"
 
 msgid "So'nggi maqolalar"
 msgstr "Latest articles"
@@ -611,14 +866,29 @@ msgstr "Latest articles"
 msgid "Sonlar"
 msgstr "Issues"
 
+msgid "Statik sahifa"
+msgstr "Static page"
+
+msgid "Statik sahifalar"
+msgstr "Static pages"
+
 msgid "Ta'lim"
 msgstr "Education"
 
 msgid "Tadqiqot etika komissiyasi tomonidan tasdiqlangan."
 msgstr "The study was approved by the ethics committee."
 
+msgid "Tagyozuv (en)"
+msgstr "Caption (en)"
+
 msgid "Tagyozuv (ixtiyoriy)"
 msgstr "Caption (optional)"
+
+msgid "Tagyozuv (ru)"
+msgstr "Caption (ru)"
+
+msgid "Tagyozuv (uz)"
+msgstr "Caption (uz)"
 
 msgid "Tahrirlash"
 msgstr "Edit"
@@ -629,11 +899,41 @@ msgstr "Requirements"
 msgid "Talablar (PDF)"
 msgstr "Requirements (PDF)"
 
+msgid "Taqriz"
+msgstr "Review"
+
+msgid "Taqrizchi"
+msgstr "Reviewer"
+
+msgid "Taqrizlar"
+msgstr "Reviews"
+
+msgid "Tartib"
+msgstr "Order"
+
+msgid "Tartib raqami"
+msgstr "Sequence number"
+
+msgid "Tasdiqlangan"
+msgstr "Confirmed"
+
 msgid "Tasdiqlash havolasi emailingizga yuborildi. Iltimos, pochtangizni tekshiring."
 msgstr "A confirmation link has been sent to your email. Please check your inbox."
 
 msgid "Tasdiqlash havolasi yaroqsiz yoki muddati o'tgan."
 msgstr "The confirmation link is invalid or has expired."
+
+msgid "Tasdiqlash tokeni"
+msgstr "Confirmation token"
+
+msgid "Tavsif (en)"
+msgstr "Description (en)"
+
+msgid "Tavsif (ru)"
+msgstr "Description (ru)"
+
+msgid "Tavsif (uz)"
+msgstr "Description (uz)"
 
 msgid "Taʼlim"
 msgstr "Education"
@@ -653,6 +953,9 @@ msgstr "Collection articles"
 msgid "To'plamlar"
 msgstr "Collections"
 
+msgid "Topshirgan foydalanuvchi"
+msgstr "Submitted user"
+
 msgid "Topshirish muddati"
 msgstr "Submission deadline"
 
@@ -662,11 +965,23 @@ msgstr "Clear"
 msgid "Toʻplamlar"
 msgstr "Collections"
 
+msgid "Tugash sanasi"
+msgstr "End date"
+
+msgid "Turi"
+msgstr "Type"
+
 msgid "Ulashish"
 msgstr "Share"
 
 msgid "Ushbu tadqiqot ... tomonidan moliyalashtirilgan."
 msgstr "This study was funded by..."
+
+msgid "Volume (tom)"
+msgstr "Volume"
+
+msgid "Xulosa"
+msgstr "Conclusion"
 
 msgid "Xush kelibsiz, {}!"
 msgstr "Welcome, {}!"
@@ -683,11 +998,17 @@ msgstr "Submit new article"
 msgid "Yangi maqolalar va sonlar chiqqanda email orqali xabar oling."
 msgstr "Get notified by email about new articles and issues."
 
+msgid "Yangilangan"
+msgstr "Updated"
+
 msgid "Yangiliklar"
 msgstr "Updates"
 
 msgid "Yangiliklarga obuna bo'ling"
 msgstr "Subscribe to updates"
+
+msgid "Yaratilgan"
+msgstr "Created"
 
 msgid "Yil"
 msgstr "Year"
@@ -697,6 +1018,9 @@ msgstr "Direction"
 
 msgid "Yo'nalishlar"
 msgstr "Directions"
+
+msgid "Yopiq"
+msgstr "Closed"
 
 msgid "b."
 msgstr "p."

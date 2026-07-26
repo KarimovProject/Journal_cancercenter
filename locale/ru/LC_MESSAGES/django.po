@@ -13,6 +13,9 @@ msgstr "0000-0000-0000-0000"
 msgid "10.1234/oncoscience.2025.01.005"
 msgstr "10.1234/oncoscience.2025.01.005"
 
+msgid "Adabiyot"
+msgstr "Литература"
+
 msgid "Adabiyot qo'shish"
 msgstr "Добавить источник"
 
@@ -22,8 +25,14 @@ msgstr "Список литературы"
 msgid "Adabiyotlar ro'yxati"
 msgstr "Список литературы"
 
+msgid "Admin tomonidan rad etilganda yoziladi."
+msgstr "Заполняется при отклонении администратором."
+
 msgid "Affiliation (en)"
 msgstr "Аффилиация (англ)"
+
+msgid "Afisha"
+msgstr "Афиша"
 
 msgid "Aloqa"
 msgstr "Контакты"
@@ -40,8 +49,23 @@ msgstr "Аннотация (рус)"
 msgid "Annotatsiya (uz)"
 msgstr "Аннотация (узб)"
 
+msgid "Arxivlangan"
+msgstr "В архиве"
+
+msgid "Asosiy sayt Doctor ID (ixtiyoriy)"
+msgstr "ID доктора основного сайта (необязательно)"
+
 msgid "Aspirantura"
 msgstr "Аспирантура"
+
+msgid "Aspirantura/Ordinatura"
+msgstr "Аспирантура/Ординатура"
+
+msgid "Aspirantura/Ordinatura dasturi"
+msgstr "Программа аспирантуры/ординатуры"
+
+msgid "Banner rasm"
+msgstr "Баннерное изображение"
 
 msgid "Barcha huquqlar himoyalangan."
 msgstr "Все права защищены."
@@ -64,6 +88,15 @@ msgstr "Статьи, соответствующие заданным услов
 msgid "Biografiya"
 msgstr "Биография"
 
+msgid "Biografiya (en)"
+msgstr "Биография (англ)"
+
+msgid "Biografiya (ru)"
+msgstr "Биография (рус)"
+
+msgid "Biografiya (uz)"
+msgstr "Биография (узб)"
+
 msgid "Birinchi maqolangizni topshiring"
 msgstr "Подайте первую статью"
 
@@ -81,6 +114,12 @@ msgstr "Главная"
 
 msgid "Bosh sahifaga qaytish"
 msgstr "Вернуться на главную"
+
+msgid "Boshlanish sanasi"
+msgstr "Дата начала"
+
+msgid "Boshqa"
+msgstr "Другое"
 
 msgid "Bu email allaqachon roʻyxatdan oʻtgan."
 msgstr "Этот email уже зарегистрирован."
@@ -100,11 +139,23 @@ msgstr "Call for papers"
 msgid "Chiqish"
 msgstr "Выйти"
 
+msgid "Chop etilgan"
+msgstr "Опубликовано"
+
+msgid "DOI"
+msgstr "DOI"
+
+msgid "DOI yoki havola"
+msgstr "DOI или ссылка"
+
 msgid "DOI yoki havola (ixtiyoriy)"
 msgstr "DOI или ссылка (необязательно)"
 
 msgid "Dastur"
 msgstr "Программа"
+
+msgid "Dastur (PDF)"
+msgstr "Программа (PDF)"
 
 msgid "Dasturni yuklab olish"
 msgstr "Скачать программу"
@@ -133,6 +184,15 @@ msgstr "Примечание"
 msgid "Etika bayonoti"
 msgstr "Этическое заявление"
 
+msgid "Etika bayonoti (en)"
+msgstr "Заявление об этике (англ)"
+
+msgid "Etika bayonoti (ru)"
+msgstr "Заявление об этике (рус)"
+
+msgid "Etika bayonoti (uz)"
+msgstr "Заявление об этике (узб)"
+
 msgid "Etika va moliyalashtirish"
 msgstr "Этика и финансирование"
 
@@ -154,6 +214,9 @@ msgstr "Активные проекты"
 msgid "Faqat tahririyat uchun maxfiy izohlar..."
 msgstr "Секретные комментарии только для редакции..."
 
+msgid "Fayl"
+msgstr "Файл"
+
 msgid "Fayl PDF yoki Word formatida bo'lishi kerak."
 msgstr "Файл должен быть в формате PDF или Word."
 
@@ -166,14 +229,23 @@ msgstr "Добавить файл"
 msgid "Filtrlash"
 msgstr "Фильтр"
 
+msgid "Foydalanuvchi"
+msgstr "Пользователь"
+
 msgid "Foydalanuvchi nomi *"
 msgstr "Имя пользователя *"
+
+msgid "Grant"
+msgstr "Грант"
 
 msgid "Grantlar"
 msgstr "Гранты"
 
 msgid "Grantlar va ilmiy loyihalar"
 msgstr "Гранты и научные проекты"
+
+msgid "Har bir bazani yangi qatorga yozing (Google Scholar, Scopus, ...)."
+msgstr "Укажите каждую базу данных с новой строки (Google Scholar, Scopus, ...)."
 
 msgid "Har bir muallif F.I.O.sini yangi qatorda yozing. Siz avtomatik birinchi muallif boʻlasiz."
 msgstr "Напишите Ф.И.О. каждого автора с новой строки. Вы автоматически станете первым автором."
@@ -215,6 +287,12 @@ msgstr "Открытых коллекций пока нет."
 msgid "Hozircha yangiliklar yo'q."
 msgstr "Новостей пока нет."
 
+msgid "ISSN (Online)"
+msgstr "ISSN (Online)"
+
+msgid "ISSN (Print)"
+msgstr "ISSN (Print)"
+
 msgid "Ilmiy daraja"
 msgstr "Ученая степень"
 
@@ -239,6 +317,12 @@ msgstr "Индексируется в базах"
 msgid "Iqtibos keltirish (APA)"
 msgstr "Цитирование (APA)"
 
+msgid "Iqtibos matni"
+msgstr "Текст цитаты"
+
+msgid "Iqtiboslar soni"
+msgstr "Количество цитирований"
+
 msgid "Ish joyi (ru)"
 msgstr "Место работы (рус)"
 
@@ -247,6 +331,15 @@ msgstr "Место работы (узб)"
 
 msgid "Ish joyi / Afiliatsiya *"
 msgstr "Место работы / Аффилиация *"
+
+msgid "Ish joyi/lavozimi (en)"
+msgstr "Место работы/должность (англ)"
+
+msgid "Ish joyi/lavozimi (ru)"
+msgstr "Место работы/должность (рус)"
+
+msgid "Ish joyi/lavozimi (uz)"
+msgstr "Место работы/должность (узб)"
 
 msgid "Jami maqolalar"
 msgstr "Всего статей"
@@ -278,17 +371,29 @@ msgstr "Выпуски журнала"
 msgid "Jurnal sonlari arxivi"
 msgstr "Архив выпусков журнала"
 
+msgid "Jurnal yangiligi"
+msgstr "Новость журнала"
+
 msgid "Jurnal yangiliklari"
 msgstr "Новости журнала"
 
 msgid "Jurnalning tahririyat va ilmiy kengash a'zolari."
 msgstr "Члены редакции и научного совета журнала."
 
+msgid "Kafedra"
+msgstr "Кафедра"
+
+msgid "Kafedra mudiri"
+msgstr "Заведующий кафедрой"
+
 msgid "Kafedralar"
 msgstr "Кафедры"
 
 msgid "Kafedralar hozircha kiritilmagan."
 msgstr "Кафедры пока не добавлены."
+
+msgid "Kalit"
+msgstr "Ключ"
 
 msgid "Kalit so'zlar"
 msgstr "Ключевые слова"
@@ -308,14 +413,26 @@ msgstr "Извините, произошла непредвиденная оши
 msgid "Kechirasiz, siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan."
 msgstr "Извините, запрашиваемая страница не существует или была перемещена."
 
+msgid "Kelajakda REST API orqali sinxronlash uchun tashqi ID."
+msgstr "Внешний ID для синхронизации через REST API в будущем."
+
 msgid "Kelayotgan"
 msgstr "Предстоящие"
+
+msgid "Kichik rasm"
+msgstr "Миниатюра"
 
 msgid "Kirish"
 msgstr "Вход"
 
 msgid "Kirish turi"
 msgstr "Тип доступа"
+
+msgid "Klinik kuzatuv"
+msgstr "Клиническое наблюдение"
+
+msgid "Klinik sinov"
+msgstr "Клиническое испытание"
 
 msgid "Ko'p iqtiboslangan"
 msgstr "Наиболее цитируемые"
@@ -335,11 +452,29 @@ msgstr "Просмотр"
 msgid "Ko'rishlar"
 msgstr "Просмотры"
 
+msgid "Konferensiya"
+msgstr "Конференция"
+
 msgid "Konferensiyalar"
 msgstr "Конференции"
 
 msgid "Konferensiyalar va tadbirlar"
 msgstr "Конференции и мероприятия"
+
+msgid "Kutilmoqda"
+msgstr "В ожидании"
+
+msgid "Lavozim (en)"
+msgstr "Должность (англ)"
+
+msgid "Lavozim (ru)"
+msgstr "Должность (рус)"
+
+msgid "Lavozim (uz)"
+msgstr "Должность (узб)"
+
+msgid "Loyiha rahbarlari"
+msgstr "Руководители проекта"
 
 msgid "Ma'lumot"
 msgstr "Информация"
@@ -356,8 +491,26 @@ msgstr "Конфликт интересов"
 msgid "Manzil"
 msgstr "Адрес"
 
+msgid "Manzil (en)"
+msgstr "Адрес (англ)"
+
+msgid "Manzil (ru)"
+msgstr "Адрес (рус)"
+
+msgid "Manzil (uz)"
+msgstr "Адрес (узб)"
+
+msgid "Maqola"
+msgstr "Статья"
+
 msgid "Maqola ko'rib chiqishga yuboriladi, natija 'Mening maqolalarim' bo'limida ko'rinadi."
 msgstr "Статья отправляется на рассмотрение, результат будет виден в разделе «Мои статьи»."
+
+msgid "Maqola rasmi"
+msgstr "Изображение статьи"
+
+msgid "Maqola rasmlari"
+msgstr "Изображения статьи"
 
 msgid "Maqola topshirish"
 msgstr "Подача статьи"
@@ -371,11 +524,17 @@ msgstr "Создайте аккаунт для подачи статей."
 msgid "Maqola topshirish uchun tizimga kiring."
 msgstr "Войдите в систему для подачи статей."
 
+msgid "Maqola turi"
+msgstr "Тип статьи"
+
 msgid "Maqola uch tilda (o'zbek, rus, ingliz) sarlavha va annotatsiya bilan taqdim etilishi tavsiya etiladi. To'liq matn PDF yoki Word formatida bo'lishi kerak."
 msgstr "Рекомендуется представлять статью на трёх языках (узбекский, русский, английский) с заголовком и аннотацией. Полный текст должен быть в формате PDF или Word."
 
 msgid "Maqola yuborish"
 msgstr "Подать статью"
+
+msgid "Maqola yuborish havolasi"
+msgstr "Ссылка для отправки статьи"
 
 msgid "Maqola yuborish tartibi"
 msgstr "Порядок подачи статей"
@@ -416,6 +575,15 @@ msgstr "Например: Vol. 5, No. 2, 2025"
 msgid "Masalan: t.f.d."
 msgstr "Например: д.м.н."
 
+msgid "Matn (en)"
+msgstr "Текст (англ)"
+
+msgid "Matn (ru)"
+msgstr "Текст (рус)"
+
+msgid "Matn (uz)"
+msgstr "Текст (узб)"
+
 msgid "Mavjud sondan tanlang yoki oʻzingiz yozing. Format: Vol. X, No. Y, YYYY"
 msgstr "Выберите из существующего выпуска или напишите свой. Формат: Vol. X, No. Y, YYYY"
 
@@ -425,8 +593,26 @@ msgstr "Мои статьи"
 msgid "Moliyalashtirish"
 msgstr "Финансирование"
 
+msgid "Moliyalashtirish (en)"
+msgstr "Финансирование (англ)"
+
+msgid "Moliyalashtirish (ru)"
+msgstr "Финансирование (рус)"
+
+msgid "Moliyalashtirish (uz)"
+msgstr "Финансирование (узб)"
+
+msgid "Moliyalashtiruvchi"
+msgstr "Спонсор"
+
+msgid "Muallif"
+msgstr "Автор"
+
 msgid "Muallif ma'lumotlari"
 msgstr "Данные автора"
+
+msgid "Muallif uchun izohlar"
+msgstr "Комментарии для автора"
 
 msgid "Muallif(lar), sarlavha, jurnal, yil, sahifalar."
 msgstr "Автор(ы), заголовок, журнал, год, страницы."
@@ -452,6 +638,15 @@ msgstr "Срок"
 msgid "Mudir"
 msgstr "Заведующий"
 
+msgid "Muharrir maqolasi"
+msgstr "Редакционная статья"
+
+msgid "Muharrir uchun xufyona izohlar"
+msgstr "Конфиденциальные комментарии для редактора"
+
+msgid "Muqova"
+msgstr "Обложка"
+
 msgid "Nashr etilgan sonlar bo'yicha maqolalar to'plami."
 msgstr "Коллекция статей по опубликованным выпускам."
 
@@ -460,6 +655,18 @@ msgstr "Не опубликовано (предпросмотр)"
 
 msgid "Nashr sanasi"
 msgstr "Дата публикации"
+
+msgid "Nomi (en)"
+msgstr "Название (англ)"
+
+msgid "Nomi (ru)"
+msgstr "Название (рус)"
+
+msgid "Nomi (uz)"
+msgstr "Название (узб)"
+
+msgid "Number (son)"
+msgstr "Номер"
 
 msgid "Nusxa olish"
 msgstr "Копировать"
@@ -479,8 +686,23 @@ msgstr "ORCID iD"
 msgid "Obuna bo'lish"
 msgstr "Подписаться"
 
+msgid "Obuna sanasi"
+msgstr "Дата подписки"
+
+msgid "Obunachi"
+msgstr "Подписчик"
+
+msgid "Obunachilar (alerts)"
+msgstr "Подписчики (оповещения)"
+
 msgid "Obunangiz tasdiqlandi! Yangi maqolalar haqida xabar beramiz."
 msgstr "Ваша подписка подтверждена! Мы будем сообщать о новых статьях."
+
+msgid "Ochiq kirish"
+msgstr "Открытый доступ"
+
+msgid "Ochiq kirishli jurnal"
+msgstr "Журнал открытого доступа"
 
 msgid "Ochiq mavzuli to'plamlar — maqola qabul qilinayotgan yo'nalishlar."
 msgstr "Открытые тематические коллекции — направления, в которых принимаются статьи."
@@ -500,8 +722,14 @@ msgstr "Рецензированные научные публикации в о
 msgid "Ordinatura"
 msgstr "Ординатура"
 
+msgid "Original tadqiqot"
+msgstr "Оригинальное исследование"
+
 msgid "Oʻzbek tilidagi sarlavha majburiy."
 msgstr "Заголовок на узбекском обязателен."
+
+msgid "PDF fayl"
+msgstr "PDF файл"
 
 msgid "PDF fayl yuklash majburiy."
 msgstr "Загрузка PDF файла обязательна."
@@ -524,14 +752,29 @@ msgstr "Профиль"
 msgid "Profilni tahrirlash"
 msgstr "Редактировать профиль"
 
+msgid "Qabul ochiq"
+msgstr "Прием открыт"
+
+msgid "Qabul qilish"
+msgstr "Принять"
+
+msgid "Qayta ishlash"
+msgstr "На доработку"
+
 msgid "Qidirish"
 msgstr "Поиск"
 
 msgid "Qidiruv"
 msgstr "Поиск"
 
+msgid "Qiymat"
+msgstr "Значение"
+
 msgid "Qo'shimcha materiallar"
 msgstr "Дополнительные материалы"
+
+msgid "Qoralama"
+msgstr "Черновик"
 
 msgid "Qoʻshimcha mualliflar (ixtiyoriy)"
 msgstr "Соавторы (необязательно)"
@@ -541,6 +784,9 @@ msgstr "RSS-лента"
 
 msgid "Rad etilgan"
 msgstr "Отклонено"
+
+msgid "Rad etish"
+msgstr "Отклонить"
 
 msgid "Rad etish sababi"
 msgstr "Причина отклонения"
@@ -578,6 +824,9 @@ msgstr "Причина:"
 msgid "Sahifa topilmadi"
 msgstr "Страница не найдена"
 
+msgid "Sahifalar"
+msgstr "Страницы"
+
 msgid "Sana"
 msgstr "Дата"
 
@@ -602,8 +851,14 @@ msgstr "Заголовок и аннотация должны быть как м
 msgid "Serverda xatolik"
 msgstr "Ошибка сервера"
 
+msgid "Sharh maqola"
+msgstr "Обзорная статья"
+
 msgid "Siz hali maqola topshirmagansiz."
 msgstr "Вы ещё не подали ни одной статьи."
+
+msgid "Slug"
+msgstr "Slug (ЧПУ)"
 
 msgid "So'nggi maqolalar"
 msgstr "Последние статьи"
@@ -611,14 +866,29 @@ msgstr "Последние статьи"
 msgid "Sonlar"
 msgstr "Выпуски"
 
+msgid "Statik sahifa"
+msgstr "Статическая страница"
+
+msgid "Statik sahifalar"
+msgstr "Статические страницы"
+
 msgid "Ta'lim"
 msgstr "Образование"
 
 msgid "Tadqiqot etika komissiyasi tomonidan tasdiqlangan."
 msgstr "Исследование одобрено этическим комитетом."
 
+msgid "Tagyozuv (en)"
+msgstr "Подпись (англ)"
+
 msgid "Tagyozuv (ixtiyoriy)"
 msgstr "Подпись (необязательно)"
+
+msgid "Tagyozuv (ru)"
+msgstr "Подпись (рус)"
+
+msgid "Tagyozuv (uz)"
+msgstr "Подпись (узб)"
 
 msgid "Tahrirlash"
 msgstr "Редактировать"
@@ -629,11 +899,41 @@ msgstr "Требования"
 msgid "Talablar (PDF)"
 msgstr "Требования (PDF)"
 
+msgid "Taqriz"
+msgstr "Рецензия"
+
+msgid "Taqrizchi"
+msgstr "Рецензент"
+
+msgid "Taqrizlar"
+msgstr "Рецензии"
+
+msgid "Tartib"
+msgstr "Порядок"
+
+msgid "Tartib raqami"
+msgstr "Порядковый номер"
+
+msgid "Tasdiqlangan"
+msgstr "Подтвержден"
+
 msgid "Tasdiqlash havolasi emailingizga yuborildi. Iltimos, pochtangizni tekshiring."
 msgstr "Ссылка для подтверждения отправлена на вашу почту. Пожалуйста, проверьте почтовый ящик."
 
 msgid "Tasdiqlash havolasi yaroqsiz yoki muddati o'tgan."
 msgstr "Ссылка для подтверждения недействительна или устарела."
+
+msgid "Tasdiqlash tokeni"
+msgstr "Токен подтверждения"
+
+msgid "Tavsif (en)"
+msgstr "Описание (англ)"
+
+msgid "Tavsif (ru)"
+msgstr "Описание (рус)"
+
+msgid "Tavsif (uz)"
+msgstr "Описание (узб)"
 
 msgid "Taʼlim"
 msgstr "Образование"
@@ -650,6 +950,9 @@ msgstr "Статьи коллекции"
 msgid "To'plamlar"
 msgstr "Коллекции"
 
+msgid "Topshirgan foydalanuvchi"
+msgstr "Пользователь, подавший заявку"
+
 msgid "Topshirish muddati"
 msgstr "Срок подачи"
 
@@ -659,11 +962,23 @@ msgstr "Очистить"
 msgid "Toʻplamlar"
 msgstr "Коллекции"
 
+msgid "Tugash sanasi"
+msgstr "Дата окончания"
+
+msgid "Turi"
+msgstr "Тип"
+
 msgid "Ulashish"
 msgstr "Поделиться"
 
 msgid "Ushbu tadqiqot ... tomonidan moliyalashtirilgan."
 msgstr "Данное исследование профинансировано..."
+
+msgid "Volume (tom)"
+msgstr "Том"
+
+msgid "Xulosa"
+msgstr "Заключение"
 
 msgid "Xush kelibsiz, {}!"
 msgstr "Добро пожаловать, {}!"
@@ -680,11 +995,17 @@ msgstr "Подать новую статью"
 msgid "Yangi maqolalar va sonlar chiqqanda email orqali xabar oling."
 msgstr "Получайте уведомления по email о новых статьях и выпусках."
 
+msgid "Yangilangan"
+msgstr "Обновлено"
+
 msgid "Yangiliklar"
 msgstr "Новости"
 
 msgid "Yangiliklarga obuna bo'ling"
 msgstr "Подпишитесь на новости"
+
+msgid "Yaratilgan"
+msgstr "Создано"
 
 msgid "Yil"
 msgstr "Год"
@@ -694,6 +1015,9 @@ msgstr "Направление"
 
 msgid "Yo'nalishlar"
 msgstr "Направления"
+
+msgid "Yopiq"
+msgstr "Закрыто"
 
 msgid "b."
 msgstr "б."
