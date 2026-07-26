@@ -153,10 +153,10 @@ class ArticleAdmin(admin.ModelAdmin):
                 icon = '⏳'
             
             name = r.reviewer.get_full_name() or r.reviewer.username
+            decision_text = r.get_decision_display()
             badges.append(
-                f'<span style="color: {color}; font-weight: bold; margin-bottom: 4px; display: inline-block;" '
-                f'title="{r.get_decision_display()}">'
-                f'👤 {name}: {icon}'
+                f'<span style="color: {color}; font-weight: bold; margin-bottom: 4px; display: inline-block;">'
+                f'👤 {name}: {icon} {decision_text}'
                 f'</span>'
             )
         return format_html('<br>'.join(badges))
