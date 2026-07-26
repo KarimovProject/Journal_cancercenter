@@ -162,6 +162,10 @@ class Issue(models.Model):
     def __str__(self):
         return f'Vol. {self.volume}, No. {self.number} ({self.year})'
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('journal:issue_detail', args=[str(self.id)])
+
     @property
     def title(self):
         return translated(self, 'title') or str(self)
