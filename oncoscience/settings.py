@@ -69,6 +69,7 @@ if DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    'axes',
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -87,6 +88,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'axes.middleware.AxesMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -361,3 +363,14 @@ CSRF_TRUSTED_ORIGINS = ['https://journal.abdullatif.uz', 'http://journal.abdulla
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 EMAIL_TIMEOUT = 5
+
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Django-Axes Settings
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_TEMPLATE = 'axes/lockout.html'
