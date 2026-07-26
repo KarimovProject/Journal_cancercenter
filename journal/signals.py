@@ -22,7 +22,7 @@ def send_article_status_email(sender, instance, created, **kwargs):
         subject = f"Maqolangiz nashr etildi: {instance.title_uz}"
         url = f"{settings.SITE_DOMAIN}{instance.get_absolute_url()}"
         message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz Oncoscience jurnalida nashr etildi.\n\nMaqolani ko'rish uchun havola: {url}"
-    elif instance.status == Article.Status.UNDER_REVIEW:
+    elif instance.status == Article.Status.REVIEW:
         subject = f"Maqolangiz taqrizga yuborildi: {instance.title_uz}"
         message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz taqriz jarayoniga o'tkazildi. Natijalar haqida qo'shimcha xabar beramiz."
     elif instance.status == Article.Status.REJECTED:
