@@ -17,51 +17,51 @@ class RegistrationForm(forms.Form):
     # Auth fields
     username = forms.CharField(
         max_length=150, widget=forms.TextInput(attrs={'class': 'form-input'}),
-        label='Foydalanuvchi nomi *',
+        label=_('Foydalanuvchi nomi *'),
     )
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-input'}),
-        label='Parol *',
+        label=_('Parol *'),
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-input'}),
-        label='Parol (qayta) *',
+        label=_('Parol (qayta) *'),
     )
 
     # Author fields
     full_name = forms.CharField(
         max_length=255, widget=forms.TextInput(attrs={'class': 'form-input'}),
-        label='F.I.O. *',
+        label=_('F.I.O. *'),
     )
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-input'}),
-        label='Email *',
+        label=_('Email *'),
     )
     academic_degree = forms.CharField(
         max_length=100, required=False,
-        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 't.f.n., t.f.d., dotsent...'}),
-        label='Ilmiy daraja',
+        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('t.f.n., t.f.d., dotsent...')}),
+        label=_('Ilmiy daraja'),
     )
     affiliation = forms.CharField(
         max_length=300, widget=forms.TextInput(attrs={'class': 'form-input'}),
-        label='Ish joyi / Afiliatsiya *',
+        label=_('Ish joyi / Afiliatsiya *'),
     )
     orcid_id = forms.CharField(
         max_length=25, required=False,
-        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': '0000-0000-0000-0000'}),
-        label='ORCID iD',
+        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('0000-0000-0000-0000')}),
+        label=_('ORCID iD'),
     )
 
     def clean_username(self):
         username = self.cleaned_data['username']
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError('Bu foydalanuvchi nomi band.')
+            raise forms.ValidationError(_('Bu foydalanuvchi nomi band.'))
         return username
 
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Bu email allaqachon roʻyxatdan oʻtgan.')
+            raise forms.ValidationError(_('Bu email allaqachon roʻyxatdan oʻtgan.'))
         return email
 
     def clean(self):
@@ -70,7 +70,7 @@ class RegistrationForm(forms.Form):
         p2 = cleaned.get('password2')
         if p1 and p2:
             if p1 != p2:
-                raise forms.ValidationError('Parollar mos kelmadi.')
+                raise forms.ValidationError(_('Parollar mos kelmadi.'))
             try:
                 validate_password(p1)
             except ValidationError as e:
@@ -100,20 +100,20 @@ class ArticleSubmissionForm(forms.ModelForm):
 
     keywords_text = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'saraton, immunoterapiya, kimyoterapiya...'}),
-        label='Kalit so\u02bblar (vergul bilan ajrating)',
+        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('saraton, immunoterapiya, kimyoterapiya...')}),
+        label=_('Kalit so\u02bblar (vergul bilan ajrating)'),
     )
     issue_text = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Masalan: Vol. 5, No. 2, 2025'}),
-        label='Jurnal soni (ixtiyoriy)',
-        help_text='Mavjud sondan tanlang yoki o\u02bbzingiz yozing. Format: Vol. X, No. Y, YYYY',
+        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Masalan: Vol. 5, No. 2, 2025')}),
+        label=_('Jurnal soni (ixtiyoriy)'),
+        help_text=_('Mavjud sondan tanlang yoki o\u02bbzingiz yozing. Format: Vol. X, No. Y, YYYY'),
     )
     co_authors = forms.CharField(
         required=False,
-        widget=forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': 'Har bir muallifni yangi qatorda yozing:\nAliyev Vali\nKarimova Saoda'}),
-        label='Qo\u02bbshimcha mualliflar (ixtiyoriy)',
-        help_text='Har bir muallif F.I.O.sini yangi qatorda yozing. Siz avtomatik birinchi muallif bo\u02bblasiz.',
+        widget=forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': _('Har bir muallifni yangi qatorda yozing:\nAliyev Vali\nKarimova Saoda')}),
+        label=_('Qo\u02bbshimcha mualliflar (ixtiyoriy)'),
+        help_text=_('Har bir muallif F.I.O.sini yangi qatorda yozing. Siz avtomatik birinchi muallif bo\u02bblasiz.'),
     )
 
     class Meta:
@@ -127,21 +127,21 @@ class ArticleSubmissionForm(forms.ModelForm):
             'doi', 'thumbnail_image', 'pdf_file',
         ]
         widgets = {
-            'title_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Sarlavha (uz)'}),
-            'title_ru': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Sarlavha (ru)'}),
-            'title_en': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Sarlavha (en)'}),
-            'abstract_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Annotatsiya (uz)'}),
-            'abstract_ru': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Annotatsiya (ru)'}),
-            'abstract_en': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Annotatsiya (en)'}),
+            'title_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Sarlavha (uz)')}),
+            'title_ru': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Sarlavha (ru)')}),
+            'title_en': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Sarlavha (en)')}),
+            'abstract_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': _('Annotatsiya (uz)')}),
+            'abstract_ru': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': _('Annotatsiya (ru)')}),
+            'abstract_en': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': _('Annotatsiya (en)')}),
             'full_text_uz': TinyMCE(attrs={'class': 'form-input'}),
             'full_text_ru': TinyMCE(attrs={'class': 'form-input'}),
             'full_text_en': TinyMCE(attrs={'class': 'form-input'}),
             'article_type': forms.Select(attrs={'class': 'form-input'}),
             'category': forms.Select(attrs={'class': 'form-input'}),
-            'funding_statement_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Ushbu tadqiqot ... tomonidan moliyalashtirilgan.'}),
-            'conflict_of_interest_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Mualliflar manfaatlar to\u02bbqnashuvi yo\u02bbqligini bildiradilar.'}),
-            'ethics_statement_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Tadqiqot etika komissiyasi tomonidan tasdiqlangan.'}),
-            'doi': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '10.1234/oncoscience.2025.01.005'}),
+            'funding_statement_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': _('Ushbu tadqiqot ... tomonidan moliyalashtirilgan.')}),
+            'conflict_of_interest_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': _('Mualliflar manfaatlar to\u02bbqnashuvi yo\u02bbqligini bildiradilar.')}),
+            'ethics_statement_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': _('Tadqiqot etika komissiyasi tomonidan tasdiqlangan.')}),
+            'doi': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('10.1234/oncoscience.2025.01.005')}),
             'thumbnail_image': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
             'pdf_file': forms.FileInput(attrs={'class': 'form-input', 'accept': '.pdf,.doc,.docx'}),
         }
@@ -177,9 +177,9 @@ class ArticleSubmissionForm(forms.ModelForm):
     def clean(self):
         cleaned = super().clean()
         if not cleaned.get('title_uz'):
-            raise forms.ValidationError('Oʻzbek tilidagi sarlavha majburiy.')
+            raise forms.ValidationError(_('Oʻzbek tilidagi sarlavha majburiy.'))
         if not cleaned.get('pdf_file'):
-            raise forms.ValidationError('PDF fayl yuklash majburiy.')
+            raise forms.ValidationError(_('PDF fayl yuklash majburiy.'))
 
         allowed_tags = list(bleach.ALLOWED_TAGS) + [
             'p', 'br', 'span', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -251,13 +251,13 @@ class AuthorProfileForm(forms.ModelForm):
             'orcid_id', 'email', 'photo',
         ]
         widgets = {
-            'full_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'F.I.O.'}),
-            'academic_degree': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Masalan: t.f.d.'}),
-            'affiliation_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Ish joyi (uz)'}),
-            'affiliation_ru': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Ish joyi (ru)'}),
-            'affiliation_en': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Affiliation (en)'}),
-            'orcid_id': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '0000-0000-0000-0000'}),
-            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'email@example.com'}),
+            'full_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('F.I.O.')}),
+            'academic_degree': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Masalan: t.f.d.')}),
+            'affiliation_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Ish joyi (uz)')}),
+            'affiliation_ru': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Ish joyi (ru)')}),
+            'affiliation_en': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Affiliation (en)')}),
+            'orcid_id': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('0000-0000-0000-0000')}),
+            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': _('email@example.com')}),
             'photo': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
         }
 
@@ -281,8 +281,8 @@ class ReviewForm(forms.ModelForm):
         fields = ['decision', 'comments_for_author', 'comments_for_editor']
         widgets = {
             'decision': forms.Select(attrs={'class': 'form-input'}),
-            'comments_for_author': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': 'Muallifga yoziladigan izohlar (qanday kamchiliklar bor, nimalarni to\u02bbg\u02bbrilash kerak)...'}),
-            'comments_for_editor': forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': 'Faqat tahririyat uchun maxfiy izohlar...'}),
+            'comments_for_author': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': _('Muallifga yoziladigan izohlar (qanday kamchiliklar bor, nimalarni to\u02bbg\u02bbrilash kerak)...')}),
+            'comments_for_editor': forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': _('Faqat tahririyat uchun maxfiy izohlar...')}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -304,8 +304,8 @@ ReferenceFormSet = inlineformset_factory(
     fields=('order', 'citation_text', 'doi_or_url'),
     widgets={
         'order': forms.NumberInput(attrs={'class': 'form-input form-input-sm', 'min': 0}),
-        'citation_text': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': 'Muallif(lar), sarlavha, jurnal, yil, sahifalar.'}),
-        'doi_or_url': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'DOI yoki havola (ixtiyoriy)'}),
+        'citation_text': forms.Textarea(attrs={'class': 'form-input', 'rows': 2, 'placeholder': _('Muallif(lar), sarlavha, jurnal, yil, sahifalar.')}),
+        'doi_or_url': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('DOI yoki havola (ixtiyoriy)')}),
     },
     extra=1,
     can_delete=True,
@@ -318,7 +318,7 @@ ArticleFigureFormSet = inlineformset_factory(
     widgets={
         'order': forms.NumberInput(attrs={'class': 'form-input form-input-sm', 'min': 0}),
         'image': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
-        'caption_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Tagyozuv (ixtiyoriy)'}),
+        'caption_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Tagyozuv (ixtiyoriy)')}),
     },
     extra=1,
     can_delete=True,
@@ -331,7 +331,7 @@ ArticleSupplementaryFileFormSet = inlineformset_factory(
     widgets={
         'order': forms.NumberInput(attrs={'class': 'form-input form-input-sm', 'min': 0}),
         'file': forms.FileInput(attrs={'class': 'form-input'}),
-        'title_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Fayl nomi'}),
+        'title_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Fayl nomi')}),
     },
     extra=1,
     can_delete=True,

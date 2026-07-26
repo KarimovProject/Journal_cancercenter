@@ -7,6 +7,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
+msgid "0000-0000-0000-0000"
+msgstr "0000-0000-0000-0000"
+
+msgid "10.1234/oncoscience.2025.01.005"
+msgstr "10.1234/oncoscience.2025.01.005"
+
 msgid "Adabiyot qo'shish"
 msgstr "Добавить источник"
 
@@ -16,11 +22,23 @@ msgstr "Список литературы"
 msgid "Adabiyotlar ro'yxati"
 msgstr "Список литературы"
 
+msgid "Affiliation (en)"
+msgstr "Аффилиация (англ)"
+
 msgid "Aloqa"
 msgstr "Контакты"
 
 msgid "Annotatsiya"
 msgstr "Аннотация"
+
+msgid "Annotatsiya (en)"
+msgstr "Аннотация (англ)"
+
+msgid "Annotatsiya (ru)"
+msgstr "Аннотация (рус)"
+
+msgid "Annotatsiya (uz)"
+msgstr "Аннотация (узб)"
 
 msgid "Aspirantura"
 msgstr "Аспирантура"
@@ -64,6 +82,12 @@ msgstr "Главная"
 msgid "Bosh sahifaga qaytish"
 msgstr "Вернуться на главную"
 
+msgid "Bu email allaqachon roʻyxatdan oʻtgan."
+msgstr "Этот email уже зарегистрирован."
+
+msgid "Bu foydalanuvchi nomi band."
+msgstr "Это имя пользователя занято."
+
 msgid "Bu muallifning nashr etilgan maqolalari yo'q."
 msgstr "У этого автора нет опубликованных статей."
 
@@ -76,6 +100,9 @@ msgstr "Call for papers"
 msgid "Chiqish"
 msgstr "Выйти"
 
+msgid "DOI yoki havola (ixtiyoriy)"
+msgstr "DOI или ссылка (необязательно)"
+
 msgid "Dastur"
 msgstr "Программа"
 
@@ -87,6 +114,9 @@ msgstr "Объявления, события и изменения в деяте
 
 msgid "Email"
 msgstr "Электронная почта"
+
+msgid "Email *"
+msgstr "Email *"
 
 msgid "Email manzilingiz"
 msgstr "Ваш email"
@@ -106,6 +136,12 @@ msgstr "Этическое заявление"
 msgid "Etika va moliyalashtirish"
 msgstr "Этика и финансирование"
 
+msgid "F.I.O."
+msgstr "Ф.И.О."
+
+msgid "F.I.O. *"
+msgstr "Ф.И.О. *"
+
 msgid "Faol"
 msgstr "Активные"
 
@@ -115,8 +151,14 @@ msgstr "Активных грантов нет."
 msgid "Faol loyihalar"
 msgstr "Активные проекты"
 
+msgid "Faqat tahririyat uchun maxfiy izohlar..."
+msgstr "Секретные комментарии только для редакции..."
+
 msgid "Fayl PDF yoki Word formatida bo'lishi kerak."
 msgstr "Файл должен быть в формате PDF или Word."
+
+msgid "Fayl nomi"
+msgstr "Имя файла"
 
 msgid "Fayl qo'shish"
 msgstr "Добавить файл"
@@ -124,11 +166,24 @@ msgstr "Добавить файл"
 msgid "Filtrlash"
 msgstr "Фильтр"
 
+msgid "Foydalanuvchi nomi *"
+msgstr "Имя пользователя *"
+
 msgid "Grantlar"
 msgstr "Гранты"
 
 msgid "Grantlar va ilmiy loyihalar"
 msgstr "Гранты и научные проекты"
+
+msgid "Har bir muallif F.I.O.sini yangi qatorda yozing. Siz avtomatik birinchi muallif boʻlasiz."
+msgstr "Напишите Ф.И.О. каждого автора с новой строки. Вы автоматически станете первым автором."
+
+msgid "Har bir muallifni yangi qatorda yozing:
+Aliyev Vali
+Karimova Saoda"
+msgstr "Пишите каждого автора с новой строки:
+Алиев Вали
+Каримова Саодат"
 
 msgid "Hisob ma'lumotlari"
 msgstr "Данные аккаунта"
@@ -160,6 +215,9 @@ msgstr "Открытых коллекций пока нет."
 msgid "Hozircha yangiliklar yo'q."
 msgstr "Новостей пока нет."
 
+msgid "Ilmiy daraja"
+msgstr "Ученая степень"
+
 msgid "Ilmiy kafedralar"
 msgstr "Научные кафедры"
 
@@ -180,6 +238,15 @@ msgstr "Индексируется в базах"
 
 msgid "Iqtibos keltirish (APA)"
 msgstr "Цитирование (APA)"
+
+msgid "Ish joyi (ru)"
+msgstr "Место работы (рус)"
+
+msgid "Ish joyi (uz)"
+msgstr "Место работы (узб)"
+
+msgid "Ish joyi / Afiliatsiya *"
+msgstr "Место работы / Аффилиация *"
 
 msgid "Jami maqolalar"
 msgstr "Всего статей"
@@ -202,6 +269,9 @@ msgstr "Навигация по журналу"
 msgid "Jurnal soni"
 msgstr "Выпуск журнала"
 
+msgid "Jurnal soni (ixtiyoriy)"
+msgstr "Выпуск журнала (необязательно)"
+
 msgid "Jurnal sonlari"
 msgstr "Выпуски журнала"
 
@@ -222,6 +292,9 @@ msgstr "Кафедры пока не добавлены."
 
 msgid "Kalit so'zlar"
 msgstr "Ключевые слова"
+
+msgid "Kalit soʻlar (vergul bilan ajrating)"
+msgstr "Ключевые слова (через запятую)"
 
 msgid "Kalit soʻz yoki muallif boʻyicha qidirish..."
 msgstr "Поиск по ключевому слову или автору..."
@@ -337,6 +410,15 @@ msgstr "Научные кафедры центра и их направлени�
 msgid "Mas'ul muallif"
 msgstr "Ответственный автор"
 
+msgid "Masalan: Vol. 5, No. 2, 2025"
+msgstr "Например: Vol. 5, No. 2, 2025"
+
+msgid "Masalan: t.f.d."
+msgstr "Например: д.м.н."
+
+msgid "Mavjud sondan tanlang yoki oʻzingiz yozing. Format: Vol. X, No. Y, YYYY"
+msgstr "Выберите из существующего выпуска или напишите свой. Формат: Vol. X, No. Y, YYYY"
+
 msgid "Mening maqolalarim"
 msgstr "Мои статьи"
 
@@ -346,8 +428,17 @@ msgstr "Финансирование"
 msgid "Muallif ma'lumotlari"
 msgstr "Данные автора"
 
+msgid "Muallif(lar), sarlavha, jurnal, yil, sahifalar."
+msgstr "Автор(ы), заголовок, журнал, год, страницы."
+
+msgid "Muallifga yoziladigan izohlar (qanday kamchiliklar bor, nimalarni toʻgʻrilash kerak)..."
+msgstr "Комментарии автору (какие есть недостатки, что нужно исправить)..."
+
 msgid "Mualliflar"
 msgstr "Авторы"
+
+msgid "Mualliflar manfaatlar toʻqnashuvi yoʻqligini bildiradilar."
+msgstr "Авторы заявляют об отсутствии конфликта интересов."
 
 msgid "Mualliflar uchun"
 msgstr "Авторам"
@@ -382,6 +473,9 @@ msgstr "Удалить"
 msgid "O'xshash maqolalar"
 msgstr "Похожие статьи"
 
+msgid "ORCID iD"
+msgstr "ORCID iD"
+
 msgid "Obuna bo'lish"
 msgstr "Подписаться"
 
@@ -406,8 +500,23 @@ msgstr "Рецензированные научные публикации в о
 msgid "Ordinatura"
 msgstr "Ординатура"
 
+msgid "Oʻzbek tilidagi sarlavha majburiy."
+msgstr "Заголовок на узбекском обязателен."
+
+msgid "PDF fayl yuklash majburiy."
+msgstr "Загрузка PDF файла обязательна."
+
 msgid "PDF yuklab olish"
 msgstr "Скачать PDF"
+
+msgid "Parol (qayta) *"
+msgstr "Пароль (повторно) *"
+
+msgid "Parol *"
+msgstr "Пароль *"
+
+msgid "Parollar mos kelmadi."
+msgstr "Пароли не совпадают."
 
 msgid "Profil"
 msgstr "Профиль"
@@ -423,6 +532,9 @@ msgstr "Поиск"
 
 msgid "Qo'shimcha materiallar"
 msgstr "Дополнительные материалы"
+
+msgid "Qoʻshimcha mualliflar (ixtiyoriy)"
+msgstr "Соавторы (необязательно)"
 
 msgid "RSS lenta"
 msgstr "RSS-лента"
@@ -475,6 +587,15 @@ msgstr "Сохранить"
 msgid "Sarlavha"
 msgstr "Заголовок"
 
+msgid "Sarlavha (en)"
+msgstr "Заголовок (англ)"
+
+msgid "Sarlavha (ru)"
+msgstr "Заголовок (рус)"
+
+msgid "Sarlavha (uz)"
+msgstr "Заголовок (узб)"
+
 msgid "Sarlavha va annotatsiya kamida o'zbek tilida bo'lishi shart."
 msgstr "Заголовок и аннотация должны быть как минимум на узбекском языке."
 
@@ -492,6 +613,12 @@ msgstr "Выпуски"
 
 msgid "Ta'lim"
 msgstr "Образование"
+
+msgid "Tadqiqot etika komissiyasi tomonidan tasdiqlangan."
+msgstr "Исследование одобрено этическим комитетом."
+
+msgid "Tagyozuv (ixtiyoriy)"
+msgstr "Подпись (необязательно)"
 
 msgid "Tahrirlash"
 msgstr "Редактировать"
@@ -535,6 +662,9 @@ msgstr "Коллекции"
 msgid "Ulashish"
 msgstr "Поделиться"
 
+msgid "Ushbu tadqiqot ... tomonidan moliyalashtirilgan."
+msgstr "Данное исследование профинансировано..."
+
 msgid "Xush kelibsiz, {}!"
 msgstr "Добро пожаловать, {}!"
 
@@ -568,6 +698,9 @@ msgstr "Направления"
 msgid "b."
 msgstr "б."
 
+msgid "email@example.com"
+msgstr "email@example.com"
+
 msgid "iqtibos"
 msgstr "цит."
 
@@ -576,6 +709,12 @@ msgstr "просм."
 
 msgid "maqola"
 msgstr "статья"
+
+msgid "saraton, immunoterapiya, kimyoterapiya..."
+msgstr "рак, иммунотерапия, химиотерапия..."
+
+msgid "t.f.n., t.f.d., dotsent..."
+msgstr "к.м.н., д.м.н., доцент..."
 
 msgid "ta natija"
 msgstr "результат(ов)"
