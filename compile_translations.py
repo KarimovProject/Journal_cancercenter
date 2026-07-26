@@ -4,6 +4,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCALE_DIR = os.path.join(BASE_DIR, 'locale')
 
 RU = {
+    'Fayl yuklanmoqda... Iltimos kuting.': 'Загрузка файла... Пожалуйста, подождите.',
+    'Fayl hajmiga qarab bu jarayon 1-2 daqiqa olishi mumkin.': 'В зависимости от размера файла этот процесс может занять 1-2 минуты.',
+    'Yuklanmoqda...': 'Загрузка...',
+
     'Adabiyot': 'Литература',
     'Admin tomonidan rad etilganda yoziladi.': 'Заполняется при отклонении администратором.',
     'Afisha': 'Афиша',
@@ -380,6 +384,10 @@ RU = {
 }
 
 EN = {
+    'Fayl yuklanmoqda... Iltimos kuting.': 'Uploading file... Please wait.',
+    'Fayl hajmiga qarab bu jarayon 1-2 daqiqa olishi mumkin.': 'Depending on the file size, this process may take 1-2 minutes.',
+    'Yuklanmoqda...': 'Uploading...',
+
     'Adabiyot': 'Reference',
     'Admin tomonidan rad etilganda yoziladi.': 'Filled in when rejected by admin.',
     'Afisha': 'Poster',

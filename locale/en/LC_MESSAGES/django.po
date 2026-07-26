@@ -220,11 +220,17 @@ msgstr "File"
 msgid "Fayl PDF yoki Word formatida bo'lishi kerak."
 msgstr "File must be in PDF or Word format."
 
+msgid "Fayl hajmiga qarab bu jarayon 1-2 daqiqa olishi mumkin."
+msgstr "Depending on the file size, this process may take 1-2 minutes."
+
 msgid "Fayl nomi"
 msgstr "File name"
 
 msgid "Fayl qo'shish"
 msgstr "Add file"
+
+msgid "Fayl yuklanmoqda... Iltimos kuting."
+msgstr "Uploading file... Please wait."
 
 msgid "Filtrlash"
 msgstr "Filter"
@@ -1021,6 +1027,9 @@ msgstr "Directions"
 
 msgid "Yopiq"
 msgstr "Closed"
+
+msgid "Yuklanmoqda..."
+msgstr "Uploading..."
 
 msgid "b."
 msgstr "p."
