@@ -1,9 +1,9 @@
 import logging
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
+from .tasks import send_email_task, watermark_pdf_task
 from django.utils.translation import gettext_lazy as _
 
 from .models import Article, Review
@@ -19,6 +19,9 @@ def send_article_status_email(sender, instance, created, **kwargs):
     # we'll send email when it becomes published or goes under review
     # Ideally, we should check what changed using a mixin, but let's just do a basic one.
     if instance.status == Article.Status.PUBLISHED:
+        # Trigger watermarking
+        watermark_pdf_task.delay(instance.id)
+        
         subject = f"Maqolangiz nashr etildi: {instance.title_uz}"
         url = f"{settings.SITE_DOMAIN}{instance.get_absolute_url()}"
         message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz Oncoscience jurnalida nashr etildi.\n\nMaqolani ko'rish uchun havola: {url}"
@@ -34,12 +37,10 @@ def send_article_status_email(sender, instance, created, **kwargs):
     author = instance.submitted_by
     if author and author.email:
         try:
-            send_mail(
+            send_email_task.delay(
                 subject,
                 message,
-                settings.DEFAULT_FROM_EMAIL,
-                [author.email],
-                fail_silently=True,
+                [author.email]
             )
         except Exception as e:
             logger.error(f"Failed to send email to {author.email}: {e}")
@@ -55,12 +56,10 @@ def send_review_emails(sender, instance, created, **kwargs):
         
         if instance.reviewer.email:
             try:
-                send_mail(
+                send_email_task.delay(
                     subject,
                     message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [instance.reviewer.email],
-                    fail_silently=True,
+                    [instance.reviewer.email]
                 )
             except Exception as e:
                 logger.error(f"Failed to send assignment email: {e}")
@@ -71,12 +70,10 @@ def send_review_emails(sender, instance, created, **kwargs):
         message = f"Yangi taqriz xulosasi: {instance.get_decision_display()}.\nMaqola: {instance.article.title_uz}\n\nFikr-mulohazalar: {instance.comments_for_editor}"
         
         try:
-            send_mail(
+            send_email_task.delay(
                 subject,
                 message,
-                settings.DEFAULT_FROM_EMAIL,
-                [settings.DEFAULT_FROM_EMAIL],
-                fail_silently=True,
+                [settings.DEFAULT_FROM_EMAIL]
             )
         except Exception as e:
             logger.error(f"Failed to send review email: {e}")

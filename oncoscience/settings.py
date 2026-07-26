@@ -374,3 +374,20 @@ AUTHENTICATION_BACKENDS = [
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1
 AXES_LOCKOUT_TEMPLATE = 'axes/lockout.html'
+
+# --- CELERY & REDIS CACHE ---
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}

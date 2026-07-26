@@ -1,81 +1,36 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
-
-from .models import Article, Author, Conference, JournalUpdate
-
-
-class StaticViewSitemap(Sitemap):
-    priority = 0.6
-    changefreq = 'weekly'
-
-    def items(self):
-        return [
-            'journal:home',
-            'journal:article_list',
-            'journal:issue_list',
-            'journal:editorial_board',
-            'journal:conference_list',
-            'journal:for_authors',
-        ]
-
-    def location(self, item):
-        return reverse(item)
-
+from .models import Article, Issue
 
 class ArticleSitemap(Sitemap):
+    changefreq = 'weekly'
     priority = 0.9
-    changefreq = 'monthly'
 
     def items(self):
-        return Article.objects.filter(status=Article.Status.PUBLISHED)
+        return Article.objects.filter(status='published')
 
     def lastmod(self, obj):
         return obj.updated_at
 
-    def location(self, obj):
-        return obj.get_absolute_url()
-
-
-class AuthorSitemap(Sitemap):
-    priority = 0.5
+class IssueSitemap(Sitemap):
     changefreq = 'monthly'
+    priority = 0.8
 
     def items(self):
-        return Author.objects.all()
+        return Issue.objects.all()
 
-    def location(self, obj):
-        return obj.get_absolute_url()
-
-
-class ConferenceSitemap(Sitemap):
+class StaticViewSitemap(Sitemap):
     priority = 0.5
-    changefreq = 'weekly'
+    changefreq = 'daily'
 
     def items(self):
-        return Conference.objects.all()
+        return ['journal:home', 'journal:article_list', 'journal:issue_list']
 
-    def location(self, obj):
-        return obj.get_absolute_url()
-
-
-class UpdateSitemap(Sitemap):
-    priority = 0.4
-    changefreq = 'weekly'
-
-    def items(self):
-        return JournalUpdate.objects.filter(is_published=True)
-
-    def lastmod(self, obj):
-        return obj.published_date
-
-    def location(self, obj):
-        return obj.get_absolute_url()
-
+    def location(self, item):
+        return reverse(item)
 
 sitemaps = {
-    'static': StaticViewSitemap,
     'articles': ArticleSitemap,
-    'authors': AuthorSitemap,
-    'conferences': ConferenceSitemap,
-    'updates': UpdateSitemap,
+    'issues': IssueSitemap,
+    'static': StaticViewSitemap,
 }

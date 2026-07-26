@@ -42,6 +42,9 @@ spec:
         - secretRef:
             name: oncoscience-secrets
             optional: true
+        env:
+        - name: REDIS_URL
+          value: "redis://redis:6379/0"
         volumeMounts:
         - name: oncoscience-data
           mountPath: /app/db.sqlite3
@@ -87,3 +90,110 @@ spec:
             name: oncoscience-service
             port:
               number: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oncoscience-celery
+  labels:
+    app: oncoscience-celery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oncoscience-celery
+  template:
+    metadata:
+      labels:
+        app: oncoscience-celery
+    spec:
+      containers:
+      - name: oncoscience-celery
+        image: oncoscience-web:latest
+        imagePullPolicy: Never
+        command: ["celery", "-A", "oncoscience", "worker", "-l", "info"]
+        envFrom:
+        - secretRef:
+            name: oncoscience-secrets
+            optional: true
+        env:
+        - name: REDIS_URL
+          value: "redis://redis:6379/0"
+        volumeMounts:
+        - name: oncoscience-data
+          mountPath: /app/db.sqlite3
+          subPath: db.sqlite3
+        - name: oncoscience-data
+          mountPath: /app/media
+          subPath: media
+      volumes:
+      - name: oncoscience-data
+        persistentVolumeClaim:
+          claimName: oncoscience-data-pvc
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: oncoscience-db-backup
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: alpine:latest
+            command:
+            - /bin/sh
+            - -c
+            - |
+              apk add --no-cache curl zip
+              DATE=$(date +"%Y-%m-%d_%H-%M")
+              BACKUP_NAME="oncoscience_db_$DATE.zip"
+              zip /tmp/$BACKUP_NAME /data/db.sqlite3
+              curl -F document=@"/tmp/$BACKUP_NAME" -F caption="= Oncoscience Baza zaxirasi: $DATE" "https://api.telegram.org/bot8310591373:AAE-bRh3PCKVr2WdmKyV21_ogyvPZdQHOvA/sendDocument?chat_id=-5053475212"
+            volumeMounts:
+            - name: oncoscience-data
+              mountPath: /data
+          restartPolicy: OnFailure
+          volumes:
+          - name: oncoscience-data
+            persistentVolumeClaim:
+              claimName: oncoscience-data-pvc
+
