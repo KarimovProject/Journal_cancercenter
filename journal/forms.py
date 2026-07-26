@@ -2,10 +2,6 @@ import bleach
 import re
 from django import forms
 from django.utils.translation import gettext_lazy as _
-try:
-    from bleach.css_sanitizer import CSSSanitizer
-except ImportError:
-    CSSSanitizer = None
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -198,15 +194,11 @@ class ArticleSubmissionForm(forms.ModelForm):
             field_name = f'full_text_{lang}'
             val = cleaned.get(field_name)
             if val:
-                kwargs = {
-                    'tags': allowed_tags,
-                    'attributes': allowed_attrs,
-                }
-                if CSSSanitizer:
-                    kwargs['css_sanitizer'] = CSSSanitizer(allowed_css_properties=['text-align', 'color', 'background-color', 'font-size', 'font-weight'])
-                else:
-                    kwargs['styles'] = ['text-align', 'color', 'background-color', 'font-size', 'font-weight']
-                cleaned[field_name] = bleach.clean(val, **kwargs)
+                cleaned[field_name] = bleach.clean(
+                    val,
+                    tags=allowed_tags,
+                    attributes=allowed_attrs
+                )
 
         return cleaned
 
