@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib import admin
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 from tinymce.widgets import TinyMCE
 
 from .models import (
@@ -89,11 +91,21 @@ class SupplementaryFileInline(admin.TabularInline):
     fields = ('order', 'file', 'title_uz', 'title_ru', 'title_en')
 
 
+class ReviewInline(admin.TabularInline):
+    model = Review
+    extra = 0
+    readonly_fields = ('reviewer', 'decision', 'comments_for_author', 'comments_for_editor', 'created_at')
+    can_delete = False
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     form = ArticleAdminForm
-    inlines = (ArticleFigureInline, ReferenceInline, SupplementaryFileInline)
-    list_display = ('title_uz', 'status', 'article_type', 'is_open_access', 'category', 'submitted_by', 'publication_date', 'views_count', 'citation_count')
+    inlines = (ArticleFigureInline, ReferenceInline, SupplementaryFileInline, ReviewInline)
+    list_display = ('title_uz', 'status', 'reviewer_status', 'article_type', 'is_open_access', 'category', 'submitted_by', 'publication_date', 'views_count')
     list_filter = ('status', 'article_type', 'is_open_access', 'category', 'issue', 'submitted_by', 'publication_date')
     search_fields = ('title_uz', 'title_ru', 'title_en', 'abstract_uz', 'doi')
     autocomplete_fields = ('authors', 'keywords', 'category', 'issue', 'corresponding_author')
@@ -118,6 +130,36 @@ class ArticleAdmin(admin.ModelAdmin):
         ('Statistika', {'fields': ('views_count', 'created_at', 'updated_at')}),
         ('Topshiruv', {'fields': ('submitted_by', 'rejection_reason')}),
     )
+
+    @admin.display(description=_('Taqrizchilar'))
+    def reviewer_status(self, obj):
+        reviews = obj.reviews.select_related('reviewer').all()
+        if not reviews:
+            return format_html('<span style="color: gray;">Taqrizchi yo\'q</span>')
+        
+        badges = []
+        for r in reviews:
+            if r.decision == 'accept':
+                color = '#10b981' # green
+                icon = '✅'
+            elif r.decision == 'reject':
+                color = '#ef4444' # red
+                icon = '❌'
+            elif r.decision == 'revise':
+                color = '#f59e0b' # orange
+                icon = '📝'
+            else:
+                color = '#3b82f6' # blue
+                icon = '⏳'
+            
+            name = r.reviewer.get_full_name() or r.reviewer.username
+            badges.append(
+                f'<span style="color: {color}; font-weight: bold; margin-bottom: 4px; display: inline-block;" '
+                f'title="{r.get_decision_display()}">'
+                f'👤 {name}: {icon}'
+                f'</span>'
+            )
+        return format_html('<br>'.join(badges))
 
 
 @admin.register(Review)
