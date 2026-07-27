@@ -1,5 +1,6 @@
 from django.urls import path
 
+from django.contrib.auth import views as auth_views
 from . import views
 
 app_name = 'journal'
@@ -31,6 +32,23 @@ urlpatterns = [
     path('royxatdan-otish/', views.register_view, name='register'),
     path('kirish/', views.login_view, name='login'),
     path('chiqish/', views.logout_view, name='logout'),
+    
+    # Password Reset
+    path('parolni-tiklash/', auth_views.PasswordResetView.as_view(
+        template_name='journal/auth/password_reset.html',
+        email_template_name='journal/auth/password_reset_email.html',
+        success_url='/ilm-fan/parolni-tiklash/yuborildi/'
+    ), name='password_reset'),
+    path('parolni-tiklash/yuborildi/', auth_views.PasswordResetDoneView.as_view(
+        template_name='journal/auth/password_reset_done.html'
+    ), name='password_reset_done'),
+    path('parolni-tiklash/tasdiqlash/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='journal/auth/password_reset_confirm.html',
+        success_url='/ilm-fan/parolni-tiklash/muvaffaqiyatli/'
+    ), name='password_reset_confirm'),
+    path('parolni-tiklash/muvaffaqiyatli/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='journal/auth/password_reset_complete.html'
+    ), name='password_reset_complete'),
     # Article submission
     path('maqola-yuborish/', views.submit_article, name='submit_article'),
     path('maqola-tahrirlash/<int:pk>/', views.edit_article, name='edit_article'),

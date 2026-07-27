@@ -33,6 +33,7 @@
     </form>
 
     <p class="auth-alt">
+      <a href="{% url 'journal:password_reset' %}" style="display: block; margin-bottom: 10px; color: var(--accent);">{% trans "Parolni unutdingizmi?" %}</a>
       {% trans "Hisobingiz yo'qmi?" %}
       <a href="{% url 'journal:register' %}">{% trans "Ro'yxatdan o'ting" %}</a>
     </p>
