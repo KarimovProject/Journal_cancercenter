@@ -20,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
 </head>
 <body>
 <header class="site-header">
@@ -39,7 +39,7 @@
         <div class="header-actions">
             {% if user.is_authenticated %}
                 <!-- Notification Bell -->
-                <div class="nav-dropdown" style="position: relative; margin-right: 15px; display: inline-block;">
+                <div class="nav-dropdown" style="position: relative; margin-right: 15px; display: inline-block;" tabindex="0">
                     <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none;">
                         &#128276;
                         {% if unread_notifications_count > 0 %}
@@ -63,7 +63,7 @@
                 <!-- End Notification Bell -->
                 <a class="btn btn-sm" href="{% url 'journal:submit_article' %}">{% trans "Maqola yuborish" %}</a>
                 <!-- User Profile Dropdown -->
-                <div class="nav-dropdown" style="position: relative; display: inline-block;">
+                <div class="nav-dropdown" style="position: relative; display: inline-block;" tabindex="0">
                     <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none; padding: 4px 8px;">
                         &#128100;
                     </a>
