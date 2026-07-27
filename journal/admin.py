@@ -268,6 +268,13 @@ class JournalInfoAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def has_module_permission(self, request):
+        return request.user.is_superuser
+        
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+
 
 admin.site.site_header = "Oncoscience — Ilmiy jurnal boshqaruvi"
 admin.site.site_title = "Oncoscience admin"
@@ -290,3 +297,10 @@ class LogEntryAdmin(admin.ModelAdmin):
         return False
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def has_module_permission(self, request):
+        return request.user.is_superuser
+        
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser
+
