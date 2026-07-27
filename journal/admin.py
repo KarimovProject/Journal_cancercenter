@@ -272,3 +272,21 @@ class JournalInfoAdmin(admin.ModelAdmin):
 admin.site.site_header = "Oncoscience — Ilmiy jurnal boshqaruvi"
 admin.site.site_title = "Oncoscience admin"
 admin.site.index_title = "Kontent boshqaruvi"
+
+
+from django.contrib.admin.models import LogEntry
+
+@admin.register(LogEntry)
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display = ('action_time', 'user', 'content_type', 'object_repr', 'action_flag', 'change_message')
+    list_filter = ('action_flag', 'user', 'content_type')
+    search_fields = ('object_repr', 'change_message')
+    date_hierarchy = 'action_time'
+    
+    # Logs should be read-only
+    def has_add_permission(self, request):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
