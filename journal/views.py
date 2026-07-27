@@ -577,6 +577,14 @@ def edit_profile(request):
 
 @login_required(login_url='/ilm-fan/kirish/')
 def reviewer_dashboard(request):
+    # Mark all unread reviewer notifications as read when they visit the dashboard
+    from .models import Notification
+    Notification.objects.filter(
+        user=request.user, 
+        link__contains='taqriz-paneli', 
+        is_read=False
+    ).update(is_read=True)
+
     reviews = Review.objects.filter(reviewer=request.user).select_related('article')
     pending_reviews = reviews.filter(decision=Review.Decision.PENDING)
     completed_reviews = reviews.exclude(decision=Review.Decision.PENDING)
