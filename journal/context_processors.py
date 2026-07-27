@@ -19,7 +19,7 @@ def site_settings(request):
 
 def unread_notifications(request):
     """Expose unread notifications count to authenticated users."""
-    if request.user.is_authenticated:
+    if hasattr(request, 'user') and request.user.is_authenticated:
         # Import inside to avoid circular imports during startup
         from .models import Notification
         count = Notification.objects.filter(user=request.user, is_read=False).count()

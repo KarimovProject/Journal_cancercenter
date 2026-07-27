@@ -52,7 +52,7 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name_en or self.name_uz)
+            self.slug = slugify(self.name_en or self.name_uz) or f"category-{hash(self.name_uz) % 100000}"
         super().save(*args, **kwargs)
 
     @property
@@ -138,7 +138,9 @@ class Keyword(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(self.name)[:140]
+            if not self.slug or not self.slug.replace('-', '').isalnum():
+                self.slug = f"keyword-{hash(self.name) % 100000}"
         super().save(*args, **kwargs)
 
 
@@ -628,7 +630,7 @@ class ScientificDepartment(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name_en or self.name_uz)
+            self.slug = slugify(self.name_en or self.name_uz) or f"dept-{hash(self.name_uz) % 100000}"
         super().save(*args, **kwargs)
 
     @property

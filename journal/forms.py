@@ -1,6 +1,7 @@
 import bleach
 import re
 from django import forms
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
@@ -224,9 +225,10 @@ class ArticleSubmissionForm(forms.ModelForm):
         for line in co_authors_text.split('\n'):
             name = line.strip()
             if name:
+                safe_slug = slugify(name)[:280] or f'author-{hash(name) % 100000}'
                 co_author, _created = Author.objects.get_or_create(
                     full_name=name,
-                    defaults={'slug': name.lower().replace(' ', '-')[:280]},
+                    defaults={'slug': safe_slug},
                 )
                 article.authors.add(co_author)
 
