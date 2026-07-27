@@ -596,6 +596,15 @@ def review_article(request, pk):
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
             form.save()
+            
+            # Mark reviewer's notifications related to reviewer dashboard as read
+            from .models import Notification
+            Notification.objects.filter(
+                user=request.user,
+                link__contains='taqriz-paneli',
+                is_read=False
+            ).update(is_read=True)
+
             messages.success(request, _('Taqriz muvaffaqiyatli saqlandi!'))
             return redirect('journal:reviewer_dashboard')
     else:
