@@ -44,14 +44,14 @@ def send_article_status_email(sender, instance, created, **kwargs):
             link=url if 'url' in locals() else ''
         )
         if author.email:
-        try:
-            send_email_task.delay(
-                subject,
-                message,
-                [author.email]
-            )
-        except Exception as e:
-            logger.error(f"Failed to send email to {author.email}: {e}")
+            try:
+                send_email_task.delay(
+                    subject,
+                    message,
+                    [author.email]
+                )
+            except Exception as e:
+                logger.error(f"Failed to send email to {author.email}: {e}")
 
 @receiver(post_save, sender=Review)
 def send_review_emails(sender, instance, created, **kwargs):
@@ -70,14 +70,14 @@ def send_review_emails(sender, instance, created, **kwargs):
                 link=url
             )
             if instance.reviewer.email:
-            try:
-                send_email_task.delay(
-                    subject,
-                    message,
-                    [instance.reviewer.email]
-                )
-            except Exception as e:
-                logger.error(f"Failed to send assignment email: {e}")
+                try:
+                    send_email_task.delay(
+                        subject,
+                        message,
+                        [instance.reviewer.email]
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to send assignment email: {e}")
                 
     elif instance.decision != Review.Decision.PENDING:
         # Taqrizchi xulosasini saqlaganda muharrirga xat yuborish
