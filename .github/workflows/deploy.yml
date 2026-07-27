@@ -29,4 +29,7 @@ jobs:
           
       - name: Restart Deployment
         run: |
+          cd /home/satosylv/Journal_cancercenter
+          sudo k3s kubectl apply -f k8s.yaml
           sudo k3s kubectl rollout restart deployment/oncoscience-web
+          sudo k3s kubectl rollout restart deployment/oncoscience-celery || true
