@@ -62,15 +62,29 @@
                 </div>
                 <!-- End Notification Bell -->
                 <a class="btn btn-sm" href="{% url 'journal:submit_article' %}">{% trans "Maqola yuborish" %}</a>
-                <a class="btn btn-sm btn-outline" href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a>
-                {% if user.assigned_reviews.exists %}
-                    <a class="btn btn-sm btn-outline" href="{% url 'journal:reviewer_dashboard' %}">{% trans "Taqrizchi Paneli" %}</a>
-                {% endif %}
-                <a class="btn btn-sm btn-outline" href="{% url 'journal:edit_profile' %}">{% trans "Profil" %}</a>
-                <form action="{% url 'journal:logout' %}" method="post" class="inline-form">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-outline">{% trans "Chiqish" %}</button>
-                </form>
+                <!-- User Profile Dropdown -->
+                <div class="nav-dropdown" style="position: relative; display: inline-block;">
+                    <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none; padding: 4px 8px;">
+                        &#128100;
+                    </a>
+                    <div class="nav-drop-menu" style="right: 0; left: auto; min-width: 200px; z-index: 1000; text-align: left;">
+                        <div style="padding: 10px; font-weight: bold; border-bottom: 1px solid var(--line); margin-bottom: 4px;">
+                            {{ user.get_full_name|default:user.username }}
+                        </div>
+                        <a href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a>
+                        {% if user.assigned_reviews.exists %}
+                        <a href="{% url 'journal:reviewer_dashboard' %}">{% trans "Taqrizchi Paneli" %}</a>
+                        {% endif %}
+                        <a href="{% url 'journal:edit_profile' %}">{% trans "Sozlamalar (Profil)" %}</a>
+                        <form action="{% url 'journal:logout' %}" method="post" style="margin: 0; padding: 0;">
+                            {% csrf_token %}
+                            <button type="submit" style="width: 100%; text-align: left; padding: 9px 12px; background: none; border: none; color: #e74c3c; font-size: 0.88rem; font-weight: 500; font-family: var(--sans); cursor: pointer; border-radius: 8px;" onmouseover="this.style.backgroundColor='var(--bg-soft)'" onmouseout="this.style.backgroundColor='transparent'">
+                                {% trans "Chiqish" %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- End User Dropdown -->
             {% else %}
                 <a class="btn btn-sm" href="{% url 'journal:login' %}?next={{ request.path }}">{% trans "Maqola yuborish" %}</a>
                 <a class="btn btn-sm btn-outline" href="{% url 'journal:register' %}">{% trans "Ro'yxatdan o'tish" %}</a>
