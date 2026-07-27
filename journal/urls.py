@@ -28,7 +28,7 @@ urlpatterns = [
     path('toplamlar/<str:slug>/', views.collection_detail, name='collection_detail'),
     path('obuna/', views.newsletter_subscribe, name='newsletter_subscribe'),
     path('obuna/tasdiqlash/<str:token>/', views.newsletter_confirm, name='newsletter_confirm'),
-    path('sahifa/<slug:key>/', views.static_page, name='static_page'),
+    path('sahifa/<str:key>/', views.static_page, name='static_page'),
     # Auth
     path('royxatdan-otish/', views.register_view, name='register'),
     path('kirish/', views.login_view, name='login'),

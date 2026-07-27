@@ -63,9 +63,10 @@ def _rate_limited(request, key_prefix, limit=5, window=3600):
 
 def _published_articles():
     return (
-        Article.objects.filter(status=PUBLISHED)
+        Article.objects.filter(status=Article.Status.PUBLISHED)
         .select_related('category', 'issue')
         .prefetch_related('authors')
+        .defer('full_text_uz', 'full_text_ru', 'full_text_en')
     )
 
 

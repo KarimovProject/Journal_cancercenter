@@ -18,6 +18,7 @@ class LatestArticlesFeed(Feed):
         return (
             Article.objects.filter(status=Article.Status.PUBLISHED)
             .prefetch_related('authors')
+            .defer('full_text_uz', 'full_text_ru', 'full_text_en')
             .order_by('-publication_date', '-created_at')[:20]
         )
 
