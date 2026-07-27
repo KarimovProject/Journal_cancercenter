@@ -573,6 +573,21 @@ def edit_profile(request):
 
 
 # ---------------------------------------------------------------------------
+# Notifications
+# ---------------------------------------------------------------------------
+
+@login_required(login_url='/ilm-fan/kirish/')
+def read_notification(request, notif_id):
+    from .models import Notification
+    notif = get_object_or_404(Notification, id=notif_id, user=request.user)
+    notif.is_read = True
+    notif.save(update_fields=['is_read'])
+    
+    if notif.link:
+        return redirect(notif.link)
+    return redirect('journal:home')
+
+# ---------------------------------------------------------------------------
 # Peer Review
 # ---------------------------------------------------------------------------
 
