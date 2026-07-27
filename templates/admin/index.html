@@ -4,39 +4,115 @@
 {% block extrastyle %}
 {{ block.super }}
 <style>
+    .dashboard-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .summary-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        text-align: center;
+        border-bottom: 4px solid var(--primary, #417690);
+    }
+    .summary-card h3 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    .summary-card .value {
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--primary, #417690);
+        margin: 0;
+    }
     .dashboard-charts {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
         gap: 20px;
         margin-bottom: 30px;
     }
     .chart-container {
-        flex: 1 1 400px;
-        max-width: 600px;
-        max-height: 400px;
         background: #fff;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         position: relative;
     }
+    .chart-container h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 16px;
+        color: #333;
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 10px;
+    }
+    .chart-wrapper {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    .chart-wrapper-doughnut {
+        position: relative;
+        height: 300px;
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
+    }
+    body.dark .summary-card,
     body.dark .chart-container {
         background: var(--bg-soft, #1e1e1e);
         box-shadow: none;
         border: 1px solid var(--line, #333);
     }
+    body.dark .summary-card {
+        border-bottom-color: var(--primary, #417690);
+    }
+    body.dark .summary-card h3,
+    body.dark .chart-container h2 {
+        color: #ccc;
+        border-bottom-color: var(--line, #333);
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+<div class="dashboard-summary" id="dashboardSummary" style="display: none;">
+    <div class="summary-card">
+        <h3>{% trans "Jami Maqolalar" %}</h3>
+        <p class="value" id="valTotalArticles">0</p>
+    </div>
+    <div class="summary-card">
+        <h3>{% trans "Jami Mualliflar" %}</h3>
+        <p class="value" id="valTotalAuthors">0</p>
+    </div>
+    <div class="summary-card">
+        <h3>{% trans "Kutilayotgan Taqrizlar" %}</h3>
+        <p class="value" id="valPendingReviews">0</p>
+    </div>
+    <div class="summary-card">
+        <h3>{% trans "Jami Ko'rishlar" %}</h3>
+        <p class="value" id="valTotalViews">0</p>
+    </div>
+</div>
+
 <div class="dashboard-charts">
     <div class="chart-container">
         <h2>{% trans "Maqolalar oylik o'sishi" %}</h2>
-        <canvas id="monthlyChart"></canvas>
+        <div class="chart-wrapper">
+            <canvas id="monthlyChart"></canvas>
+        </div>
     </div>
     <div class="chart-container">
         <h2>{% trans "Maqolalar holati" %}</h2>
-        <canvas id="statusChart"></canvas>
+        <div class="chart-wrapper-doughnut">
+            <canvas id="statusChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -48,6 +124,16 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('{% url "journal:admin_stats_api" %}')
         .then(response => response.json())
         .then(data => {
+            // Update summary cards
+            if (data.summary) {
+                document.getElementById('dashboardSummary').style.display = 'grid';
+                document.getElementById('valTotalArticles').innerText = data.summary.total_articles;
+                document.getElementById('valTotalAuthors').innerText = data.summary.total_authors;
+                document.getElementById('valPendingReviews').innerText = data.summary.pending_reviews;
+                document.getElementById('valTotalViews').innerText = data.summary.total_views;
+            }
+
+            // Monthly Chart
             const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
             new Chart(ctxMonthly, {
                 type: 'bar',
@@ -56,17 +142,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasets: [{
                         label: "{% trans 'Yangi maqolalar' %}",
                         data: data.months.data,
-                        backgroundColor: '#0e6e63',
+                        backgroundColor: '#417690',
                         borderRadius: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    plugins: { legend: { display: false } }
                 }
             });
 
+            // Status Chart
             const ctxStatus = document.getElementById('statusChart').getContext('2d');
             const statusLabels = Object.keys(data.statuses);
             const statusData = Object.values(data.statuses);
@@ -76,12 +164,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     labels: statusLabels,
                     datasets: [{
                         data: statusData,
-                        backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c', '#9b59b6']
+                        backgroundColor: ['#417690', '#79aec8', '#999', '#f5dd5d', '#e74c3c'],
+                        borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    cutout: '70%'
                 }
             });
         })

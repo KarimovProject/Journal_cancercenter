@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.db import transaction
-from django.db.models import F, Q
+from django.db.models import F, Q, Sum
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -646,6 +646,12 @@ from django.db.models.functions import TruncMonth
 
 @staff_member_required
 def admin_stats_api(request):
+    # Summary statistics
+    total_articles = Article.objects.count()
+    total_authors = Author.objects.count()
+    pending_reviews = Review.objects.filter(decision=Review.Decision.PENDING).count()
+    total_views = Article.objects.aggregate(total=Sum('views_count'))['total'] or 0
+
     # Statuses
     status_counts = Article.objects.values('status').annotate(count=Count('id'))
     status_data = {item['status']: item['count'] for item in status_counts}
@@ -656,6 +662,12 @@ def admin_stats_api(request):
     months_data = [m['count'] for m in monthly]
     
     return JsonResponse({
+        'summary': {
+            'total_articles': total_articles,
+            'total_authors': total_authors,
+            'pending_reviews': pending_reviews,
+            'total_views': total_views,
+        },
         'statuses': status_data,
         'months': {
             'labels': months_labels,
