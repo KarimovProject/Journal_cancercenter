@@ -443,8 +443,8 @@ body.dark .footer {
         body.nav-open .header-actions{display:flex;order:4;flex-basis:100%;flex-wrap:wrap;padding-top:14px;margin-top:4px;border-top:1px solid var(--line)}
         .main-nav{flex-direction:column;align-items:stretch}
         .main-nav>a{padding:12px 4px;border-bottom:1px solid var(--line)}
-        .main-nav>a::after,.nav-drop-toggle::after{display:none}
-        .nav-drop-menu{position:static;box-shadow:none;border:0;padding:0 0 0 12px;display:block}
+        .main-nav>a::after,.main-nav .nav-drop-toggle::after{display:none}
+        .main-nav .nav-drop-menu{position:static;box-shadow:none;border:0;padding:0 0 0 12px;display:block}
         .header-top{flex-wrap:wrap}
         .header-search{order:3;max-width:none;flex-basis:100%;margin-top:4px}
         body.nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
