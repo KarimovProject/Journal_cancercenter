@@ -43,7 +43,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/api/admin-stats/')
+    fetch('{% url "journal:admin_stats_api" %}')
         .then(response => response.json())
         .then(data => {
             const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
