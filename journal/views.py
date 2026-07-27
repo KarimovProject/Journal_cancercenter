@@ -620,3 +620,27 @@ def custom_404(request, exception=None):
 
 def custom_500(request):
     return render(request, 'journal/500.html', status=500)
+
+from django.http import JsonResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+
+@staff_member_required
+def admin_stats_api(request):
+    # Statuses
+    status_counts = Article.objects.values('status').annotate(count=Count('id'))
+    status_data = {item['status']: item['count'] for item in status_counts}
+    
+    # Monthly submissions (last 6 months or all)
+    monthly = Article.objects.annotate(month=TruncMonth('created_at')).values('month').annotate(count=Count('id')).order_by('month')
+    months_labels = [m['month'].strftime('%b %Y') if m['month'] else 'Unknown' for m in monthly]
+    months_data = [m['count'] for m in monthly]
+    
+    return JsonResponse({
+        'statuses': status_data,
+        'months': {
+            'labels': months_labels,
+            'data': months_data
+        }
+    })

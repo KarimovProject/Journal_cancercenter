@@ -22,6 +22,31 @@
         --serif:'Outfit',Georgia,'Times New Roman',serif;
     }
 
+
+body.dark {
+    --brand: #24a899;
+    --brand-dark: #168a7d;
+    --brand-light: #163531;
+    --accent: #e59055;
+    --ink: #f0f4f3;
+    --ink-soft: #c1ccca;
+    --muted: #8c9e9b;
+    --line: #263633;
+    --bg: #0d1514;
+    --bg-soft: #131d1b;
+    --shadow: 0 2px 4px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.6);
+}
+
+body.dark img {
+    filter: brightness(0.9);
+}
+
+body.dark .site-header,
+body.dark .footer {
+    border-color: var(--line);
+}
+
     /* ============================================================
        BASE
        ============================================================ */

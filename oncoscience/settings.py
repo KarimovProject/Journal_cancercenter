@@ -115,6 +115,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
                 'journal.context_processors.site_settings',
+                'journal.context_processors.unread_notifications',
             ],
         },
     },

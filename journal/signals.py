@@ -6,7 +6,7 @@ from django.urls import reverse
 from .tasks import send_email_task, watermark_pdf_task
 from django.utils.translation import gettext_lazy as _
 
-from .models import Article, Review
+from .models import Article, Review, Notification
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +34,16 @@ def send_article_status_email(sender, instance, created, **kwargs):
     else:
         return
 
+
     author = instance.submitted_by
-    if author and author.email:
+    if author:
+        # Create In-App Notification
+        Notification.objects.create(
+            user=author,
+            message=subject,
+            link=url if 'url' in locals() else ''
+        )
+        if author.email:
         try:
             send_email_task.delay(
                 subject,
@@ -54,7 +62,14 @@ def send_review_emails(sender, instance, created, **kwargs):
         url = f"{site_domain}{reverse('journal:reviewer_dashboard')}"
         message = f"Hurmatli {instance.reviewer.get_full_name() or instance.reviewer.username},\n\nSizga '{instance.article.title_uz}' nomli maqola taqriz uchun biriktirildi.\nIltimos, saytga kirib 'Taqrizchi Paneli' orqali maqola bilan tanishing va o'z xulosangizni yuboring.\n\nHavola: {url}"
         
-        if instance.reviewer.email:
+
+        if instance.reviewer:
+            Notification.objects.create(
+                user=instance.reviewer,
+                message=subject,
+                link=url
+            )
+            if instance.reviewer.email:
             try:
                 send_email_task.delay(
                     subject,

@@ -1,0 +1,87 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .dashboard-charts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .chart-container {
+        flex: 1 1 400px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    body.dark .chart-container {
+        background: var(--bg-soft, #1e1e1e);
+        box-shadow: none;
+        border: 1px solid var(--line, #333);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-charts">
+    <div class="chart-container">
+        <h2>{% trans "Maqolalar oylik o'sishi" %}</h2>
+        <canvas id="monthlyChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <h2>{% trans "Maqolalar holati" %}</h2>
+        <canvas id="statusChart"></canvas>
+    </div>
+</div>
+
+{{ block.super }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/admin-stats/')
+        .then(response => response.json())
+        .then(data => {
+            const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
+            new Chart(ctxMonthly, {
+                type: 'bar',
+                data: {
+                    labels: data.months.labels,
+                    datasets: [{
+                        label: "{% trans 'Yangi maqolalar' %}",
+                        data: data.months.data,
+                        backgroundColor: '#0e6e63',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            const statusLabels = Object.keys(data.statuses);
+            const statusData = Object.values(data.statuses);
+            new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusData,
+                        backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c', '#9b59b6']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching admin stats:', error));
+});
+</script>
+{% endblock %}

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -927,3 +928,19 @@ class JournalInfo(models.Model):
     @property
     def indexed_list(self):
         return [line.strip() for line in self.indexed_in.splitlines() if line.strip()]
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications', verbose_name=_('Foydalanuvchi'))
+    message = models.TextField(_('Xabar matni'))
+    link = models.CharField(_('Havola'), max_length=255, blank=True)
+    is_read = models.BooleanField(_('Oqilgan'), default=False)
+    created_at = models.DateTimeField(_('Yaratilgan vaqt'), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Bildirishnoma')
+        verbose_name_plural = _('Bildirishnomalar')
+        ordering = ['-created_at']
+
+    def __str__(self):
+            return f'{self.user.username} - {self.created_at.strftime("%Y-%m-%d")}'

@@ -6,6 +6,7 @@ from . import views
 app_name = 'journal'
 
 urlpatterns = [
+    path('api/admin-stats/', views.admin_stats_api, name='admin_stats_api'),
     path('', views.home, name='home'),
     path('maqolalar/', views.article_list, name='article_list'),
     path('maqolalar/<slug:slug>/', views.article_detail, name='article_detail'),

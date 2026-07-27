@@ -38,6 +38,10 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="filter-group">
+                <label>{% trans "Muallif" %}</label>
+                <input type="text" name="author" value="{{ request.GET.author }}" placeholder="{% trans 'Muallif FISH...' %}">
+            </div>
             <button type="submit" class="btn" style="width:100%;">{% trans "Filtrlash" %}</button>
             {% if querystring %}<a href="{% url 'journal:article_list' %}" class="btn btn-outline btn-sm" style="width:100%; margin-top:8px; justify-content:center;">{% trans "Tozalash" %}</a>{% endif %}
         </form>

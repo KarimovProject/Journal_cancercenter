@@ -38,6 +38,29 @@
 
         <div class="header-actions">
             {% if user.is_authenticated %}
+                <!-- Notification Bell -->
+                <div class="nav-dropdown" style="position: relative; margin-right: 15px; display: inline-block;">
+                    <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none;">
+                        &#128276;
+                        {% if unread_notifications_count > 0 %}
+                            <span style="position: absolute; top: -5px; right: -10px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold;">
+                                {{ unread_notifications_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+                    <div class="nav-drop-menu" style="right: -50px; left: auto; min-width: 250px; max-height: 400px; overflow-y: auto; z-index: 1000; text-align: left;">
+                        <div style="padding: 10px; font-weight: bold; border-bottom: 1px solid var(--line);">{% trans 'Bildirishnomalar' %}</div>
+                        {% for notif in user.notifications.all|slice:":5" %}
+                            <a href="{{ notif.link }}" style="padding: 10px; border-bottom: 1px solid var(--line); display: block; {% if not notif.is_read %}background: var(--bg-soft); font-weight: bold;{% endif %}">
+                                <div style="font-size: 0.85rem; color: var(--ink); line-height: 1.2;">{{ notif.message }}</div>
+                                <div style="font-size: 0.75rem; color: var(--muted); margin-top: 5px;">{{ notif.created_at|date:"d.m.Y H:i" }}</div>
+                            </a>
+                        {% empty %}
+                            <div style="padding: 15px; text-align: center; color: var(--muted); font-size: 0.9rem;">{% trans 'Yangi xabarlar yo`q' %}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- End Notification Bell -->
                 <a class="btn btn-sm" href="{% url 'journal:submit_article' %}">{% trans "Maqola yuborish" %}</a>
                 <a class="btn btn-sm btn-outline" href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a>
                 {% if user.assigned_reviews.exists %}
