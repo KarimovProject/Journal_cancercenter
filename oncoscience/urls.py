@@ -57,5 +57,11 @@ handler404 = 'journal.views.custom_404'
 handler500 = 'journal.views.custom_500'
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+
+# Serve media files in production as well, since there is no Nginx serving them
+from django.urls import re_path
+from django.views.static import serve
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
