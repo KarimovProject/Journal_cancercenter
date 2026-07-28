@@ -335,21 +335,64 @@ document.querySelectorAll('.btn-add-row').forEach(function (btn) {
 });
 
 document.querySelector('.submit-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+
   var overlay = document.getElementById('loading-overlay');
   var progressText = document.getElementById('upload-progress');
   overlay.style.display = 'flex';
-  if (progressText) {
-    progressText.innerText = 'Yuklanmoqda, iltimos kuting...';
-  }
   
   var submitBtn = this.querySelector('button[type="submit"]');
   if (submitBtn) {
+    submitBtn.disabled = true;
     submitBtn.innerText = '{% trans "Yuklanmoqda..." %}';
-    // Disable button after a short delay to allow form submission to proceed
-    setTimeout(function() {
-      submitBtn.disabled = true;
-    }, 50);
   }
+
+  var formData = new FormData(this);
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', window.location.href, true);
+
+  xhr.upload.onprogress = function(event) {
+    if (event.lengthComputable) {
+      var percentComplete = Math.round((event.loaded / event.total) * 100);
+      if (percentComplete >= 100) {
+        progressText.innerText = 'Serverda saqlanmoqda, kuting...';
+      } else {
+        progressText.innerText = percentComplete + '%';
+      }
+    }
+  };
+
+  xhr.onload = function() {
+    if (xhr.status >= 200 && xhr.status < 400) {
+      if (xhr.responseURL && xhr.responseURL !== window.location.href) {
+        // Muvaffaqiyatli saqlangandan so'ng boshqa sahifaga yo'naltirilsa:
+        window.location.href = xhr.responseURL;
+      } else {
+        // Xatoliklar bilan formani qayta chizish uchun:
+        document.open();
+        document.write(xhr.responseText);
+        document.close();
+      }
+    } else {
+      alert("Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring.");
+      overlay.style.display = 'none';
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = '{% trans "Maqolani topshirish" %}';
+      }
+    }
+  };
+
+  xhr.onerror = function() {
+    alert("Tarmoq xatoligi yuz berdi. Internet aloqasini tekshiring.");
+    overlay.style.display = 'none';
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerText = '{% trans "Maqolani topshirish" %}';
+    }
+  };
+
+  xhr.send(formData);
 });
 </script>
 {% endblock %}
