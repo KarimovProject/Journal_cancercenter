@@ -340,10 +340,17 @@ document.querySelector('.submit-form').addEventListener('submit', function (e) {
   var overlay = document.getElementById('loading-overlay');
   var progressText = document.getElementById('upload-progress');
   
-  // Ekranni to'liq qoplashi va "position: fixed" buzilmasligi uchun eng asosiy elementga o'tkazamiz
   if (overlay.parentNode !== document.body) {
     document.body.appendChild(overlay);
   }
+  
+  // Brauzer CSS qoidalarini (transform, filter) chetlab o'tish uchun JS orqali aniq joylashuv beramiz
+  overlay.style.position = 'absolute';
+  overlay.style.top = window.scrollY + 'px';
+  overlay.style.height = window.innerHeight + 'px';
+  
+  // Oyna ochiq paytida sahifani past-tepaga surishni to'xtatamiz
+  document.body.style.overflow = 'hidden';
   
   overlay.style.display = 'flex';
   
@@ -382,11 +389,13 @@ document.querySelector('.submit-form').addEventListener('submit', function (e) {
         window.location.href = xhr.responseURL;
       } else {
         // Xatoliklar bilan formani qayta chizish uchun:
+        document.body.style.overflow = '';
         document.open();
         document.write(xhr.responseText);
         document.close();
       }
     } else {
+      document.body.style.overflow = '';
       alert("Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring.");
       overlay.style.display = 'none';
       if (submitBtn) {
@@ -397,6 +406,7 @@ document.querySelector('.submit-form').addEventListener('submit', function (e) {
   };
 
   xhr.onerror = function() {
+    document.body.style.overflow = '';
     alert("Tarmoq xatoligi yuz berdi. Internet aloqasini tekshiring.");
     overlay.style.display = 'none';
     if (submitBtn) {
