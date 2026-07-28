@@ -339,12 +339,25 @@ document.querySelector('.submit-form').addEventListener('submit', function (e) {
 
   var overlay = document.getElementById('loading-overlay');
   var progressText = document.getElementById('upload-progress');
+  
+  // Ekranni to'liq qoplashi va "position: fixed" buzilmasligi uchun eng asosiy elementga o'tkazamiz
+  if (overlay.parentNode !== document.body) {
+    document.body.appendChild(overlay);
+  }
+  
   overlay.style.display = 'flex';
+  
+  if (progressText) {
+    progressText.innerText = 'Yuklanmoqda, iltimos kuting...';
+  }
   
   var submitBtn = this.querySelector('button[type="submit"]');
   if (submitBtn) {
-    submitBtn.disabled = true;
     submitBtn.innerText = '{% trans "Yuklanmoqda..." %}';
+    // Disable button after a short delay to allow form submission to proceed
+    setTimeout(function() {
+      submitBtn.disabled = true;
+    }, 50);
   }
 
   var formData = new FormData(this);
