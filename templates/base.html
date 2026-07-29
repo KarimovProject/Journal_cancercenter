@@ -19,102 +19,114 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
 </head>
 <body>
 <header class="site-header">
-    <div class="header-top-row">
-        <div class="container d-flex align-center space-between">
-            <a href="{% url 'journal:home' %}" class="brand">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" class="brand-logo">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                </svg>
-                <div class="brand-text">
-                    <span class="brand-mark">Central Asian</span>
-                    <span class="brand-mark alt">Cancer Sciences</span>
+    <div class="container header-top">
+        <a href="{% url 'journal:home' %}" class="brand">
+            <span class="brand-mark">Central Asian</span> <span class="brand-mark alt">Cancer Sciences</span>
+            <span class="brand-sub">{% trans "Ilmiy-amaliy jurnal" %}</span>
+        </a>
+
+        <form class="header-search" action="{% url 'journal:article_list' %}" method="get" role="search">
+            <input type="text" name="q" value="{{ request.GET.q }}"
+                   placeholder="{% trans 'Kalit soʻz yoki muallif boʻyicha qidirish...' %}" aria-label="{% trans 'Qidiruv' %}">
+            <button type="submit" aria-label="{% trans 'Qidirish' %}">&#128269;</button>
+        </form>
+
+        <div class="header-actions">
+            {% if user.is_authenticated %}
+                <!-- Notification Bell -->
+                <div class="nav-dropdown" style="position: relative; margin-right: 15px; display: inline-block;" tabindex="0">
+                    <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none;">
+                        &#128276;
+                        {% if unread_notifications_count > 0 %}
+                            <span style="position: absolute; top: -5px; right: -10px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold;">
+                                {{ unread_notifications_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+                    <div class="nav-drop-menu" style="right: -50px; left: auto; min-width: 250px; max-height: 400px; overflow-y: auto; z-index: 1000; text-align: left;">
+                        <div style="padding: 10px; font-weight: bold; border-bottom: 1px solid var(--line);">{% trans 'Bildirishnomalar' %}</div>
+                        {% for notif in unread_notifications_list %}
+                            <a href="{% url 'journal:read_notification' notif.id %}" style="padding: 10px; border-bottom: 1px solid var(--line); display: block; background: var(--bg-soft); font-weight: bold;">
+                                <div style="font-size: 0.85rem; color: var(--ink); line-height: 1.2;">{{ notif.message }}</div>
+                                <div style="font-size: 0.75rem; color: var(--muted); margin-top: 5px;">{{ notif.created_at|date:"d.m.Y H:i" }}</div>
+                            </a>
+                        {% empty %}
+                            <div style="padding: 15px; text-align: center; color: var(--muted); font-size: 0.9rem;">{% trans 'Yangi xabarlar yo`q' %}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-            </a>
-            
-            <div class="header-actions">
-                <form action="{% url 'set_language' %}" method="post" class="lang-switch-inline">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.path }}">
-                    <div class="nav-dropdown">
-                        <button type="button" class="lang-drop-toggle">&#127103; English &#9662;</button>
-                        <div class="nav-drop-menu">
-                            {% for code, name in LANGUAGES %}
-                                <button type="submit" name="language" value="{{ code }}" class="lang-btn">{{ name }}</button>
-                            {% endfor %}
+                <!-- End Notification Bell -->
+                <a class="btn btn-sm" href="{% url 'journal:submit_article' %}">{% trans "Maqola yuborish" %}</a>
+                <!-- User Profile Dropdown -->
+                <div class="nav-dropdown" style="position: relative; display: inline-block;" tabindex="0">
+                    <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none; padding: 4px 8px;">
+                        &#128100;
+                    </a>
+                    <div class="nav-drop-menu" style="right: 0; left: auto; min-width: 200px; z-index: 1000; text-align: left;">
+                        <div style="padding: 10px; font-weight: bold; border-bottom: 1px solid var(--line); margin-bottom: 4px;">
+                            {{ user.get_full_name|default:user.username }}
                         </div>
-                    </div>
-                </form>
-                
-                <span class="divider">|</span>
-                
-                {% if user.is_authenticated %}
-                    <a href="{% url 'journal:edit_profile' %}" class="auth-link">{{ user.username }}</a>
-                    <form action="{% url 'journal:logout' %}" method="post" style="margin: 0; padding: 0; display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="auth-link logout-btn">{% trans "Chiqish" %}</button>
-                    </form>
-                {% else %}
-                    <a href="{% url 'journal:register' %}" class="auth-link">Register</a>
-                    <a href="{% url 'journal:login' %}" class="auth-link">Login</a>
-                {% endif %}
-                
-                <a href="{% url 'journal:submit_article' %}" class="btn btn-submit">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                    Submit Manuscript
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="header-bottom-row">
-        <div class="container d-flex align-center space-between">
-            <nav class="main-nav">
-                <a href="{% url 'journal:home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a>
-                <div class="nav-dropdown">
-                    <a href="#" class="nav-drop-toggle">About the Journal &#9662;</a>
-                    <div class="nav-drop-menu">
-                        <a href="{% url 'journal:static_page' 'about' %}">About</a>
-                        <a href="{% url 'journal:static_page' 'aims' %}">Aims & Scope</a>
+                        <a href="{% url 'journal:my_articles' %}">{% trans "Mening maqolalarim" %}</a>
+                        {% if user.assigned_reviews.exists %}
+                        <a href="{% url 'journal:reviewer_dashboard' %}">{% trans "Taqrizchi Paneli" %}</a>
+                        {% endif %}
+                        <a href="{% url 'journal:edit_profile' %}">{% trans "Sozlamalar (Profil)" %}</a>
+                        <form action="{% url 'journal:logout' %}" method="post" style="margin: 0; padding: 0;">
+                            {% csrf_token %}
+                            <button type="submit" style="width: 100%; text-align: left; padding: 9px 12px; background: none; border: none; color: #e74c3c; font-size: 0.88rem; font-weight: 500; font-family: var(--sans); cursor: pointer; border-radius: 8px;" onmouseover="this.style.backgroundColor='var(--bg-soft)'" onmouseout="this.style.backgroundColor='transparent'">
+                                {% trans "Chiqish" %}
+                            </button>
+                        </form>
                     </div>
                 </div>
-                <div class="nav-dropdown">
-                    <a href="{% url 'journal:article_list' %}" class="nav-drop-toggle">Articles &#9662;</a>
-                    <div class="nav-drop-menu">
-                        <a href="{% url 'journal:article_list' %}">Latest Articles</a>
-                        <a href="{% url 'journal:issue_list' %}">All Issues</a>
-                    </div>
-                </div>
-                <div class="nav-dropdown">
-                    <a href="{% url 'journal:for_authors' %}" class="nav-drop-toggle">For Authors &#9662;</a>
-                    <div class="nav-drop-menu">
-                        <a href="{% url 'journal:for_authors' %}">Author Guidelines</a>
-                        <a href="{% url 'journal:submit_article' %}">Submit Manuscript</a>
-                    </div>
-                </div>
-                <div class="nav-dropdown">
-                    <a href="#" class="nav-drop-toggle">For Reviewers &#9662;</a>
-                    <div class="nav-drop-menu">
-                        <a href="#">Reviewer Guidelines</a>
-                    </div>
-                </div>
-                <a href="{% url 'journal:editorial_board' %}">Editorial Board</a>
-                <a href="{% url 'journal:update_list' %}">News & Events</a>
-            </nav>
-            <form class="header-search-inline" action="{% url 'journal:article_list' %}" method="get">
-                <input type="text" name="q" placeholder="Search articles, keywords, authors..." value="{{ request.GET.q }}">
-                <button type="submit">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </button>
-            </form>
-            <button class="nav-toggle" aria-label="Menu" onclick="document.body.classList.toggle('nav-open')">
-                <span></span><span></span><span></span>
+                <!-- End User Dropdown -->
+            {% else %}
+                <a class="btn btn-sm" href="{% url 'journal:login' %}?next={{ request.path }}">{% trans "Maqola yuborish" %}</a>
+                <a class="btn btn-sm btn-outline" href="{% url 'journal:register' %}">{% trans "Ro'yxatdan o'tish" %}</a>
+            {% endif %}
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme">
+                <span id="theme-icon">&#9728;</span>
             </button>
+            <form action="{% url 'set_language' %}" method="post" class="lang-switch">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.path }}">
+                {% for code, name in LANGUAGES %}
+                    <button type="submit" name="language" value="{{ code }}"
+                            class="lang-btn {% if code == LANGUAGE_CODE %}active{% endif %}">{{ code|upper }}</button>
+                {% endfor %}
+            </form>
         </div>
+
+        <button class="nav-toggle" aria-label="Menu" onclick="document.body.classList.toggle('nav-open')">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <div class="header-nav-bar">
+        <nav class="container main-nav">
+            <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a>
+            <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a>
+            <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a>
+            <a href="{% url 'journal:collection_list' %}">{% trans "Toʻplamlar" %}</a>
+            <a href="{% url 'journal:editorial_board' %}">{% trans "Ilmiy kengash" %}</a>
+            <a href="{% url 'journal:department_list' %}">{% trans "Kafedralar" %}</a>
+            <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a>
+            <div class="nav-dropdown">
+                <a href="#" class="nav-drop-toggle">{% trans "Taʼlim" %} &#9662;</a>
+                <div class="nav-drop-menu">
+                    <a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a>
+                    <a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a>
+                    <a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a>
+                </div>
+            </div>
+            <a href="{% url 'journal:update_list' %}">{% trans "Yangiliklar" %}</a>
+            <a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a>
+        </nav>
     </div>
 </header>
 
@@ -132,78 +144,32 @@
 
 <footer class="site-footer">
     <div class="container footer-grid">
-        <div class="footer-col brand-col">
-            <a href="{% url 'journal:home' %}" class="brand" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                </svg>
-                <div class="brand-text">
-                    <span class="brand-mark" style="font-size: 1.1rem; color: #fff;">Central Asian</span>
-                    <span class="brand-mark alt" style="font-size: 0.9rem; color: #ccc;">Cancer Sciences</span>
-                </div>
-            </a>
-            <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 1.5rem; line-height: 1.5;">
-                An international, peer-reviewed, open access journal dedicated to advancing cancer research and improving oncology care across Central Asia and beyond.
-            </p>
-            <div class="social-icons" style="display: flex; gap: 12px;">
-                <a href="#" aria-label="Twitter"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
-                <a href="#" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
-                <a href="#" aria-label="Email"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a>
-            </div>
+        <div>
+            <h4>{{ SITE_NAME }}</h4>
+            <p>{% trans "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi." %}</p>
         </div>
-        
-        <div class="footer-col">
-            <h4>Journal</h4>
-            <a href="{% url 'journal:static_page' 'about' %}">About the Journal</a>
-            <a href="{% url 'journal:static_page' 'aims' %}">Aims & Scope</a>
-            <a href="{% url 'journal:editorial_board' %}">Editorial Board</a>
-            <a href="{% url 'journal:static_page' 'ethics' %}">Ethics & Policies</a>
-            <a href="{% url 'journal:static_page' 'contact' %}">Contact</a>
+        <div>
+            <h4>{% trans "Bo'limlar" %}</h4>
+            <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a>
+            <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a>
+            <a href="{% url 'journal:editorial_board' %}">{% trans "Ilmiy kengash" %}</a>
+            <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a>
         </div>
-        
-        <div class="footer-col">
-            <h4>For Authors</h4>
-            <a href="{% url 'journal:for_authors' %}">Author Guidelines</a>
-            <a href="{% url 'journal:submit_article' %}">Submit Manuscript</a>
-            <a href="#">Track Submission</a>
-            <a href="#">Article Processing Charge</a>
-            <a href="#">Data Policy</a>
+        <div>
+            <h4>{% trans "Ta'lim" %}</h4>
+            <a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a>
+            <a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a>
+            <a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a>
         </div>
-        
-        <div class="footer-col">
-            <div style="margin-bottom: 1.5rem;">
-                <h4>For Reviewers</h4>
-                <a href="#">Reviewer Guidelines</a>
-                <a href="#">Review Process</a>
-                <a href="#">Reviewer Benefits</a>
-                <a href="#">Register as Reviewer</a>
-            </div>
-            <div>
-                <h4>Resources</h4>
-                <a href="{% url 'journal:update_list' %}">News & Events</a>
-                <a href="#">FAQ</a>
-                <a href="#">Article Templates</a>
-            </div>
-        </div>
-        
-        <div class="footer-col newsletter-col">
-            <h4>Stay Updated</h4>
-            <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 1rem; line-height: 1.5;">Subscribe to our newsletter for the latest articles and updates.</p>
-            <form action="{% url 'journal:newsletter_subscribe' %}" method="post" style="display: flex; flex-direction: column; gap: 8px;">
-                {% csrf_token %}
-                <input type="email" name="email" placeholder="Enter your email" required style="padding: 10px; border-radius: 6px; border: 1px solid #333; background: #1a1a1a; color: #fff;">
-                <button type="submit" class="btn btn-primary" style="padding: 10px; border-radius: 6px;">Subscribe</button>
-            </form>
+        <div>
+            <h4>{% trans "Ma'lumot" %}</h4>
+            <a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a>
+            <a href="/rss/">{% trans "RSS lenta" %}</a>
+            <a href="https://cancercenter.uz" target="_blank" rel="noopener">cancercenter.uz</a>
         </div>
     </div>
-    
-    <div class="container footer-bottom" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 1.5rem; margin-top: 2rem; font-size: 0.85rem; color: #888;">
-        <span>&copy; {% now "Y" %} {{ SITE_NAME }}. All rights reserved.</span>
-        <div class="footer-legal" style="display: flex; gap: 16px;">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Use</a>
-            <a href="#">Accessibility</a>
-        </div>
+    <div class="container footer-bottom">
+        <span>&copy; {% now "Y" %} {{ SITE_NAME }}. {% trans "Barcha huquqlar himoyalangan." %}</span>
     </div>
 </footer>
 <script>
