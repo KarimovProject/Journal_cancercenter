@@ -84,6 +84,7 @@ def home(request):
             date_start__gte=timezone.now().date()
         ).order_by('date_start')[:3],
         'latest_issue': Issue.objects.first(),
+        'editorial_board': EditorialBoardMember.objects.all()[:4],
         'stats': {
             'articles': articles.count(),
             'authors': Author.objects.count(),

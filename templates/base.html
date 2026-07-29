@@ -37,6 +37,9 @@
             </a>
             
             <div class="header-actions">
+                <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Mavzuni almashtirish" style="background: transparent; border: none; color: #fff; cursor: pointer; font-size: 1.2rem; padding: 0 8px;">
+                    <span id="theme-icon">&#9728;</span>
+                </button>
                 <form action="{% url 'set_language' %}" method="post" class="lang-switch-inline">
                     {% csrf_token %}
                     <input name="next" type="hidden" value="{{ request.path }}">
