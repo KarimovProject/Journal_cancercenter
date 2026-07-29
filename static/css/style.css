@@ -679,3 +679,111 @@ body.dark .footer {
         @page{margin:2cm}
     }
     
+/* ============================================================
+   LIGHT MODE PREMIUM ENHANCEMENTS (OVERRIDE)
+   ============================================================ */
+   
+/* 1. Deep Teal Header for Light Mode */
+body:not(.dark) .site-header {
+    background: #0a504a; /* Deep medical teal */
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(10, 80, 74, 0.15);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: none;
+}
+body:not(.dark) .site-header .brand-mark,
+body:not(.dark) .site-header .brand-mark.alt,
+body:not(.dark) .site-header .brand-sub,
+body:not(.dark) .site-header .nav-drop-toggle,
+body:not(.dark) .site-header .header-search button {
+    color: #ffffff;
+}
+body:not(.dark) .header-nav-bar {
+    background: #0e6e63; /* slightly lighter teal for bottom bar */
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+body:not(.dark) .header-nav-bar a {
+    color: rgba(255,255,255,0.9);
+}
+body:not(.dark) .header-nav-bar a:hover {
+    color: #ffffff;
+    background: rgba(255,255,255,0.1);
+}
+body:not(.dark) .header-search input {
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+body:not(.dark) .header-search input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+body:not(.dark) .header-search input:focus {
+    background: #ffffff;
+    color: #000000;
+}
+body:not(.dark) .nav-drop-menu {
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+body:not(.dark) .nav-drop-menu a {
+    color: #333333;
+}
+body:not(.dark) .nav-drop-menu a:hover {
+    color: var(--brand);
+    background: var(--bg-soft);
+}
+
+/* 2. Premium Shadows and Hover Lift for Cards */
+body:not(.dark) .card,
+body:not(.dark) .metric,
+body:not(.dark) .collection-card,
+body:not(.dark) .person,
+body:not(.dark) .aside-box,
+body:not(.dark) .jinfo {
+    box-shadow: 0 4px 20px rgba(14, 110, 99, 0.06);
+    border: 1px solid rgba(14, 110, 99, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+body:not(.dark) .card:hover,
+body:not(.dark) .metric:hover,
+body:not(.dark) .collection-card:hover,
+body:not(.dark) .person:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(14, 110, 99, 0.12);
+}
+
+body:not(.dark) .article-row {
+    transition: background 0.2s, transform 0.2s;
+    border-radius: 8px;
+    padding: 16px;
+    margin: -16px;
+    margin-bottom: 16px;
+}
+body:not(.dark) .article-row:hover {
+    background: var(--bg-soft);
+    transform: translateX(4px);
+}
+
+/* 3. Vibrant Badges */
+body:not(.dark) .badge-oa {
+    background: #e6f6ec;
+    color: #198754;
+    border: 1px solid #c3e6cb;
+    box-shadow: 0 2px 4px rgba(25,135,84,0.1);
+}
+body:not(.dark) .badge-type {
+    background: #e7f1ff;
+    color: #0d6efd;
+    border: 1px solid #b6d4fe;
+}
+body:not(.dark) .doi-badge {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+body:not(.dark) .doi-badge .doi-label {
+    background: var(--brand);
+    color: #fff;
+}
