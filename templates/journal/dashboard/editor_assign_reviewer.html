@@ -1,0 +1,42 @@
+{% extends "journal/dashboard/base_dashboard.html" %}
+{% load i18n %}
+
+{% block title %}Assign Reviewer - {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Assign Reviewer{% endblock %}
+
+{% block dashboard_content %}
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'journal:editor_article_detail' article.id %}" style="text-decoration: none; color: #555; font-size: 0.9rem;">&larr; Back to Manuscript</a>
+</div>
+
+<div class="card-dash" style="max-width: 600px;">
+    <div class="card-dash-header">
+        <h4>Assign Reviewer for: {{ article.title|truncatechars:50 }}</h4>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label for="reviewer" style="display: block; font-weight: 500; color: #333; margin-bottom: 8px;">Select Reviewer</label>
+            <select name="reviewer" id="reviewer" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; font-family: inherit;">
+                <option value="">-- Select a user --</option>
+                {% for u in users %}
+                    <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.email }})</option>
+                {% endfor %}
+            </select>
+            <p style="font-size: 0.8rem; color: #777; margin-top: 5px;">Select a user to review this manuscript. They will be notified via email.</p>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label for="message" style="display: block; font-weight: 500; color: #333; margin-bottom: 8px;">Message to Reviewer (Optional)</label>
+            <textarea name="message" id="message" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; font-family: inherit; resize: vertical; box-sizing: border-box;" placeholder="Dear Reviewer, please review this manuscript focusing on..."></textarea>
+        </div>
+        
+        <div style="display: flex; gap: 15px;">
+            <button type="submit" class="btn-dash">Assign Reviewer</button>
+            <a href="{% url 'journal:editor_article_detail' article.id %}" class="btn-dash outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

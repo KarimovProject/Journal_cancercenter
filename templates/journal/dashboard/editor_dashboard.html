@@ -1,0 +1,73 @@
+{% extends "journal/dashboard/base_dashboard.html" %}
+{% load i18n %}
+
+{% block title %}Dashboard Overview - {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block dashboard_content %}
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px;">
+    <!-- Stat Cards -->
+    <div class="card-dash" style="margin-bottom: 0;">
+        <h4 style="margin: 0 0 10px 0; color: #777; font-size: 0.9rem; text-transform: uppercase;">New Submissions</h4>
+        <div style="font-size: 2rem; font-weight: 700; color: #333;">{{ stats.new_submissions }}</div>
+    </div>
+    <div class="card-dash" style="margin-bottom: 0;">
+        <h4 style="margin: 0 0 10px 0; color: #777; font-size: 0.9rem; text-transform: uppercase;">Under Review</h4>
+        <div style="font-size: 2rem; font-weight: 700; color: #f57c00;">{{ stats.under_review }}</div>
+    </div>
+    <div class="card-dash" style="margin-bottom: 0;">
+        <h4 style="margin: 0 0 10px 0; color: #777; font-size: 0.9rem; text-transform: uppercase;">Accepted</h4>
+        <div style="font-size: 2rem; font-weight: 700; color: #388e3c;">{{ stats.accepted }}</div>
+    </div>
+    <div class="card-dash" style="margin-bottom: 0;">
+        <h4 style="margin: 0 0 10px 0; color: #777; font-size: 0.9rem; text-transform: uppercase;">Rejected</h4>
+        <div style="font-size: 2rem; font-weight: 700; color: #d32f2f;">{{ stats.rejected }}</div>
+    </div>
+</div>
+
+<div class="card-dash">
+    <div class="card-dash-header">
+        <h4>Submission Queue</h4>
+        <div>
+            <input type="text" placeholder="Search manuscripts..." style="padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem; width: 250px;">
+        </div>
+    </div>
+    <table class="table-dash">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Manuscript Title</th>
+                <th>Author</th>
+                <th>Date Submitted</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>#{{ article.id }}</td>
+                <td>
+                    <a href="{% url 'journal:editor_article_detail' article.id %}" class="title-link">{{ article.title|truncatewords:8 }}</a>
+                    <div style="font-size: 0.8rem; color: #777; margin-top: 4px;">{{ article.category.name|default:"General" }}</div>
+                </td>
+                <td>{{ article.authors.first.full_name|default:"Unknown" }}</td>
+                <td>{{ article.created_at|date:"M d, Y" }}</td>
+                <td>
+                    <span class="badge-dash {% if article.status == 'SUBMITTED' %}submitted{% elif article.status == 'UNDER_REVIEW' %}under-review{% elif article.status == 'ACCEPTED' %}accepted{% elif article.status == 'REJECTED' %}rejected{% elif article.status == 'REVISION' %}revision{% endif %}">
+                        {{ article.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'journal:editor_article_detail' article.id %}" class="btn-dash sm outline">Review &rarr;</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 30px; color: #777;">No submissions in the queue.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

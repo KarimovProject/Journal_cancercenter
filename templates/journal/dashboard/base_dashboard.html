@@ -1,0 +1,110 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Editorial Dashboard - {{ SITE_NAME }}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Inter', sans-serif; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        /* Sidebar */
+        .sidebar { width: 260px; background-color: #0d2e4a; color: #fff; flex-shrink: 0; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h2 { margin: 0; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.5px; }
+        .sidebar-header p { margin: 5px 0 0 0; font-size: 0.8rem; color: #a9b7d0; }
+        .sidebar-nav { flex: 1; padding: 20px 0; }
+        .sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li { margin-bottom: 5px; }
+        .sidebar-nav a { display: flex; align-items: center; padding: 12px 20px; color: #cdd9ed; text-decoration: none; transition: 0.2s; font-size: 0.95rem; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background-color: rgba(255,255,255,0.1); color: #fff; border-left: 4px solid #4a90e2; }
+        .sidebar-nav a .icon { margin-right: 12px; font-size: 1.1rem; width: 20px; text-align: center; }
+        .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
+        .sidebar-footer a { color: #a9b7d0; text-decoration: none; }
+        .sidebar-footer a:hover { color: #fff; }
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .topbar { background-color: #fff; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .topbar-left h3 { margin: 0; font-size: 1.1rem; color: #333; font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 20px; }
+        .user-profile { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #555; }
+        .user-avatar { width: 32px; height: 32px; background-color: #4a90e2; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        .content-area { padding: 30px; flex: 1; overflow-y: auto; }
+        /* Common Dashboard Components */
+        .card-dash { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); padding: 20px; margin-bottom: 24px; }
+        .card-dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .card-dash-header h4 { margin: 0; font-size: 1.1rem; color: #333; }
+        .badge-dash { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-dash.submitted { background: #e3f2fd; color: #1976d2; }
+        .badge-dash.under-review { background: #fff3e0; color: #f57c00; }
+        .badge-dash.accepted { background: #e8f5e9; color: #388e3c; }
+        .badge-dash.rejected { background: #ffebee; color: #d32f2f; }
+        .badge-dash.revision { background: #f3e5f5; color: #7b1fa2; }
+        
+        .table-dash { width: 100%; border-collapse: collapse; }
+        .table-dash th, .table-dash td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .table-dash th { color: #777; font-weight: 500; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .table-dash tr:hover { background-color: #fcfcfc; }
+        .table-dash .title-link { color: #2c3e50; font-weight: 600; text-decoration: none; }
+        .table-dash .title-link:hover { color: #4a90e2; }
+        
+        .btn-dash { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #4a90e2; color: #fff; border: none; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; text-decoration: none; transition: 0.2s; }
+        .btn-dash:hover { background: #357abd; }
+        .btn-dash.outline { background: transparent; border: 1px solid #ddd; color: #555; }
+        .btn-dash.outline:hover { background: #f5f5f5; border-color: #ccc; }
+        .btn-dash.sm { padding: 4px 10px; font-size: 0.75rem; }
+        
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>CACS Journal</h2>
+                <p>Editorial Dashboard</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="{% url 'journal:editor_dashboard' %}" class="{% if request.resolver_match.url_name == 'editor_dashboard' %}active{% endif %}"><span class="icon">&#128200;</span> Overview</a></li>
+                    <li><a href="#"><span class="icon">&#128196;</span> Submissions</a></li>
+                    <li><a href="#"><span class="icon">&#128101;</span> Reviewers</a></li>
+                    <li><a href="#"><span class="icon">&#128218;</span> Issues</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="{% url 'journal:home' %}">&larr; Back to Public Site</a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h3>{% block page_title %}Dashboard{% endblock %}</h3>
+                </div>
+                <div class="topbar-right">
+                    <div class="user-profile">
+                        <span>{{ user.get_full_name|default:user.username }}</span>
+                        <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div style="padding: 15px; margin-bottom: 20px; border-radius: 4px; background: {% if message.tags == 'error' %}#ffebee; color: #d32f2f{% else %}#e8f5e9; color: #388e3c{% endif %};">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                {% block dashboard_content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

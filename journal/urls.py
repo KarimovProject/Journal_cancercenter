@@ -59,4 +59,10 @@ urlpatterns = [
     # Reviewer dashboard
     path('taqriz-paneli/', views.reviewer_dashboard, name='reviewer_dashboard'),
     path('taqriz-qilish/<int:pk>/', views.review_article, name='review_article'),
+    
+    # Editor Dashboard
+    path('dashboard/editor/', views.editor_dashboard, name='editor_dashboard'),
+    path('dashboard/editor/article/<int:pk>/', views.editor_article_detail, name='editor_article_detail'),
+    path('dashboard/editor/article/<int:pk>/assign/', views.editor_assign_reviewer, name='editor_assign_reviewer'),
+    path('dashboard/editor/article/<int:pk>/decision/', views.editor_make_decision, name='editor_make_decision'),
 ]

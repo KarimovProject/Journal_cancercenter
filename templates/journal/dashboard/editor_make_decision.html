@@ -1,0 +1,43 @@
+{% extends "journal/dashboard/base_dashboard.html" %}
+{% load i18n %}
+
+{% block title %}Make Decision - {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Editorial Decision{% endblock %}
+
+{% block dashboard_content %}
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'journal:editor_article_detail' article.id %}" style="text-decoration: none; color: #555; font-size: 0.9rem;">&larr; Back to Manuscript</a>
+</div>
+
+<div class="card-dash" style="max-width: 600px;">
+    <div class="card-dash-header">
+        <h4>Make Decision for: {{ article.title|truncatechars:50 }}</h4>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label for="status" style="display: block; font-weight: 500; color: #333; margin-bottom: 8px;">Final Status</label>
+            <select name="status" id="status" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; font-family: inherit;">
+                <option value="">-- Select Decision --</option>
+                <option value="ACCEPTED" {% if article.status == 'ACCEPTED' %}selected{% endif %}>Accept Submission</option>
+                <option value="REJECTED" {% if article.status == 'REJECTED' %}selected{% endif %}>Reject Submission</option>
+                <option value="REVISION" {% if article.status == 'REVISION' %}selected{% endif %}>Request Revisions</option>
+                <option value="UNDER_REVIEW" {% if article.status == 'UNDER_REVIEW' %}selected{% endif %}>Return to Under Review</option>
+            </select>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label for="comments" style="display: block; font-weight: 500; color: #333; margin-bottom: 8px;">Comments for the Author (Optional)</label>
+            <textarea name="comments" id="comments" rows="6" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; font-family: inherit; resize: vertical; box-sizing: border-box;" placeholder="Dear Author, we have reviewed your manuscript and decided to..."></textarea>
+            <p style="font-size: 0.8rem; color: #777; margin-top: 5px;">This message will be sent to the author.</p>
+        </div>
+        
+        <div style="display: flex; gap: 15px;">
+            <button type="submit" class="btn-dash">Save Decision</button>
+            <a href="{% url 'journal:editor_article_detail' article.id %}" class="btn-dash outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

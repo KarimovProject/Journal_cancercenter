@@ -1,0 +1,108 @@
+{% extends "journal/dashboard/base_dashboard.html" %}
+{% load i18n %}
+
+{% block title %}Review Article #{{ article.id }} - {{ SITE_NAME }}{% endblock %}
+{% block page_title %}Manuscript #{{ article.id }}{% endblock %}
+
+{% block dashboard_content %}
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'journal:editor_dashboard' %}" style="text-decoration: none; color: #555; font-size: 0.9rem;">&larr; Back to Queue</a>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+    <!-- Left Column: Manuscript Details -->
+    <div>
+        <div class="card-dash">
+            <div class="card-dash-header">
+                <h4>Manuscript Details</h4>
+                <span class="badge-dash {% if article.status == 'SUBMITTED' %}submitted{% elif article.status == 'UNDER_REVIEW' %}under-review{% elif article.status == 'ACCEPTED' %}accepted{% elif article.status == 'REJECTED' %}rejected{% elif article.status == 'REVISION' %}revision{% endif %}">
+                    {{ article.get_status_display }}
+                </span>
+            </div>
+            <h2 style="margin: 0 0 15px 0; font-size: 1.4rem; color: #333; font-family: var(--serif);">{{ article.title }}</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <h5 style="margin: 0 0 5px 0; color: #777; font-size: 0.85rem; text-transform: uppercase;">Authors</h5>
+                <p style="margin: 0; font-size: 0.95rem; color: #333;">
+                    {% for a in article.authors.all %}{{ a.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h5 style="margin: 0 0 5px 0; color: #777; font-size: 0.85rem; text-transform: uppercase;">Abstract</h5>
+                <div style="font-size: 0.95rem; color: #444; line-height: 1.6;">
+                    {{ article.abstract|linebreaks }}
+                </div>
+            </div>
+            
+            {% if article.pdf_file %}
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                <a href="{{ article.pdf_file.url }}" class="btn-dash" target="_blank">&#128196; Download Full Manuscript (PDF)</a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="card-dash">
+            <div class="card-dash-header">
+                <h4>Peer Reviews</h4>
+                <a href="{% url 'journal:editor_assign_reviewer' article.id %}" class="btn-dash sm">+ Assign Reviewer</a>
+            </div>
+            
+            {% if reviews %}
+                {% for review in reviews %}
+                <div style="border: 1px solid #eee; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <div style="font-weight: 600; color: #333;">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</div>
+                        <div style="font-size: 0.8rem; color: #777;">Assigned: {{ review.created_at|date:"M d, Y" }}</div>
+                    </div>
+                    {% if review.status == 'COMPLETED' %}
+                        <div style="display: flex; gap: 15px; margin-bottom: 10px; font-size: 0.85rem;">
+                            <div><span style="color: #777;">Score:</span> <strong>{{ review.score|default:"-" }}/10</strong></div>
+                            <div><span style="color: #777;">Recommendation:</span> <strong>{{ review.get_decision_display|default:"-" }}</strong></div>
+                        </div>
+                        <div style="background: #f9f9f9; padding: 10px; border-radius: 4px; font-size: 0.9rem; color: #444;">
+                            {{ review.comments_for_editor|default:"No comments provided."|linebreaks }}
+                        </div>
+                    {% else %}
+                        <div style="color: #f57c00; font-size: 0.9rem; font-style: italic;">Review in progress (Not completed yet)</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #777; font-size: 0.9rem; text-align: center; padding: 20px 0;">No reviewers assigned yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Right Column: Editorial Actions -->
+    <div>
+        <div class="card-dash" style="background-color: #fcfcfc; border: 1px solid #e0e0e0;">
+            <div class="card-dash-header">
+                <h4>Editorial Decision</h4>
+            </div>
+            <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Review the manuscript and peer review feedback to make a final publication decision.</p>
+            
+            <a href="{% url 'journal:editor_make_decision' article.id %}" class="btn-dash" style="width: 100%; justify-content: center; margin-bottom: 10px;">Make Final Decision</a>
+            <a href="{% url 'journal:editor_assign_reviewer' article.id %}" class="btn-dash outline" style="width: 100%; justify-content: center;">Assign Reviewer</a>
+        </div>
+        
+        <div class="card-dash">
+            <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px;">Information</h4>
+            <div style="margin-bottom: 10px; font-size: 0.9rem;">
+                <span style="color: #777; display: block; font-size: 0.8rem;">Category</span>
+                <strong>{{ article.category.name|default:"-" }}</strong>
+            </div>
+            <div style="margin-bottom: 10px; font-size: 0.9rem;">
+                <span style="color: #777; display: block; font-size: 0.8rem;">Keywords</span>
+                <strong>
+                    {% for kw in article.keywords.all %}{{ kw.name }}{% if not forloop.last %}, {% endif %}{% empty %}-{% endfor %}
+                </strong>
+            </div>
+            <div style="margin-bottom: 10px; font-size: 0.9rem;">
+                <span style="color: #777; display: block; font-size: 0.8rem;">Submitted Date</span>
+                <strong>{{ article.created_at|date:"F d, Y" }}</strong>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
