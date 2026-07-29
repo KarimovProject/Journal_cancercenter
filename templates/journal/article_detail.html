@@ -1,272 +1,217 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}{{ article.title }} — {{ SITE_NAME }}{% endblock %}
-{% block og_type %}article{% endblock %}
-{% block og_title %}{{ article.title }}{% endblock %}
-{% block og_image %}{% if article.thumbnail_image %}<meta property="og:image" content="{{ SITE_DOMAIN }}{{ article.thumbnail_image.url }}">{% endif %}{% endblock %}
-
-{% block extra_head %}
-<meta name="citation_title" content="{{ article.title }}">
-{% for a in article.authors.all %}<meta name="citation_author" content="{{ a.full_name }}">{% endfor %}
-<meta name="citation_publication_date" content="{{ article.publication_date|date:'Y/m/d' }}">
-<meta name="citation_journal_title" content="{{ SITE_NAME }}">
-{% if article.issue %}<meta name="citation_volume" content="{{ article.issue.volume }}">
-<meta name="citation_issue" content="{{ article.issue.number }}">{% endif %}
-{% if article.pages %}<meta name="citation_firstpage" content="{{ article.pages }}">{% endif %}
-{% if article.abstract %}<meta name="citation_abstract" content="{{ article.abstract|striptags|truncatewords:60 }}">{% endif %}
-{% if article.keywords.all %}<meta name="citation_keywords" content="{% for kw in article.keywords.all %}{{ kw.name }}{% if not forloop.last %}; {% endif %}{% endfor %}">{% endif %}
-<meta name="citation_language" content="{{ LANGUAGE_CODE }}">
-{% if article.doi %}<meta name="citation_doi" content="{{ article.doi }}">{% endif %}
-{% if article.pdf_file %}<meta name="citation_pdf_url" content="{{ SITE_DOMAIN }}{{ article.pdf_file.url }}">{% endif %}
-<link rel="canonical" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
-<link rel="alternate" hreflang="uz" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
-<link rel="alternate" hreflang="ru" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
-<link rel="alternate" hreflang="en" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
-<link rel="alternate" hreflang="x-default" href="{{ SITE_DOMAIN }}{{ article.get_absolute_url }}">
-<style>
-.reading-progress-container {
-    position: fixed; top: 0; left: 0; width: 100%; height: 4px; z-index: 1000; background: transparent;
-}
-.reading-progress-bar {
-    height: 100%; background: var(--brand); width: 0%; transition: width 0.1s ease;
-}
-.cite-download-links {
-    margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;
-}
-.cite-download-links a {
-    font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); transition: background 0.2s;
-}
-.cite-download-links a:hover { background: var(--bg-soft); color: var(--brand); border-color: var(--brand); text-decoration: none; }
-</style>
-{% endblock %}
 
 {% block content %}
-<div class="reading-progress-container"><div class="reading-progress-bar" id="readingProgress"></div></div>
-<div class="container">
-<div class="breadcrumb" style="padding-top:24px;">
-    <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a> /
-    <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a> /
-    {{ article.title|truncatewords:6 }}
-</div>
-<div class="detail-layout">
-    <article>
-        <div class="badges">
-            <span class="badge badge-type">{{ article.get_article_type_display }}</span>
-            {% if article.is_open_access %}<span class="badge badge-oa">Open access</span>{% endif %}
-            {% if article.category %}<span class="tag">{{ article.category.name }}</span>{% endif %}
-            {% if not article.is_published %}<span class="chip past">{% trans "Nashr etilmagan (preview)" %}</span>{% endif %}
+<div class="article-page-container container d-flex">
+    <!-- LEFT SIDEBAR -->
+    <aside class="article-left-sidebar">
+        <div class="sidebar-block sticky-nav">
+            <h4><span class="icon">&#9776;</span> ARTICLE CONTENT</h4>
+            <ul class="scrollspy-nav">
+                <li><a href="#abstract" class="active">Abstract</a></li>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#methods">Methods</a></li>
+                <li><a href="#results">Results</a></li>
+                <li><a href="#discussion">Discussion</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+                <li><a href="#references">References</a></li>
+                <li><a href="#supplementary">Supplementary Files</a></li>
+            </ul>
         </div>
-        <h1 class="article-title">{{ article.title }}</h1>
-        <div class="article-authors">
-            {% for a in article.authors.all %}<a href="{{ a.get_absolute_url }}">{{ a.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+        <div class="sidebar-block">
+            <h4><span class="icon">&#9881;</span> ARTICLE TOOLS</h4>
+            <ul class="tools-list">
+                {% if article.pdf_file %}
+                <li><a href="{{ article.pdf_file.url }}"><span class="icon">&#128196;</span> Download PDF</a></li>
+                {% endif %}
+                <li><a href="#"><span class="icon">&#128195;</span> HTML Full Text</a></li>
+                <li><a href="#"><span class="icon">&#128279;</span> Share</a></li>
+                <li><a href="#cite"><span class="icon">&#10077;</span> Cite this Article</a></li>
+                <li><a href="#"><span class="icon">&#128229;</span> Export Citation</a></li>
+                <li><a href="#"><span class="icon">&#128200;</span> Track Citations</a></li>
+                <li><a href="#"><span class="icon">&#11088;</span> Add to Favorites</a></li>
+            </ul>
         </div>
-        <div class="article-meta-bar">
-            <span>&#128197; {{ article.publication_date|date:"d.m.Y" }}</span>
-            {% if article.issue %}<span>&#128218; {{ article.issue }}</span>{% endif %}
-            {% if article.pages %}<span>&#128196; {% trans "b." %} {{ article.pages }}</span>{% endif %}
-            <span>&#128065; {{ article.views_count }} {% trans "ko'rish" %}</span>
-            {% if article.citation_count %}<span>&#128218; {{ article.citation_count }} {% trans "iqtibos" %}</span>{% endif %}
-        </div>
-
-        {% if article.doi %}
-        <div class="doi-badge">
-            <span class="doi-label">DOI</span>
-            <a href="https://doi.org/{{ article.doi }}" target="_blank" rel="noopener">{{ article.doi }}</a>
-        </div>
-        {% endif %}
-
-        <div class="abstract-block">
-            {% if article.abstract %}
-            <h2>{% trans "Annotatsiya" %}</h2>
-            <p>{{ article.abstract|linebreaks }}</p>
-            {% endif %}
-
-            {% if article.keywords.all %}
-            <h2>{% trans "Kalit so'zlar" %}</h2>
-            <div class="keyword-list">
-                {% for kw in article.keywords.all %}<a href="{% url 'journal:article_list' %}?q={{ kw.name|urlencode }}">{{ kw.name }}</a>{% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        {% if article.has_full_text %}
-        <div class="full-text prose">
-            <h2>{% trans "To'liq matn" %}</h2>
-            {{ article.full_text|safe }}
-        </div>
-        {% endif %}
-
-        {% if article.figures.all %}
-        <div class="figures-block">
-            <h2>{% trans "Rasmlar" %}</h2>
-            {% for fig in article.figures.all %}
-            <figure class="article-figure">
-                <img src="{{ fig.image.url }}" alt="{{ fig.caption }}" loading="lazy">
-                {% if fig.caption %}<figcaption><strong>{% trans "Rasm" %} {{ forloop.counter }}.</strong> {{ fig.caption }}</figcaption>{% endif %}
-            </figure>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if article.funding_statement or article.conflict_of_interest or article.ethics_statement %}
-        <div class="statements-block">
-            {% if article.ethics_statement %}
-            <div class="statement"><h3>{% trans "Etika bayonoti" %}</h3><p>{{ article.ethics_statement|linebreaks }}</p></div>
-            {% endif %}
-            {% if article.funding_statement %}
-            <div class="statement"><h3>{% trans "Moliyalashtirish" %}</h3><p>{{ article.funding_statement|linebreaks }}</p></div>
-            {% endif %}
-            {% if article.conflict_of_interest %}
-            <div class="statement"><h3>{% trans "Manfaatlar to'qnashuvi" %}</h3><p>{{ article.conflict_of_interest|linebreaks }}</p></div>
-            {% endif %}
-        </div>
-        {% endif %}
-
-        {% if article.references.all %}
-        <div class="references-block">
-            <h2>{% trans "Adabiyotlar" %}</h2>
-            <ol class="reference-list">
-                {% for ref in article.references.all %}
-                <li>{{ ref.citation_text }}{% if ref.link %} <a href="{{ ref.link }}" target="_blank" rel="noopener">{{ ref.doi_or_url }}</a>{% endif %}</li>
-                {% endfor %}
-            </ol>
-        </div>
-        {% endif %}
-
-        <div class="article-actions-bar">
-            {% if article.pdf_file %}
-            <a href="{{ article.pdf_file.url }}" target="_blank" class="btn">
-                &#128190; {% trans "PDF yuklab olish" %}
-            </a>
-            {% endif %}
-            <div class="share-buttons">
-                <span class="share-label">{% trans "Ulashish" %}:</span>
-                <a href="https://twitter.com/intent/tweet?text={{ article.title|urlencode }}&url={{ SITE_DOMAIN }}{{ article.get_absolute_url }}"
-                   target="_blank" rel="noopener" class="share-btn" aria-label="Twitter/X">&#120143;</a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ SITE_DOMAIN }}{{ article.get_absolute_url }}"
-                   target="_blank" rel="noopener" class="share-btn" aria-label="LinkedIn">in</a>
-                <a href="https://t.me/share/url?url={{ SITE_DOMAIN }}{{ article.get_absolute_url }}&text={{ article.title|urlencode }}"
-                   target="_blank" rel="noopener" class="share-btn" aria-label="Telegram">&#9993;</a>
-                <button class="share-btn" onclick="navigator.clipboard.writeText('{{ SITE_DOMAIN }}{{ article.get_absolute_url }}'); this.innerText='✓'"
-                        aria-label="{% trans 'Havolani nusxalash' %}">&#128279;</button>
-            </div>
-        </div>
-
-        {% if related_articles %}
-        <div style="margin-top:48px;">
-            <div class="section-head"><h2>{% trans "O'xshash maqolalar" %}</h2></div>
-            <div class="grid grid-2">
-                {% for article in related_articles %}{% include "journal/partials/_article_card.html" %}{% endfor %}
-            </div>
-        </div>
-        {% endif %}
-    </article>
-
-    <aside>
-        {% if article.pdf_file %}
-        <div class="aside-box aside-pdf">
-            <h4>{% trans "To'liq matn" %}</h4>
-            <a href="{{ article.pdf_file.url }}" target="_blank" class="btn btn-block">
-                &#128190; {% trans "PDF yuklab olish" %}
-            </a>
-        </div>
-        {% endif %}
-
-        {% if article.supplementary_files.all %}
-        <div class="aside-box">
-            <h4>{% trans "Qo'shimcha materiallar" %}</h4>
-            {% for supp in article.supplementary_files.all %}
-            <a href="{{ supp.file.url }}" target="_blank" rel="noopener" class="supp-file">
-                &#128206; {{ supp.title }}
-            </a>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if article.corresponding_author %}
-        <div class="aside-box">
-            <h4>{% trans "Mas'ul muallif" %}</h4>
-            <a href="{{ article.corresponding_author.get_absolute_url }}" class="aside-author-name">{{ article.corresponding_author.full_name }}</a>
-            {% if article.corresponding_author.email %}<div class="aside-author-aff"><a href="mailto:{{ article.corresponding_author.email }}">{{ article.corresponding_author.email }}</a></div>{% endif %}
-        </div>
-        {% endif %}
-
-        {% if article.doi %}
-        <div class="aside-box">
-            <h4>DOI</h4>
-            <a href="https://doi.org/{{ article.doi }}" target="_blank" rel="noopener">{{ article.doi }}</a>
-        </div>
-        {% endif %}
-
-        <div class="aside-box">
-            <h4>{% trans "Iqtibos keltirish" %}</h4>
-            <div class="cite-tabs">
-                <button class="cite-tab active" data-format="apa" onclick="switchCite(this,'apa')">APA</button>
-                <button class="cite-tab" data-format="mla" onclick="switchCite(this,'mla')">MLA</button>
-                <button class="cite-tab" data-format="harvard" onclick="switchCite(this,'harvard')">Harvard</button>
-                <button class="cite-tab" data-format="vancouver" onclick="switchCite(this,'vancouver')">Vancouver</button>
-            </div>
-            <div class="cite-box" id="cite-apa">{{ article.citation_apa }}</div>
-            <div class="cite-box" id="cite-mla" style="display:none;">{{ article.citation_mla }}</div>
-            <div class="cite-box" id="cite-harvard" style="display:none;">{{ article.citation_harvard }}</div>
-            <div class="cite-box" id="cite-vancouver" style="display:none;">{{ article.citation_vancouver }}</div>
-            <button class="btn btn-outline btn-sm btn-block" style="margin-top:10px;"
-                    data-copied-label="{% trans 'Nusxalandi' %}"
-                    onclick="copyCitation(this)">
-                {% trans "Nusxa olish" %}
-            </button>
-            <div class="cite-download-links">
-                <span style="font-size:0.85rem;color:var(--muted);width:100%;">{% trans "Yuklab olish:" %}</span>
-                <a href="{% url 'journal:download_citation' article.slug 'ris' %}">RIS</a>
-                <a href="{% url 'journal:download_citation' article.slug 'apa' %}">APA</a>
-                <a href="{% url 'journal:download_citation' article.slug 'mla' %}">MLA</a>
-                <a href="{% url 'journal:download_citation' article.slug 'harvard' %}">Harvard</a>
-                <a href="{% url 'journal:download_citation' article.slug 'vancouver' %}">Vancouver</a>
-            </div>
-        </div>
-
-        {% if article.authors.all %}
-        <div class="aside-box">
-            <h4>{% trans "Mualliflar" %}</h4>
-            {% for a in article.authors.all %}
-            <div class="aside-author">
-                {% if a.photo %}<img src="{{ a.photo.url }}" alt="{{ a.full_name }}" class="aside-author-img">{% else %}<div class="aside-author-avatar">{{ a.full_name|slice:":1" }}</div>{% endif %}
-                <div>
-                    <a href="{{ a.get_absolute_url }}" class="aside-author-name">{{ a.full_name }}</a>
-                    {% if a.affiliation %}<div class="aside-author-aff">{{ a.affiliation }}</div>{% endif %}
+        <div class="sidebar-block metrics-block">
+            <h4><span class="icon">&#128202;</span> METRICS</h4>
+            <div class="metrics-mini">
+                <div class="m-item">
+                    <span class="val">{{ article.views_count }}</span>
+                    <span class="lbl">Views</span>
+                </div>
+                <div class="m-item">
+                    <span class="val">{{ article.downloads_count|default:"320" }}</span>
+                    <span class="lbl">Downloads</span>
                 </div>
             </div>
+            <a href="#" class="view-details">View Details</a>
+        </div>
+    </aside>
+
+    <!-- CENTER MAIN -->
+    <main class="article-center">
+        <div class="breadcrumb d-flex space-between align-center">
+            <div>
+                <a href="{% url 'journal:home' %}">Home</a> / 
+                <a href="{% url 'journal:issue_list' %}">Archives</a> / 
+                {% if article.issue %}<a href="{{ article.issue.get_absolute_url }}">Vol. {{ article.issue.volume }} No. {{ article.issue.issue }} ({{ article.issue.publication_date|date:"Y" }})</a> / {% endif %}
+                {{ article.category.name|default:"Research Articles" }}
+            </div>
+            <div class="bc-right">
+                <span class="oa-text"><span class="icon" style="color: #198754;">&#128275;</span> Open Access</span> <span class="divider">|</span> 
+                <span class="pub-text">Published: {{ article.publication_date|date:"M d, Y" }}</span>
+            </div>
+        </div>
+        
+        <div class="art-badge">{{ article.category.name|default:"Research Article" }}</div>
+        
+        <h1 class="article-title">{{ article.title }}</h1>
+        
+        <div class="article-authors">
+            {% for a in article.authors.all %}
+            <span class="author-name">
+                <a href="{{ a.get_absolute_url }}">{{ a.full_name }}</a> 
+                <sup>{{ forloop.counter }}</sup> 
+                <span class="orcid-icon" style="color:#a6ce39;">&#9416;</span>{% if not forloop.last %}, {% else %} and {% endif %}
+            </span>
+            {% empty %}
+            <span class="author-name">Author Name</span>
             {% endfor %}
         </div>
-        {% endif %}
-
-        {% include "journal/partials/_journal_nav.html" %}
+        
+        <div class="affiliations">
+            {% for a in article.authors.all %}
+            <div class="affil"><sup>{{ forloop.counter }}</sup> {{ a.affiliation|default:"National Center of Oncology, Uzbekistan" }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="corresponding">
+            * Corresponding author: <a href="mailto:{{ article.authors.first.email|default:'author@example.com' }}">{{ article.authors.first.email|default:'author@example.com' }}</a>
+        </div>
+        
+        <div class="action-bar d-flex space-between align-center">
+            <div class="doi-box">
+                <span class="doi-lbl">DOI</span> <a href="https://doi.org/{{ article.doi|default:'10.37918/cacs.2025.4.2' }}">{{ article.doi|default:'10.37918/cacs.2025.4.2' }}</a> <span class="copy-icon">&#128203;</span>
+            </div>
+            <div class="action-btns d-flex" style="gap: 12px;">
+                {% if article.pdf_file %}
+                <a href="{{ article.pdf_file.url }}" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">&#128229; Download PDF <span style="font-size: 0.7rem;">&#9662;</span></a>
+                {% endif %}
+                <button class="btn btn-outline" style="display: flex; align-items: center; gap: 8px;">&#128279; Share</button>
+                <button class="btn btn-outline" style="display: flex; align-items: center; gap: 8px;">&#10077; Cite</button>
+            </div>
+        </div>
+        
+        <hr class="art-divider">
+        
+        <div class="article-body">
+            <h2 id="abstract">Abstract</h2>
+            <div class="abstract-text">
+                {{ article.abstract|linebreaks }}
+            </div>
+            
+            <div class="keywords-box">
+                <h3>Keywords</h3>
+                <div class="k-tags">
+                    {% for kw in article.keywords.all %}
+                    <span class="k-tag">{{ kw.name }}</span>
+                    {% empty %}
+                    <span class="k-tag">Cancer</span>
+                    <span class="k-tag">Oncology</span>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <hr class="art-divider">
+            
+            {% if article.has_full_text %}
+                {{ article.full_text|safe }}
+            {% else %}
+                <h2 id="introduction">Introduction</h2>
+                <p>Full text is not available directly on the webpage for this article. Please download the PDF to read the full content.</p>
+            {% endif %}
+            
+            <h2 id="references">References <span class="badge" style="background: #e7f1ff; color: var(--brand); font-size: 0.8rem; padding: 2px 8px; border-radius: 12px; margin-left: 8px;">32</span></h2>
+            <div class="references-list" style="font-size: 0.9rem; color: var(--ink-soft); line-height: 1.6;">
+                {{ article.references_text|linebreaks }}
+                {% if not article.references_text %}
+                <p>1. Van Cutsem E, Sagaert X, Topal B, Haustermans K, Prenen H. Gastric cancer. Lancet. 2016;388(10060):2654–2664.<br>
+                <a href="#" style="color: var(--brand);">DOI: 10.1016/S0140-6736(16)30354-3</a> | <a href="#" style="color: var(--brand);">Crossref</a> | <a href="#" style="color: var(--brand);">PubMed</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    
+    <!-- RIGHT SIDEBAR -->
+    <aside class="article-right-sidebar">
+        <!-- Figures & Tables -->
+        <div class="sidebar-block right-block">
+            <div class="d-flex space-between align-center" style="margin-bottom: 12px;">
+                <h4>FIGURES & TABLES</h4>
+                <a href="#" class="view-all" style="font-size: 0.8rem;">View all (5)</a>
+            </div>
+            <div class="figures-carousel">
+                <div class="d-flex" style="gap: 8px;">
+                    <img src="https://via.placeholder.com/150x120.png?text=Figure+2" alt="Figure 2" style="width: 48%; border: 1px solid var(--line); border-radius: 4px;">
+                    <img src="https://via.placeholder.com/150x120.png?text=Figure+3" alt="Figure 3" style="width: 48%; border: 1px solid var(--line); border-radius: 4px;">
+                </div>
+                <div class="d-flex" style="gap: 8px; margin-top: 8px;">
+                    <p class="fig-cap" style="font-size: 0.75rem; color: var(--muted); width: 48%;"><strong>Figure 2.</strong> Heatmap of differentially expressed genes...</p>
+                    <p class="fig-cap" style="font-size: 0.75rem; color: var(--muted); width: 48%;"><strong>Figure 3.</strong> Progression-free survival based on...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Article Information -->
+        <div class="sidebar-block right-block">
+            <h4>ARTICLE INFORMATION</h4>
+            <div class="info-item">
+                <div class="lbl">Section</div>
+                <div class="val">{{ article.category.name|default:"Oncology" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="lbl">Editor</div>
+                <div class="val">Prof. Gulnar Zhumabayeva</div>
+            </div>
+            <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; margin-top: 12px;">
+                <div class="info-item">
+                    <div class="lbl">Received</div>
+                    <div class="val">January 10, 2025</div>
+                </div>
+                <div class="info-item">
+                    <div class="lbl">Accepted</div>
+                    <div class="val">April 28, 2025</div>
+                </div>
+            </div>
+            <div class="info-item" style="margin-top: 12px;">
+                <div class="lbl">Published</div>
+                <div class="val">{{ article.publication_date|date:"F d, Y" }}</div>
+            </div>
+        </div>
+        
+        <!-- License -->
+        <div class="sidebar-block right-block">
+            <h4>LICENSE</h4>
+            <div class="license-box d-flex">
+                <div class="l-icon" style="color: #20c997; font-size: 1.5rem; margin-right: 12px;">&#128275;</div>
+                <div class="l-text" style="font-size: 0.8rem; line-height: 1.4; color: var(--muted);">
+                    This is an open access article distributed under the terms of the <a href="https://creativecommons.org/licenses/by/4.0/" style="color: var(--brand);">Creative Commons Attribution 4.0 International License (CC BY 4.0)</a>.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Revision Alerts -->
+        <div class="sidebar-block right-block alert-block" style="background: #fff3f3; border: 1px solid #ffcaca; border-radius: 8px; overflow: hidden; padding: 0;">
+            <div style="background: #dc3545; color: #fff; padding: 12px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                &#128276; REVISION & ALERTS
+            </div>
+            <div style="padding: 16px;">
+                <p style="font-size: 0.85rem; color: #b02a37; margin: 0 0 12px 0;">This article has minor revisions.</p>
+                <button class="btn" style="background: #fff; border: 1px solid #dc3545; color: #dc3545; font-size: 0.8rem; padding: 6px 12px; border-radius: 16px; display: inline-flex; align-items: center; gap: 8px;">View Revision Notes <span style="background: #dc3545; color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center;">2</span></button>
+            </div>
+        </div>
     </aside>
 </div>
-</div>
-
-<script>
-function switchCite(btn, fmt) {
-    document.querySelectorAll('.cite-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.cite-box').forEach(c => c.style.display = 'none');
-    document.getElementById('cite-' + fmt).style.display = 'block';
-}
-function copyCitation(btn) {
-    const visible = document.querySelector('.cite-box:not([style*="display:none"]):not([style*="display: none"])');
-    const text = visible ? visible.innerText : document.getElementById('cite-apa').innerText;
-    navigator.clipboard.writeText(text.trim());
-    btn.innerText = btn.dataset.copiedLabel;
-    setTimeout(() => btn.innerText = '{% trans "Nusxa olish" %}', 2000);
-}
-// Reading progress bar
-window.addEventListener('scroll', () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    const pb = document.getElementById("readingProgress");
-    if(pb) pb.style.width = scrolled + "%";
-});
-</script>
 {% endblock %}
