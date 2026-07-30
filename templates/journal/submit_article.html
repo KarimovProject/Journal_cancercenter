@@ -1,9 +1,9 @@
-{% extends "journal/dashboard/base_dashboard.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}{% if is_edit %}{% trans "Maqolani tahrirlash" %}{% else %}{% trans "Maqola topshirish" %}{% endif %} — {{ SITE_NAME }}{% endblock %}
 
-{% block dashboard_content %}
+{% block content %}
 <div class="page-header">
   <div class="container">
     <div class="breadcrumb">
@@ -101,7 +101,7 @@ body.dark-mode .loading-text {
       </ul>
     </div>
 
-    <form method="post" enctype="multipart/form-data" class="submit-form space-y-8">
+    <form method="post" enctype="multipart/form-data" class="submit-form">
       {% csrf_token %}
 
       <div class="form-field">
@@ -142,8 +142,8 @@ body.dark-mode .loading-text {
         </div>
       </div>
 
-      <div class="text-xl font-bold text-slate-800 dark:text-white mb-4 mt-8 pb-2 border-b border-gray-100 dark:border-slate-700">{% trans "To'liq matn" %}</div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{% trans "Maqolaning to'liq matnini shu yerga kiriting. Kamida o'zbek tilida tavsiya etiladi." %}</p>
+      <div class="form-section-title">{% trans "To'liq matn" %}</div>
+      <p class="form-help">{% trans "Maqolaning to'liq matnini shu yerga kiriting. Kamida o'zbek tilida tavsiya etiladi." %}</p>
 
       <div class="form-field">
         <label>{{ form.full_text_uz.label }}</label>
@@ -183,21 +183,21 @@ body.dark-mode .loading-text {
       <div class="form-field">
         <label>{{ form.co_authors.label }}</label>
         {{ form.co_authors }}
-        {% if form.co_authors.help_text %}<small class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ form.co_authors.help_text }}</small>{% endif %}
+        {% if form.co_authors.help_text %}<small class="form-help">{{ form.co_authors.help_text }}</small>{% endif %}
         {{ form.co_authors.errors }}
       </div>
 
       <div class="form-field">
         <label>{{ form.issue_text.label }}</label>
         {{ form.issue_text }}
-        {% if form.issue_text.help_text %}<small class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ form.issue_text.help_text }}</small>{% endif %}
+        {% if form.issue_text.help_text %}<small class="form-help">{{ form.issue_text.help_text }}</small>{% endif %}
         {{ form.issue_text.errors }}
       </div>
 
       <div class="form-field">
         <label>{{ form.doi.label }}</label>
         {{ form.doi }}
-        {% if form.doi.help_text %}<small class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ form.doi.help_text }}</small>{% endif %}
+        {% if form.doi.help_text %}<small class="form-help">{{ form.doi.help_text }}</small>{% endif %}
         {{ form.doi.errors }}
       </div>
 
@@ -213,7 +213,7 @@ body.dark-mode .loading-text {
         {{ form.pdf_file.errors }}
       </div>
 
-      <div class="text-xl font-bold text-slate-800 dark:text-white mb-4 mt-8 pb-2 border-b border-gray-100 dark:border-slate-700">{% trans "Etika va moliyalashtirish" %}</div>
+      <div class="form-section-title">{% trans "Etika va moliyalashtirish" %}</div>
       <div class="form-field">
         <label>{{ form.funding_statement_uz.label }}</label>
         {{ form.funding_statement_uz }}
@@ -228,94 +228,93 @@ body.dark-mode .loading-text {
       </div>
 
       {# ---------- References ---------- #}
-      <div class="text-xl font-bold text-slate-800 dark:text-white mb-4 mt-8 pb-2 border-b border-gray-100 dark:border-slate-700">{% trans "Adabiyotlar ro'yxati" %}</div>
+      <div class="form-section-title">{% trans "Adabiyotlar ro'yxati" %}</div>
       {{ ref_fs.management_form }}
       <div class="formset" id="ref-formset" data-prefix="ref">
         {% for f in ref_fs %}
-        <div class="formset-row p-4 mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 relative">
+        <div class="formset-row">
           {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
-          <div class="formset-grid grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="formset-cell formset-order md:col-span-2">{{ f.order.label_tag }}{{ f.order }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ f.citation_text.label_tag }}{{ f.citation_text }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ f.doi_or_url.label_tag }}{{ f.doi_or_url }}</div>
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ f.order.label_tag }}{{ f.order }}</div>
+            <div class="formset-cell formset-grow">{{ f.citation_text.label_tag }}{{ f.citation_text }}</div>
+            <div class="formset-cell formset-grow">{{ f.doi_or_url.label_tag }}{{ f.doi_or_url }}</div>
           </div>
-          {% if f.instance.pk %}<label class="formset-del text-red-500 hover:text-red-700 text-sm mt-2 cursor-pointer flex items-center">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
+          {% if f.instance.pk %}<label class="formset-del">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
         </div>
         {% endfor %}
       </div>
       <template id="ref-empty">
-        <div class="formset-row p-4 mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 relative">
-          <div class="formset-grid grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="formset-cell formset-order md:col-span-2">{{ ref_fs.empty_form.order.label_tag }}{{ ref_fs.empty_form.order }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ ref_fs.empty_form.citation_text.label_tag }}{{ ref_fs.empty_form.citation_text }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ ref_fs.empty_form.doi_or_url.label_tag }}{{ ref_fs.empty_form.doi_or_url }}</div>
+        <div class="formset-row">
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ ref_fs.empty_form.order.label_tag }}{{ ref_fs.empty_form.order }}</div>
+            <div class="formset-cell formset-grow">{{ ref_fs.empty_form.citation_text.label_tag }}{{ ref_fs.empty_form.citation_text }}</div>
+            <div class="formset-cell formset-grow">{{ ref_fs.empty_form.doi_or_url.label_tag }}{{ ref_fs.empty_form.doi_or_url }}</div>
           </div>
         </div>
       </template>
-      <button type="button" class="btn-add-row inline-flex items-center px-4 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-800 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors" data-target="ref">+ {% trans "Adabiyot qo'shish" %}</button>
+      <button type="button" class="btn btn-outline btn-add-row" data-target="ref">+ {% trans "Adabiyot qo'shish" %}</button>
 
       {# ---------- Figures ---------- #}
-      <div class="text-xl font-bold text-slate-800 dark:text-white mb-4 mt-8 pb-2 border-b border-gray-100 dark:border-slate-700">{% trans "Rasmlar" %}</div>
+      <div class="form-section-title">{% trans "Rasmlar" %}</div>
       {{ fig_fs.management_form }}
       <div class="formset" id="fig-formset" data-prefix="fig">
         {% for f in fig_fs %}
-        <div class="formset-row p-4 mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 relative">
+        <div class="formset-row">
           {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
-          <div class="formset-grid grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="formset-cell formset-order md:col-span-2">{{ f.order.label_tag }}{{ f.order }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ f.image.label_tag }}{{ f.image }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ f.caption_uz.label_tag }}{{ f.caption_uz }}</div>
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ f.order.label_tag }}{{ f.order }}</div>
+            <div class="formset-cell formset-grow">{{ f.image.label_tag }}{{ f.image }}</div>
+            <div class="formset-cell formset-grow">{{ f.caption_uz.label_tag }}{{ f.caption_uz }}</div>
           </div>
-          {% if f.instance.pk %}<label class="formset-del text-red-500 hover:text-red-700 text-sm mt-2 cursor-pointer flex items-center">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
+          {% if f.instance.pk %}<label class="formset-del">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
         </div>
         {% endfor %}
       </div>
       <template id="fig-empty">
-        <div class="formset-row p-4 mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 relative">
-          <div class="formset-grid grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="formset-cell formset-order md:col-span-2">{{ fig_fs.empty_form.order.label_tag }}{{ fig_fs.empty_form.order }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ fig_fs.empty_form.image.label_tag }}{{ fig_fs.empty_form.image }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ fig_fs.empty_form.caption_uz.label_tag }}{{ fig_fs.empty_form.caption_uz }}</div>
+        <div class="formset-row">
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ fig_fs.empty_form.order.label_tag }}{{ fig_fs.empty_form.order }}</div>
+            <div class="formset-cell formset-grow">{{ fig_fs.empty_form.image.label_tag }}{{ fig_fs.empty_form.image }}</div>
+            <div class="formset-cell formset-grow">{{ fig_fs.empty_form.caption_uz.label_tag }}{{ fig_fs.empty_form.caption_uz }}</div>
           </div>
         </div>
       </template>
-      <button type="button" class="btn-add-row inline-flex items-center px-4 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-800 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors" data-target="fig">+ {% trans "Rasm qo'shish" %}</button>
+      <button type="button" class="btn btn-outline btn-add-row" data-target="fig">+ {% trans "Rasm qo'shish" %}</button>
 
       {# ---------- Supplementary files ---------- #}
-      <div class="text-xl font-bold text-slate-800 dark:text-white mb-4 mt-8 pb-2 border-b border-gray-100 dark:border-slate-700">{% trans "Qo'shimcha materiallar" %}</div>
+      <div class="form-section-title">{% trans "Qo'shimcha materiallar" %}</div>
       {{ supp_fs.management_form }}
       <div class="formset" id="supp-formset" data-prefix="supp">
         {% for f in supp_fs %}
-        <div class="formset-row p-4 mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 relative">
+        <div class="formset-row">
           {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
-          <div class="formset-grid grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="formset-cell formset-order md:col-span-2">{{ f.order.label_tag }}{{ f.order }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ f.file.label_tag }}{{ f.file }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ f.title_uz.label_tag }}{{ f.title_uz }}</div>
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ f.order.label_tag }}{{ f.order }}</div>
+            <div class="formset-cell formset-grow">{{ f.file.label_tag }}{{ f.file }}</div>
+            <div class="formset-cell formset-grow">{{ f.title_uz.label_tag }}{{ f.title_uz }}</div>
           </div>
-          {% if f.instance.pk %}<label class="formset-del text-red-500 hover:text-red-700 text-sm mt-2 cursor-pointer flex items-center">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
+          {% if f.instance.pk %}<label class="formset-del">{{ f.DELETE }} {% trans "O'chirish" %}</label>{% endif %}
         </div>
         {% endfor %}
       </div>
       <template id="supp-empty">
-        <div class="formset-row p-4 mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 relative">
-          <div class="formset-grid grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div class="formset-cell formset-order md:col-span-2">{{ supp_fs.empty_form.order.label_tag }}{{ supp_fs.empty_form.order }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ supp_fs.empty_form.file.label_tag }}{{ supp_fs.empty_form.file }}</div>
-            <div class="formset-cell formset-grow md:col-span-5">{{ supp_fs.empty_form.title_uz.label_tag }}{{ supp_fs.empty_form.title_uz }}</div>
+        <div class="formset-row">
+          <div class="formset-grid">
+            <div class="formset-cell formset-order">{{ supp_fs.empty_form.order.label_tag }}{{ supp_fs.empty_form.order }}</div>
+            <div class="formset-cell formset-grow">{{ supp_fs.empty_form.file.label_tag }}{{ supp_fs.empty_form.file }}</div>
+            <div class="formset-cell formset-grow">{{ supp_fs.empty_form.title_uz.label_tag }}{{ supp_fs.empty_form.title_uz }}</div>
           </div>
         </div>
       </template>
-      <button type="button" class="btn-add-row inline-flex items-center px-4 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-800 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors" data-target="supp">+ {% trans "Fayl qo'shish" %}</button>
+      <button type="button" class="btn btn-outline btn-add-row" data-target="supp">+ {% trans "Fayl qo'shish" %}</button>
 
       {% if form.non_field_errors %}
         <div class="form-errors">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all" style="margin-top:24px;">{% trans "Maqolani topshirish" %}</button>
+      <button type="submit" class="btn btn-block" style="margin-top:24px;">{% trans "Maqolani topshirish" %}</button>
     </form>
   </div>
-</div>
 </div>
 
 {{ form.media }}
