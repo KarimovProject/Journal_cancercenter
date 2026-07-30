@@ -6,7 +6,7 @@ from django.urls import reverse
 from .tasks import send_email_task, watermark_pdf_task
 from django.utils.translation import gettext_lazy as _
 
-from .models import Article, Review, Notification
+from .models import Article, Review, Notification, NewsletterSubscription
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,16 @@ def send_article_status_email(sender, instance, created, **kwargs):
         subject = f"Maqolangiz nashr etildi: {instance.title_uz}"
         url = f"{settings.SITE_DOMAIN}{instance.get_absolute_url()}"
         message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz Oncoscience jurnalida nashr etildi.\n\nMaqolani ko'rish uchun havola: {url}"
+        
+        # Obunachilarga (Subscribers) xabar yuborish
+        subscriber_subject = f"Yangi maqola nashr etildi: {instance.title_uz}"
+        subscriber_message = f"Hurmatli obunachi,\n\nOncoscience jurnalida yangi maqola nashr etildi:\n\n{instance.title_uz}\n\nO'qish uchun havola: {url}\n\nUshbu xabar sizning obunangiz asosida yuborilmoqda."
+        subscribers = NewsletterSubscription.objects.filter(is_active=True, is_confirmed=True)
+        for sub in subscribers:
+            try:
+                send_email_task.delay(subscriber_subject, subscriber_message, [sub.email])
+            except Exception as e:
+                logger.error(f"Failed to send newsletter email to {sub.email}: {e}")
     elif instance.status == Article.Status.REVIEW:
         subject = f"Maqolangiz taqrizga yuborildi: {instance.title_uz}"
         message = f"Hurmatli muallif,\n\nSizning '{instance.title_uz}' nomli maqolangiz taqriz jarayoniga o'tkazildi. Natijalar haqida qo'shimcha xabar beramiz."
