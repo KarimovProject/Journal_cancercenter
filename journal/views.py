@@ -776,31 +776,3 @@ def editor_make_decision(request, pk):
         'article': article,
     }
     return render(request, 'journal/dashboard/editor_make_decision.html', context)
-
-@login_required
-def submit_article_new(request):
-    from .forms import ArticleSubmissionNewForm
-    if request.method == 'POST':
-        form = ArticleSubmissionNewForm(request.POST, request.FILES)
-        if form.is_valid():
-            article = form.save(commit=False)
-            article.submitted_by = request.user
-            article.status = Article.Status.DRAFT
-            
-            if article.title_uz:
-                from django.utils.text import slugify
-                import uuid
-                base_slug = slugify(article.title_uz) or "maqola"
-                article.slug = f"{base_slug}-{uuid.uuid4().hex[:6]}"
-                
-            article.save()
-            
-            if hasattr(request.user, 'author_profile'):
-                article.authors.add(request.user.author_profile)
-                
-            messages.success(request, _('Maqolangiz muvaffaqiyatli yuborildi! U hozirda qoralama holatida.'))
-            return redirect('journal:my_articles')
-    else:
-        form = ArticleSubmissionNewForm()
-        
-    return render(request, 'journal/dashboard/submit_article.html', {'form': form})

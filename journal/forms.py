@@ -338,27 +338,3 @@ ArticleSupplementaryFileFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
-
-class ArticleSubmissionNewForm(forms.ModelForm):
-    agree_to_terms = forms.BooleanField(
-        required=True,
-        label=_("Men ushbu maqolani jurnal qoidalariga asosan yuboryapman va unda plagiat (ko'chirmachilik) yo'qligini tasdiqlayman.")
-    )
-    
-    class Meta:
-        model = Article
-        fields = ['article_type', 'category', 'title_uz', 'abstract_uz', 'pdf_file']
-        widgets = {
-            'article_type': forms.Select(attrs={'class': 'form-input'}),
-            'category': forms.Select(attrs={'class': 'form-input'}),
-            'title_uz': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Maqolaning to\'liq sarlavhasi')}),
-            'abstract_uz': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': _('Maqola annotatsiyasi (qisqacha mazmuni)...')}),
-            'pdf_file': forms.FileInput(attrs={'class': 'form-input', 'accept': '.pdf,.doc,.docx'}),
-        }
-        labels = {
-            'article_type': _('Maqola turi'),
-            'category': _('Yo\'nalish'),
-            'title_uz': _('Sarlavha'),
-            'abstract_uz': _('Annotatsiya (Qisqacha mazmun)'),
-            'pdf_file': _('Maqola fayli (PDF yoki Word)'),
-        }
