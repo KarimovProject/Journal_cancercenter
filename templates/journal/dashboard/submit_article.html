@@ -8,15 +8,15 @@
 <div class="max-w-4xl mx-auto">
     
     <!-- Header Section -->
-    <div class="mb-8 pb-4 border-b border-gray-200">
-        <h1 class="text-3xl font-bold text-slate-800 font-display mb-2">{% trans "Yangi Maqola Yuborish" %}</h1>
-        <p class="text-slate-500">
+    <div class="mb-8 pb-4 border-b border-gray-200 dark:border-slate-700">
+        <h1 class="text-3xl font-bold text-slate-800 dark:text-white font-display mb-2">{% trans "Yangi Maqola Yuborish" %}</h1>
+        <p class="text-slate-500 dark:text-slate-400 dark:text-slate-500">
             {% trans "Iltimos, maqolangiz haqidagi ma'lumotlarni to'ldiring va faylni yuklang. Barcha maydonlar to'ldirilishi shart." %}
         </p>
     </div>
 
     <!-- Form Section -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-8">
         <form method="post" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
             
@@ -46,7 +46,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Article Type -->
                 <div class="space-y-2">
-                    <label for="{{ form.article_type.id_for_label }}" class="block text-sm font-semibold text-slate-700">
+                    <label for="{{ form.article_type.id_for_label }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
                         {{ form.article_type.label }}
                     </label>
                     {{ form.article_type }}
@@ -54,7 +54,7 @@
                 
                 <!-- Category -->
                 <div class="space-y-2">
-                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-semibold text-slate-700">
+                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
                         {{ form.category.label }}
                     </label>
                     {{ form.category }}
@@ -63,42 +63,42 @@
 
             <!-- Title -->
             <div class="space-y-2">
-                <label for="{{ form.title_uz.id_for_label }}" class="block text-sm font-semibold text-slate-700">
+                <label for="{{ form.title_uz.id_for_label }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
                     {{ form.title_uz.label }}
                 </label>
                 {{ form.title_uz }}
                 {% if form.title_uz.help_text %}
-                    <p class="text-xs text-slate-400 mt-1">{{ form.title_uz.help_text }}</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ form.title_uz.help_text }}</p>
                 {% endif %}
             </div>
 
             <!-- Abstract -->
             <div class="space-y-2">
-                <label for="{{ form.abstract_uz.id_for_label }}" class="block text-sm font-semibold text-slate-700">
+                <label for="{{ form.abstract_uz.id_for_label }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
                     {{ form.abstract_uz.label }}
                 </label>
                 {{ form.abstract_uz }}
-                <p class="text-xs text-slate-400 mt-1">
+                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">
                     {% trans "Qisqacha mazmun (Annotatsiya) maqolaning asosiy maqsadi, uslublari va natijalarini o'z ichiga olishi kerak (150-250 so'z)." %}
                 </p>
             </div>
 
             <!-- File Upload Area -->
             <div class="space-y-2 pt-4">
-                <label for="{{ form.pdf_file.id_for_label }}" class="block text-sm font-semibold text-slate-700">
+                <label for="{{ form.pdf_file.id_for_label }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
                     {{ form.pdf_file.label }}
                 </label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg hover:border-teal-500 hover:bg-slate-50 transition-colors cursor-pointer relative">
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 dark:border-slate-600 border-dashed rounded-lg hover:border-teal-500 hover:bg-slate-50 dark:bg-slate-700 transition-colors cursor-pointer relative">
                     <div class="space-y-1 text-center">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-slate-400 mb-3"></i>
-                        <div class="flex text-sm text-slate-600 justify-center">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-slate-400 dark:text-slate-500 mb-3"></i>
+                        <div class="flex text-sm text-slate-600 dark:text-slate-300 justify-center">
                             <span class="relative rounded-md font-medium text-teal-600 hover:text-teal-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-teal-500">
                                 {% trans "Faylni tanlang" %}
                                 {{ form.pdf_file }}
                             </span>
                             <p class="pl-1">{% trans "yoki shu yerga tashlang" %}</p>
                         </div>
-                        <p class="text-xs text-slate-500">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
                             PDF, DOC, DOCX - 20MB gacha
                         </p>
                     </div>
@@ -106,16 +106,16 @@
             </div>
 
             <!-- Terms & Conditions / Plagiarism Check -->
-            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-8">
+            <div class="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg border border-slate-200 dark:border-slate-600 mt-8">
                 <div class="flex items-start">
                     <div class="flex items-center h-5">
                         {{ form.agree_to_terms }}
                     </div>
                     <div class="ml-3 text-sm">
-                        <label for="{{ form.agree_to_terms.id_for_label }}" class="font-medium text-slate-700 cursor-pointer">
+                        <label for="{{ form.agree_to_terms.id_for_label }}" class="font-medium text-slate-700 dark:text-slate-200 cursor-pointer">
                             {% trans "Mualliflik huquqi va Plagiat" %}
                         </label>
-                        <p class="text-slate-500 mt-1">
+                        <p class="text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-1">
                             {{ form.agree_to_terms.label }}
                         </p>
                     </div>
@@ -123,8 +123,8 @@
             </div>
 
             <!-- Submit Buttons -->
-            <div class="pt-6 flex items-center justify-end space-x-4 border-t border-gray-100">
-                <a href="{% url 'journal:author_dashboard' %}" class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors">
+            <div class="pt-6 flex items-center justify-end space-x-4 border-t border-gray-100 dark:border-slate-700">
+                <a href="{% url 'journal:author_dashboard' %}" class="px-5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors">
                     {% trans "Bekor qilish" %}
                 </a>
                 <button type="submit" class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-teal-600 border border-transparent rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 shadow-sm transition-colors">
@@ -140,6 +140,8 @@
 <style>
     /* Styling adjustments for Django default form widgets */
     .form-input {
+        background-color: transparent;
+        color: var(--text-color, #1e293b);
         width: 100%;
         padding: 0.625rem 0.875rem;
         border: 1px solid #e2e8f0;

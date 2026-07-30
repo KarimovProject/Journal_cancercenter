@@ -795,8 +795,8 @@ def submit_article_new(request):
                 
             article.save()
             
-            if hasattr(request.user, 'author'):
-                article.authors.add(request.user.author)
+            if hasattr(request.user, 'author_profile'):
+                article.authors.add(request.user.author_profile)
                 
             messages.success(request, _('Maqolangiz muvaffaqiyatli yuborildi! U hozirda qoralama holatida.'))
             return redirect('journal:my_articles')
