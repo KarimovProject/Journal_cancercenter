@@ -18,7 +18,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from ipware import get_client_ip
 
-from .forms import (
+from .forms import (ArticleSubmissionForm, 
     ArticleFigureFormSet,
     ArticleSubmissionForm,
     ArticleSupplementaryFileFormSet,
@@ -432,347 +432,35 @@ def logout_view(request):
 # Article submission
 # ---------------------------------------------------------------------------
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def submit_article(request):
     if request.method == 'POST':
         form = ArticleSubmissionForm(request.POST, request.FILES)
-        ref_fs = ReferenceFormSet(request.POST, prefix='ref', instance=form.instance)
-        fig_fs = ArticleFigureFormSet(request.POST, request.FILES, prefix='fig', instance=form.instance)
-        supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=form.instance)
-
-        if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
-            with transaction.atomic():
-                article = form.save(commit=False)
-                article.submitted_by = request.user
-                article.status = Article.Status.DRAFT
-                article.save()
-
-                form.save_m2m_custom(article, request.user)
-
-                for fs in (ref_fs, fig_fs, supp_fs):
-                    fs.instance = article
-                    fs.save()
-
-            messages.success(request, _('Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi.'))
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.submitted_by = request.user
+            article.status = Article.Status.DRAFT
+            
+            # Generate a basic slug if title exists
+            if article.title_uz:
+                from django.utils.text import slugify
+                import uuid
+                base_slug = slugify(article.title_uz)
+                if not base_slug:
+                    base_slug = "maqola"
+                article.slug = f"{base_slug}-{uuid.uuid4().hex[:6]}"
+                
+            article.save()
+            
+            # Link current user as an author if they have an Author profile
+            if hasattr(request.user, 'author'):
+                article.authors.add(request.user.author)
+                
+            messages.success(request, _('Maqolangiz muvaffaqiyatli yuborildi! U hozirda qoralama holatida.'))
             return redirect('journal:my_articles')
     else:
         form = ArticleSubmissionForm()
-        ref_fs = ReferenceFormSet(prefix='ref', instance=Article())
-        fig_fs = ArticleFigureFormSet(prefix='fig', instance=Article())
-        supp_fs = ArticleSupplementaryFileFormSet(prefix='supp', instance=Article())
-
-    context = {
-        'form': form,
-        'ref_fs': ref_fs,
-        'fig_fs': fig_fs,
-        'supp_fs': supp_fs,
-        'meta_description': _('Maqola topshirish formasi.'),
-    }
-    return render(request, 'journal/submit_article.html', context)
-
-
-@login_required(login_url='/ilm-fan/kirish/')
-def edit_article(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    if article.submitted_by != request.user:
-        raise Http404()
-    if article.status not in (Article.Status.DRAFT, Article.Status.REJECTED):
-        messages.error(request, _('Koʻrib chiqilayotgan yoki chop etilgan maqolani tahrirlash mumkin emas.'))
-        return redirect('journal:my_articles')
-
-    # Pre-fill keywords and co-authors
-    initial = {}
-    if article.keywords.exists():
-        initial['keywords_text'] = ', '.join(k.name for k in article.keywords.all())
-    if article.issue:
-        initial['issue_text'] = f'Vol. {article.issue.volume}, No. {article.issue.number}, {article.issue.year}'
-    # Co-authors: all authors except the current user's own profile
-    other_authors = article.authors.exclude(user=request.user)
-    if other_authors.exists():
-        initial['co_authors'] = '\n'.join(a.full_name for a in other_authors)
-
-    if request.method == 'POST':
-        form = ArticleSubmissionForm(request.POST, request.FILES, instance=article, initial=initial)
-        ref_fs = ReferenceFormSet(request.POST, prefix='ref', instance=article)
-        fig_fs = ArticleFigureFormSet(request.POST, request.FILES, prefix='fig', instance=article)
-        supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=article)
-
-        if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
-            with transaction.atomic():
-                article = form.save(commit=False)
-                article.status = Article.Status.DRAFT
-                article.rejection_reason = ''
-                article.save()
-
-                form.save_m2m_custom(article, request.user, is_edit=True)
-
-                for fs in (ref_fs, fig_fs, supp_fs):
-                    fs.save()
-
-            messages.success(request, _('Maqola yangilandi va qayta ko\'rib chiqishga yuborildi.'))
-            return redirect('journal:my_articles')
-    else:
-        form = ArticleSubmissionForm(instance=article, initial=initial)
-        ref_fs = ReferenceFormSet(prefix='ref', instance=article)
-        fig_fs = ArticleFigureFormSet(prefix='fig', instance=article)
-        supp_fs = ArticleSupplementaryFileFormSet(prefix='supp', instance=article)
-
-    context = {
-        'form': form,
-        'ref_fs': ref_fs,
-        'fig_fs': fig_fs,
-        'supp_fs': supp_fs,
-        'article': article,
-        'is_edit': True,
-        'meta_description': _('Maqolani tahrirlash.'),
-    }
-    return render(request, 'journal/submit_article.html', context)
-
-
-@login_required(login_url='/ilm-fan/kirish/')
-def my_articles(request):
-    articles = Article.objects.filter(submitted_by=request.user).order_by('-created_at')
-    stats = {
-        'total': articles.count(),
-        'published': articles.filter(status=Article.Status.PUBLISHED).count(),
-        'draft': articles.filter(status=Article.Status.DRAFT).count(),
-        'review': articles.filter(status=Article.Status.REVIEW).count(),
-        'rejected': articles.filter(status=Article.Status.REJECTED).count(),
-        'total_views': sum(a.views_count for a in articles),
-        'total_citations': sum(a.citation_count for a in articles),
-    }
-    context = {
-        'articles': articles,
-        'stats': stats,
-        'meta_description': _('Mening maqolalarim.'),
-    }
-    return render(request, 'journal/my_articles.html', context)
-
-
-@login_required(login_url='/ilm-fan/kirish/')
-def edit_profile(request):
-    author = getattr(request.user, 'author_profile', None)
-    if not author:
-        author = Author.objects.create(user=request.user, full_name=request.user.get_full_name() or request.user.username)
-
-    if request.method == 'POST':
-        form = AuthorProfileForm(request.POST, request.FILES, instance=author)
-        if form.is_valid():
-            form.save()
-            messages.success(request, _('Profilingiz yangilandi.'))
-            return redirect('journal:edit_profile')
-    else:
-        form = AuthorProfileForm(instance=author)
-
-    context = {
-        'form': form,
-        'author': author,
-        'meta_description': _('Profilni tahrirlash.'),
-    }
-    return render(request, 'journal/edit_profile.html', context)
-
-
-# ---------------------------------------------------------------------------
-# Notifications
-# ---------------------------------------------------------------------------
-
-@login_required(login_url='/ilm-fan/kirish/')
-def read_notification(request, notif_id):
-    from .models import Notification
-    notif = get_object_or_404(Notification, id=notif_id, user=request.user)
-    notif.is_read = True
-    notif.save(update_fields=['is_read'])
-    
-    if notif.link:
-        return redirect(notif.link)
-    return redirect('journal:home')
-
-# ---------------------------------------------------------------------------
-# Peer Review
-# ---------------------------------------------------------------------------
-
-@login_required(login_url='/ilm-fan/kirish/')
-def reviewer_dashboard(request):
-    # Mark all unread reviewer notifications as read when they visit the dashboard
-    from .models import Notification
-    Notification.objects.filter(
-        user=request.user, 
-        link__contains='taqriz-paneli', 
-        is_read=False
-    ).update(is_read=True)
-
-    reviews = Review.objects.filter(reviewer=request.user).select_related('article')
-    pending_reviews = reviews.filter(decision=Review.Decision.PENDING)
-    completed_reviews = reviews.exclude(decision=Review.Decision.PENDING)
-    
-    context = {
-        'pending_reviews': pending_reviews,
-        'completed_reviews': completed_reviews,
-        'meta_description': _('Taqrizchi paneli.'),
-    }
-    return render(request, 'journal/reviewer_dashboard.html', context)
-
-@login_required(login_url='/ilm-fan/kirish/')
-def review_article(request, pk):
-    review = get_object_or_404(Review, pk=pk, reviewer=request.user)
-    from .forms import ReviewForm
-    if request.method == 'POST':
-        form = ReviewForm(request.POST, instance=review)
-        if form.is_valid():
-            form.save()
-            
-            # Mark reviewer's notifications related to reviewer dashboard as read
-            from .models import Notification
-            Notification.objects.filter(
-                user=request.user,
-                link__contains='taqriz-paneli',
-                is_read=False
-            ).update(is_read=True)
-
-            messages.success(request, _('Taqriz muvaffaqiyatli saqlandi!'))
-            return redirect('journal:reviewer_dashboard')
-    else:
-        form = ReviewForm(instance=review)
         
-    context = {
-        'review': review,
-        'article': review.article,
-        'form': form,
-        'meta_description': _('Maqolani taqrizlash.'),
-    }
-    return render(request, 'journal/review_article.html', context)
-
-
-# ---------------------------------------------------------------------------
-# Error handlers
-# ---------------------------------------------------------------------------
-
-def custom_404(request, exception=None):
-    return render(request, 'journal/404.html', status=404)
-
-
-def custom_500(request):
-    return render(request, 'journal/500.html', status=500)
-
-from django.http import JsonResponse
-from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Count
-from django.db.models.functions import TruncMonth
-
-@staff_member_required
-def admin_stats_api(request):
-    # Summary statistics
-    total_articles = Article.objects.count()
-    total_authors = Author.objects.count()
-    pending_reviews = Review.objects.filter(decision=Review.Decision.PENDING).count()
-    total_views = Article.objects.aggregate(total=Sum('views_count'))['total'] or 0
-
-    # Statuses
-    status_counts = Article.objects.values('status').annotate(count=Count('id'))
-    status_data = {item['status']: item['count'] for item in status_counts}
-    
-    # Monthly submissions (last 6 months or all)
-    monthly = Article.objects.annotate(month=TruncMonth('created_at')).values('month').annotate(count=Count('id')).order_by('month')
-    months_labels = [m['month'].strftime('%b %Y') if m['month'] else 'Unknown' for m in monthly]
-    months_data = [m['count'] for m in monthly]
-    
-    return JsonResponse({
-        'summary': {
-            'total_articles': total_articles,
-            'total_authors': total_authors,
-            'pending_reviews': pending_reviews,
-            'total_views': total_views,
-        },
-        'statuses': status_data,
-        'months': {
-            'labels': months_labels,
-            'data': months_data
-        }
+    return render(request, 'journal/dashboard/submit_article.html', {
+        'form': form
     })
-
-
-# =====================================================================
-# EDITORIAL DASHBOARD VIEWS
-# =====================================================================
-from django.contrib.auth.decorators import user_passes_test
-
-def is_editor(user):
-    return user.is_authenticated and (user.is_staff or user.is_superuser)
-
-@user_passes_test(is_editor, login_url='/kirish/')
-def editor_dashboard(request):
-    articles = Article.objects.all().order_by('-created_at')
-    
-    stats = {
-        'new_submissions': articles.filter(status='SUBMITTED').count(),
-        'under_review': articles.filter(status='UNDER_REVIEW').count(),
-        'accepted': articles.filter(status='ACCEPTED').count(),
-        'rejected': articles.filter(status='REJECTED').count(),
-    }
-    
-    context = {
-        'articles': articles,
-        'stats': stats,
-    }
-    return render(request, 'journal/dashboard/editor_dashboard.html', context)
-
-@user_passes_test(is_editor, login_url='/kirish/')
-def editor_article_detail(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    reviews = Review.objects.filter(article=article).order_by('-created_at')
-    
-    context = {
-        'article': article,
-        'reviews': reviews,
-    }
-    return render(request, 'journal/dashboard/editor_article_detail.html', context)
-
-@user_passes_test(is_editor, login_url='/kirish/')
-def editor_assign_reviewer(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    author_ids = article.authors.values_list('id', flat=True)
-    users = User.objects.filter(is_active=True).exclude(id__in=author_ids).order_by('first_name', 'username')
-    
-    if request.method == 'POST':
-        reviewer_id = request.POST.get('reviewer')
-        message = request.POST.get('message', '')
-        
-        if reviewer_id:
-            reviewer = get_object_or_404(User, id=reviewer_id)
-            Review.objects.create(
-                article=article,
-                reviewer=reviewer,
-                status='ASSIGNED'
-            )
-            
-            if article.status == 'SUBMITTED':
-                article.status = 'UNDER_REVIEW'
-                article.save()
-                
-            messages.success(request, f"Reviewer {reviewer.get_full_name() or reviewer.username} assigned successfully.")
-            return redirect('journal:editor_article_detail', pk=article.pk)
-            
-    context = {
-        'article': article,
-        'users': users,
-    }
-    return render(request, 'journal/dashboard/editor_assign_reviewer.html', context)
-
-@user_passes_test(is_editor, login_url='/kirish/')
-def editor_make_decision(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    
-    if request.method == 'POST':
-        new_status = request.POST.get('status')
-        comments = request.POST.get('comments', '')
-        
-        if new_status and new_status in dict(Article.Status.choices):
-            article.status = new_status
-            article.save()
-            messages.success(request, f"Article status updated to {article.get_status_display()}.")
-            return redirect('journal:editor_article_detail', pk=article.pk)
-            
-    context = {
-        'article': article,
-    }
-    return render(request, 'journal/dashboard/editor_make_decision.html', context)

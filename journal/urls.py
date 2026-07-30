@@ -52,10 +52,11 @@ urlpatterns = [
         template_name='journal/auth/password_reset_complete.html'
     ), name='password_reset_complete'),
     # Article submission
-    path('maqola-yuborish/', views.submit_article, name='submit_article'),
-    path('maqola-tahrirlash/<int:pk>/', views.edit_article, name='edit_article'),
+        path('maqola-tahrirlash/<int:pk>/', views.edit_article, name='edit_article'),
     path('mening-maqolalarim/', views.my_articles, name='my_articles'),
     path('profil/', views.edit_profile, name='edit_profile'),
+    path('dashboard/submit/', views.submit_article, name='submit_article'),
+
     # Reviewer dashboard
     path('taqriz-paneli/', views.reviewer_dashboard, name='reviewer_dashboard'),
     path('taqriz-qilish/<int:pk>/', views.review_article, name='review_article'),
