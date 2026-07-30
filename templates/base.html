@@ -31,9 +31,8 @@
         </a>
 
         <form class="header-search" action="{% url 'journal:article_list' %}" method="get" role="search">
-            <input type="text" name="q" value="{{ request.GET.q }}"
-                   placeholder="{% trans 'Kalit soʻz yoki muallif boʻyicha qidirish...' %}" aria-label="{% trans 'Qidiruv' %}">
-            <button type="submit" aria-label="{% trans 'Qidirish' %}">&#128269;</button>
+            <input type="search" name="q" value="{{ request.GET.q }}"
+                   placeholder="{% trans 'Qidirish' %}" aria-label="{% trans 'Qidirish' %}">
         </form>
 
         <div class="header-actions">

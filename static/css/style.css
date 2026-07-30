@@ -135,7 +135,7 @@ body.dark .footer {
     .brand-mark.alt{color:var(--ink)}
     .brand-sub{display:block;font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:3px}
     .header-search{position:relative;flex:1;max-width:440px;margin:0}
-    .header-search input{width:100%;padding:10px 44px 10px 16px;border:1px solid var(--line);border-radius:10px;font-size:.9rem;background:var(--bg-soft)}
+    .header-search input{width:100%;padding:10px 16px;border:1px solid var(--line);border-radius:10px;font-size:.9rem;background:var(--bg-soft)}
     .header-search input:focus{background:#fff}
     .header-search button{position:absolute;right:5px;top:50%;transform:translateY(-50%);border:0;background:transparent;cursor:pointer;font-size:1rem;line-height:1;padding:7px;color:var(--muted)}
     .header-search button:hover{color:var(--brand)}
