@@ -3,10 +3,10 @@
        DESIGN TOKENS
        ============================================================ */
     :root{
-        --brand:#0e6e63;          /* deep clinical teal */
-        --brand-dark:#0a504a;
-        --brand-light:#e2f1ef;
-        --accent:#c26a2c;         /* warm clay, used sparingly */
+        --brand:#0f2e4a;          /* deep clinical teal */
+        --brand-dark:#0a1e30;
+        --brand-light:#e5eff5;
+        --accent:#00E5FF;         /* warm clay, used sparingly */
         --ink:#12211f;            /* near-black, green undertone */
         --ink-soft:#2f3d3a;
         --muted:#5c6d6a;
@@ -18,16 +18,16 @@
         --shadow:0 1px 2px rgba(18,33,31,.05), 0 1px 3px rgba(18,33,31,.06);
         --shadow-lg:0 18px 40px -22px rgba(14,110,99,.42);
         --maxw:1200px;
-        --sans:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-        --serif:'Outfit',Georgia,'Times New Roman',serif;
+        --sans:'Space Grotesk',system-ui,sans-serif;
+        --serif:'Merriweather',Georgia,serif;
     }
 
 
 body.dark {
-    --brand: #24a899;
+    --brand: #1b4b7a;
     --brand-dark: #168a7d;
     --brand-light: #163531;
-    --accent: #e59055;
+    --accent: #00E5FF;
     --ink: #f0f4f3;
     --ink-soft: #c1ccca;
     --muted: #8c9e9b;
@@ -544,10 +544,10 @@ body.dark .footer {
        DARK MODE — manual toggle via body.dark + auto fallback
        ============================================================ */
     body.dark{
-        --brand:#1a9b8e;
-        --brand-dark:#0e6e63;
-        --brand-light:#0d2e2a;
-        --accent:#d97e3a;
+        --brand:#0f2e4a;
+        --brand-dark:#0a1e30;
+        --brand-light:#e5eff5;
+        --accent:#00E5FF;
         --ink:#e4ebe9;
         --ink-soft:#b8c5c2;
         --muted:#7a8c88;
@@ -585,7 +585,7 @@ body.dark .footer {
     body.dark .status-draft{background:#232726;color:#a8b5b2}
     body.dark .errorlist,body.dark .rejection-reason{color:#e89090}
     @media(prefers-color-scheme:dark){
-        body:not(.light){ --brand:#1a9b8e;--brand-dark:#0e6e63;--brand-light:#0d2e2a;--accent:#d97e3a;--ink:#e4ebe9;--ink-soft:#b8c5c2;--muted:#7a8c88;--line:#1e2e2b;--bg:#0d1614;--bg-soft:#121e1c;--shadow:0 1px 3px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.15);--shadow-lg:0 8px 32px rgba(0,0,0,.3) }
+        body:not(.light){ --brand:#0f2e4a;--brand-dark:#0a1e30;--brand-light:#e5eff5;--accent:#00E5FF;--ink:#e4ebe9;--ink-soft:#b8c5c2;--muted:#7a8c88;--line:#1e2e2b;--bg:#0d1614;--bg-soft:#121e1c;--shadow:0 1px 3px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.15);--shadow-lg:0 8px 32px rgba(0,0,0,.3) }
         body:not(.light) .site-header{position:sticky;top:0;z-index:50;background:rgba(13,22,20,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 30px rgba(0,0,0,0.2);transition:all 0.3s ease;}
         body:not(.light) .header-nav-bar{background:rgba(13,22,20,.95)}
         body:not(.light) .card,body:not(.light) .aside-box,body:not(.light) .sidebar,body:not(.light) .metric,body:not(.light) .conf-card,body:not(.light) .person,body:not(.light) .collection-card,body:not(.light) .article-row,body:not(.light) .stat-card,body:not(.light) .auth-card,body:not(.light) .submit-form,body:not(.light) .jinfo,body:not(.light) .eic-card,body:not(.light) .nav-drop-menu,body:not(.light) .journal-nav{background:#101a18;border-color:var(--line)}
@@ -786,4 +786,95 @@ body:not(.dark) .doi-badge {
 body:not(.dark) .doi-badge .doi-label {
     background: var(--brand);
     color: #fff;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  33% { transform: scale(1.1) translate(2%, 3%); opacity: 0.6; }
+  66% { transform: scale(0.9) translate(-2%, -3%); opacity: 0.9; }
+  100% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--brand); 
+  color: #fff;
+  padding: 100px 0 90px;
+}
+.hero::before, .hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  animation: pulseGlow 15s infinite alternate ease-in-out;
+}
+.hero::before {
+  width: 400px;
+  height: 400px;
+  background: rgba(0, 229, 255, 0.15); /* Bioluminescent Teal */
+  top: -100px;
+  right: -100px;
+}
+.hero::after {
+  width: 500px;
+  height: 500px;
+  background: rgba(0, 229, 255, 0.1);
+  bottom: -200px;
+  left: -100px;
+  animation-delay: -7.5s;
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+body.dark .hero {
+  background-color: #071726; 
+}
+
+
+/* ============================================================
+   CLINICAL PRECISION LAYOUT UPDATES
+   ============================================================ */
+.card, .conf-card, .eic-card, .submit-info {
+  border: none !important;
+  background: var(--bg);
+  box-shadow: 0 4px 24px -8px rgba(15, 46, 74, 0.08) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+.card:hover, .conf-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 32px -8px rgba(15, 46, 74, 0.12) !important;
+}
+body.dark .card, body.dark .conf-card, body.dark .eic-card, body.dark .submit-info {
+  background: #131d26 !important; /* Slightly distinct from page bg */
+  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.3) !important;
+}
+.container {
+  max-width: 1280px !important; 
+}
+section {
+  padding: 100px 0 !important; 
+}
+.hero {
+  padding: 140px 0 120px !important; /* Extremely airy hero */
+}
+.site-header {
+  border-bottom: none !important;
+  box-shadow: 0 1px 0 0 rgba(15, 46, 74, 0.05);
+}
+body.dark .site-header {
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+.btn, .btn-primary, .btn-light {
+  border-radius: 8px !important;
+  font-family: var(--sans);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.btn-primary:hover {
+  background: var(--accent) !important;
+  color: #000 !important; /* Contrast against the bright teal */
 }
