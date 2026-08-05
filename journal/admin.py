@@ -172,9 +172,9 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(EditorialBoardMember)
 class EditorialBoardMemberAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'position_uz', 'academic_degree', 'is_editor_in_chief', 'order')
-    list_editable = ('is_editor_in_chief', 'order')
-    list_filter = ('is_editor_in_chief',)
+    list_display = ('full_name', 'position_uz', 'academic_degree', 'role', 'order')
+    list_editable = ('role', 'order')
+    list_filter = ('role',)
     search_fields = ('full_name', 'position_uz', 'academic_degree')
 
 
@@ -276,7 +276,7 @@ class JournalInfoAdmin(admin.ModelAdmin):
 
 
 
-admin.site.site_header = "Oncoscience — Ilmiy jurnal boshqaruvi"
+admin.site.site_header = "Central Asian Cancer Sciences — Ilmiy jurnal boshqaruvi"
 admin.site.site_title = "Oncoscience admin"
 admin.site.index_title = "Kontent boshqaruvi"
 

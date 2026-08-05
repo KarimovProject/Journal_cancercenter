@@ -76,7 +76,7 @@ def home(request):
         'latest_articles': articles[:5],
         'most_viewed': articles.order_by('-views_count')[:5],
         'categories': Category.objects.all(),
-        'editor_in_chief': EditorialBoardMember.objects.filter(is_editor_in_chief=True).first(),
+        'editor_in_chief': EditorialBoardMember.objects.filter(role=EditorialBoardMember.Role.EDITOR_IN_CHIEF).first(),
         'metrics': JournalMetric.objects.all(),
         'collections': Collection.objects.filter(status=Collection.Status.OPEN)[:3],
         'journal_updates': JournalUpdate.objects.filter(is_published=True)[:3],

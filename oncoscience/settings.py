@@ -172,7 +172,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'uz')
+LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'en')
 
 TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Tashkent')
 
@@ -255,7 +255,7 @@ EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
 
 # Public site domain used to build absolute URLs for SEO/Open Graph tags.
 SITE_DOMAIN = os.getenv('SITE_DOMAIN', 'http://localhost:8000')
-SITE_NAME = os.getenv('SITE_NAME', 'Oncoscience')
+SITE_NAME = os.getenv('SITE_NAME', 'Central Asian Cancer Sciences')
 
 # TinyMCE — WYSIWYG editor for article full text in the admin.
 TINYMCE_DEFAULT_CONFIG = {

@@ -13,8 +13,8 @@ def translated(instance, base):
     Fields are stored as ``<base>_uz``, ``<base>_ru``, ``<base>_en``.
     Falls back to Uzbek, then to any non-empty value.
     """
-    lang = (get_language() or 'uz')[:2]
-    order = [lang, 'uz', 'ru', 'en']
+    lang = (get_language() or 'en')[:2]
+    order = [lang, 'en', 'uz', 'ru']
     for code in order:
         value = getattr(instance, f'{base}_{code}', None)
         if value:
@@ -186,10 +186,13 @@ class Article(TimeStampedModel):
 
     class ArticleType(models.TextChoices):
         RESEARCH = 'research', _('Original tadqiqot')
+        SYSTEMATIC_REVIEW = 'systematic_review', _('Tizimli sharhlar')
+        CASE_REPORT = 'case_report', _('Klinik holat')
+        SHORT_COMMUNICATION = 'short_communication', _('Qisqa xabar')
         REVIEW = 'review', _('Sharh maqola')
-        CASE_REPORT = 'case_report', _('Klinik kuzatuv')
-        EDITORIAL = 'editorial', _('Muharrir maqolasi')
-        CLINICAL_TRIAL = 'clinical_trial', _('Klinik sinov')
+        CLINICAL_GUIDELINE = 'clinical_guideline', _('Klinik ko\'rsatmalar')
+        PERSPECTIVE = 'perspective', _('Perspektiva')
+        LETTER = 'letter', _('Muharrirga xat')
         OTHER = 'other', _('Boshqa')
 
     title_uz = models.CharField(_('Sarlavha (uz)'), max_length=500)
@@ -218,6 +221,8 @@ class Article(TimeStampedModel):
     ethics_statement_uz = models.TextField(_('Etika bayonoti (uz)'), blank=True)
     ethics_statement_ru = models.TextField(_('Etika bayonoti (ru)'), blank=True)
     ethics_statement_en = models.TextField(_('Etika bayonoti (en)'), blank=True)
+    ai_disclosure = models.TextField(_('Sun\'iy intellekt deklaratsiyasi'), blank=True, help_text=_('Tadqiqotda AI dan qanday foydalanilganligi.'))
+    plagiarism_score = models.PositiveIntegerField(_('Plagiat foizi (%)'), blank=True, null=True, help_text=_('iThenticate plagiat tekshiruvi natijasi.'))
 
     corresponding_author = models.ForeignKey(
         Author, related_name='corresponding_articles', on_delete=models.SET_NULL,
@@ -346,7 +351,7 @@ class Article(TimeStampedModel):
             author_str = f"{names[0]}."
         else:
             author_str = ""
-        cite = f'{author_str} "{self.title}." Oncoscience'
+        cite = f'{author_str} "{self.title}." Central Asian Cancer Sciences'
         if self.issue:
             cite += f', vol. {self.issue.volume}, no. {self.issue.number}'
         if self.year:
@@ -362,7 +367,7 @@ class Article(TimeStampedModel):
         names = [a.full_name for a in self.authors.all()]
         author_str = ' and '.join(names) if names else ''
         year = self.year or ''
-        cite = f"{author_str} ({year}) '{self.title}', Oncoscience"
+        cite = f"{author_str} ({year}) '{self.title}', Central Asian Cancer Sciences"
         if self.issue:
             cite += f', {self.issue.volume}({self.issue.number})'
         if self.pages:
@@ -376,7 +381,7 @@ class Article(TimeStampedModel):
     def citation_vancouver(self):
         names = [a.full_name for a in self.authors.all()]
         author_str = ', '.join(names) if names else ''
-        cite = f"{author_str}. {self.title}. Oncoscience."
+        cite = f"{author_str}. {self.title}. Central Asian Cancer Sciences."
         if self.year:
             cite += f" {self.year};"
         if self.issue:
@@ -391,7 +396,7 @@ class Article(TimeStampedModel):
         lines = [
             "TY  - JOUR",
             f"T1  - {self.title}",
-            "JO  - Oncoscience"
+            "JO  - Central Asian Cancer Sciences"
         ]
         for a in self.authors.all():
             lines.append(f"AU  - {a.full_name}")
@@ -529,7 +534,14 @@ class EditorialBoardMember(models.Model):
     photo = models.ImageField(_('Rasm'), upload_to='board/', blank=True, null=True)
     email = models.EmailField(_('Email'), blank=True)
     orcid_id = models.CharField(_('ORCID iD'), max_length=25, blank=True)
-    is_editor_in_chief = models.BooleanField(_('Bosh muharrir'), default=False)
+    class Role(models.TextChoices):
+        EDITOR_IN_CHIEF = 'editor_in_chief', _('Bosh muharrir')
+        ASSOCIATE_EDITOR = 'associate_editor', _('Bosh muharrir o\'rinbosari')
+        SECTION_EDITOR = 'section_editor', _('Bo\'lim muharriri')
+        MEMBER = 'member', _('Hay\'at a\'zosi')
+        SECRETARY = 'secretary', _('Tahririyat kotibi')
+        
+    role = models.CharField(_('Lavozim (Nizom bo\'yicha)'), max_length=30, choices=Role.choices, default=Role.MEMBER)
     order = models.PositiveIntegerField(_('Tartib'), default=0)
 
     class Meta:
