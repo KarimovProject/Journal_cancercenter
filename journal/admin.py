@@ -105,7 +105,7 @@ class ReviewInline(admin.TabularInline):
 class ArticleAdmin(admin.ModelAdmin):
     form = ArticleAdminForm
     inlines = (ArticleFigureInline, ReferenceInline, SupplementaryFileInline, ReviewInline)
-    list_display = ('title_uz', 'status', 'reviewer_status', 'article_type', 'is_open_access', 'category', 'submitted_by', 'publication_date', 'views_count')
+    list_display = ('title_uz', 'status', 'reviewer_status', 'article_type', 'is_open_access', 'category', 'plagiarism_score', 'submitted_by', 'publication_date', 'views_count')
     list_filter = ('status', 'article_type', 'is_open_access', 'category', 'issue', 'submitted_by', 'publication_date')
     search_fields = ('title_uz', 'title_ru', 'title_en', 'abstract_uz', 'doi')
     autocomplete_fields = ('authors', 'keywords', 'category', 'issue', 'corresponding_author')
