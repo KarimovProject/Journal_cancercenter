@@ -123,6 +123,7 @@ class ArticleAdmin(admin.ModelAdmin):
                 'funding_statement_uz', 'funding_statement_ru', 'funding_statement_en',
                 'conflict_of_interest_uz', 'conflict_of_interest_ru', 'conflict_of_interest_en',
                 'ethics_statement_uz', 'ethics_statement_ru', 'ethics_statement_en',
+                'ai_disclosure', 'plagiarism_score',
             ),
             'classes': ('collapse',),
         }),
