@@ -1121,3 +1121,21 @@ msgstr "результат(ов)"
 
 msgid "va boshqalar"
 msgstr "и др."
+
+msgid "Moliyalashtirish (ixtiyoriy)"
+msgstr "Финансирование (необязательно)"
+
+msgid "Manfaatlar toʻqnashuvi (ixtiyoriy)"
+msgstr "Конфликт интересов (необязательно)"
+
+msgid "Etika bayonoti (ixtiyoriy)"
+msgstr "Заявление об этике (необязательно)"
+
+msgid "Rasm (ixtiyoriy)"
+msgstr "Фото (необязательно)"
+
+msgid "Muallif uchun izohlar (Majburiy emas)"
+msgstr "Комментарии для автора (Необязательно)"
+
+msgid "Muharrir uchun xufyona izohlar (Majburiy emas)"
+msgstr "Конфиденциальные комментарии для редактора (Необязательно)"

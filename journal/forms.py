@@ -149,29 +149,29 @@ class ArticleSubmissionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['title_uz'].label = 'Sarlavha (uz) *'
-        self.fields['title_ru'].label = 'Sarlavha (ru)'
-        self.fields['title_en'].label = 'Sarlavha (en)'
-        self.fields['abstract_uz'].label = 'Annotatsiya (uz) *'
-        self.fields['abstract_ru'].label = 'Annotatsiya (ru)'
-        self.fields['abstract_en'].label = 'Annotatsiya (en)'
-        self.fields['article_type'].label = 'Maqola turi *'
-        self.fields['category'].label = 'Yoʻnalish *'
-        self.fields['doi'].label = 'DOI (ixtiyoriy)'
-        self.fields['doi'].help_text = 'Masalan: 10.1234/oncoscience.2025.01.005 — tahririyat beradi, boʻlmasa boʻsh qoldiring'
-        self.fields['thumbnail_image'].label = 'Kichik rasm (ixtiyoriy)'
-        self.fields['pdf_file'].label = 'PDF fayl *'
+        self.fields['title_uz'].label = str(_('Sarlavha (uz)')) + ' *'
+        self.fields['title_ru'].label = str(_('Sarlavha (ru)'))
+        self.fields['title_en'].label = str(_('Sarlavha (en)'))
+        self.fields['abstract_uz'].label = str(_('Annotatsiya (uz)')) + ' *'
+        self.fields['abstract_ru'].label = str(_('Annotatsiya (ru)'))
+        self.fields['abstract_en'].label = str(_('Annotatsiya (en)'))
+        self.fields['article_type'].label = str(_('Maqola turi')) + ' *'
+        self.fields['category'].label = str(_('Yoʻnalish')) + ' *'
+        self.fields['doi'].label = str(_('DOI (ixtiyoriy)'))
+        self.fields['doi'].help_text = str(_('Masalan: 10.1234/oncoscience.2025.01.005 — tahririyat beradi, boʻlmasa boʻsh qoldiring'))
+        self.fields['thumbnail_image'].label = str(_('Kichik rasm (ixtiyoriy)'))
+        self.fields['pdf_file'].label = str(_('PDF fayl')) + ' *'
         self.fields['doi'].required = False
         self.fields['thumbnail_image'].required = False
-        self.fields['full_text_uz'].label = 'To\u02bbliq matn (uz)'
-        self.fields['full_text_ru'].label = 'To\u02bbliq matn (ru)'
-        self.fields['full_text_en'].label = 'To\u02bbliq matn (en)'
+        self.fields['full_text_uz'].label = str(_('Toʻliq matn (uz)'))
+        self.fields['full_text_ru'].label = str(_('Toʻliq matn (ru)'))
+        self.fields['full_text_en'].label = str(_('Toʻliq matn (en)'))
         self.fields['full_text_uz'].required = False
         self.fields['full_text_ru'].required = False
         self.fields['full_text_en'].required = False
-        self.fields['funding_statement_uz'].label = 'Moliyalashtirish (ixtiyoriy)'
-        self.fields['conflict_of_interest_uz'].label = 'Manfaatlar to\u02bbqnashuvi (ixtiyoriy)'
-        self.fields['ethics_statement_uz'].label = 'Etika bayonoti (ixtiyoriy)'
+        self.fields['funding_statement_uz'].label = str(_('Moliyalashtirish (ixtiyoriy)'))
+        self.fields['conflict_of_interest_uz'].label = str(_('Manfaatlar to\u02bbqnashuvi (ixtiyoriy)'))
+        self.fields['ethics_statement_uz'].label = str(_('Etika bayonoti (ixtiyoriy)'))
         for name in ('funding_statement_uz', 'conflict_of_interest_uz', 'ethics_statement_uz'):
             self.fields[name].required = False
 
@@ -265,14 +265,14 @@ class AuthorProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['full_name'].label = 'F.I.O. *'
-        self.fields['academic_degree'].label = 'Ilmiy daraja'
-        self.fields['affiliation_uz'].label = 'Ish joyi/lavozimi (uz)'
-        self.fields['affiliation_ru'].label = 'Ish joyi/lavozimi (ru)'
-        self.fields['affiliation_en'].label = 'Ish joyi/lavozimi (en)'
-        self.fields['orcid_id'].label = 'ORCID iD'
-        self.fields['email'].label = 'Email'
-        self.fields['photo'].label = 'Rasm (ixtiyoriy)'
+        self.fields['full_name'].label = str(_('F.I.O.')) + ' *'
+        self.fields['academic_degree'].label = str(_('Ilmiy daraja'))
+        self.fields['affiliation_uz'].label = str(_('Ish joyi/lavozimi (uz)'))
+        self.fields['affiliation_ru'].label = str(_('Ish joyi/lavozimi (ru)'))
+        self.fields['affiliation_en'].label = str(_('Ish joyi/lavozimi (en)'))
+        self.fields['orcid_id'].label = str(_('ORCID iD'))
+        self.fields['email'].label = str(_('Email'))
+        self.fields['photo'].label = str(_('Rasm (ixtiyoriy)'))
         self.fields['photo'].required = False
 
 
@@ -289,10 +289,10 @@ class ReviewForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['decision'].label = 'Xulosa *'
-        self.fields['comments_for_author'].label = 'Muallif uchun izohlar (Majburiy emas)'
+        self.fields['decision'].label = str(_('Xulosa')) + ' *'
+        self.fields['comments_for_author'].label = str(_('Muallif uchun izohlar (Majburiy emas)'))
         self.fields['comments_for_author'].required = False
-        self.fields['comments_for_editor'].label = 'Muharrir uchun xufyona izohlar (Majburiy emas)'
+        self.fields['comments_for_editor'].label = str(_('Muharrir uchun xufyona izohlar (Majburiy emas)'))
         self.fields['comments_for_editor'].required = False
 
 

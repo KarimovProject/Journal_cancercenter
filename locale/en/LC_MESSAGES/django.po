@@ -1118,3 +1118,21 @@ msgstr "result(s)"
 
 msgid "va boshqalar"
 msgstr "et al."
+
+msgid "Moliyalashtirish (ixtiyoriy)"
+msgstr "Funding (optional)"
+
+msgid "Manfaatlar toʻqnashuvi (ixtiyoriy)"
+msgstr "Conflict of interest (optional)"
+
+msgid "Etika bayonoti (ixtiyoriy)"
+msgstr "Ethics statement (optional)"
+
+msgid "Rasm (ixtiyoriy)"
+msgstr "Photo (optional)"
+
+msgid "Muallif uchun izohlar (Majburiy emas)"
+msgstr "Comments for author (Optional)"
+
+msgid "Muharrir uchun xufyona izohlar (Majburiy emas)"
+msgstr "Confidential comments for editor (Optional)"
