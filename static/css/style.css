@@ -805,11 +805,6 @@ body:not(.dark) .doi-badge .doi-label {
 }
 
 
-  33% { transform: scale(1.1) translate(2%, 3%); opacity: 0.6; }
-  66% { transform: scale(0.9) translate(-2%, -3%); opacity: 0.9; }
-  100% { transform: scale(1) translate(0, 0); opacity: 0.8; }
-}
-
 .hero {
   position: relative;
   overflow: hidden;
