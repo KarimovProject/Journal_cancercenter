@@ -71,28 +71,32 @@ def _published_articles():
 
 
 def home(request):
-    articles = _published_articles()
-    context = {
-        'latest_articles': articles[:5],
-        'most_viewed': articles.order_by('-views_count')[:5],
-        'categories': Category.objects.all(),
-        'editor_in_chief': EditorialBoardMember.objects.filter(role=EditorialBoardMember.Role.EDITOR_IN_CHIEF).first(),
-        'metrics': JournalMetric.objects.all(),
-        'collections': Collection.objects.filter(status=Collection.Status.OPEN)[:3],
-        'journal_updates': JournalUpdate.objects.filter(is_published=True)[:3],
-        'upcoming_conferences': Conference.objects.filter(
-            date_start__gte=timezone.now().date()
-        ).order_by('date_start')[:3],
-        'latest_issue': Issue.objects.first(),
-        'stats': {
-            'articles': articles.count(),
-            'authors': Author.objects.count(),
-            'categories': Category.objects.count(),
-            'editors': EditorialBoardMember.objects.count(),
-        },
-        'meta_description': 'Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya '
-                            'Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi.',
-    }
+    context = cache.get('homepage_context')
+    if not context:
+        articles = _published_articles()
+        context = {
+            'latest_articles': list(articles[:5]),
+            'most_viewed': list(articles.order_by('-views_count')[:5]),
+            'categories': list(Category.objects.all()),
+            'editor_in_chief': EditorialBoardMember.objects.filter(role=EditorialBoardMember.Role.EDITOR_IN_CHIEF).first(),
+            'metrics': list(JournalMetric.objects.all()),
+            'collections': list(Collection.objects.filter(status=Collection.Status.OPEN)[:3]),
+            'journal_updates': list(JournalUpdate.objects.filter(is_published=True)[:3]),
+            'upcoming_conferences': list(Conference.objects.filter(
+                date_start__gte=timezone.now().date()
+            ).order_by('date_start')[:3]),
+            'latest_issue': Issue.objects.first(),
+            'stats': {
+                'articles': articles.count(),
+                'authors': Author.objects.count(),
+                'categories': Category.objects.count(),
+                'editors': EditorialBoardMember.objects.count(),
+            },
+            'meta_description': 'Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya '
+                                'Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi.',
+        }
+        cache.set('homepage_context', context, 60 * 15)
+        
     return render(request, 'journal/home.html', context)
 
 
