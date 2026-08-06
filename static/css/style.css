@@ -844,7 +844,7 @@ body.dark .card, body.dark .conf-card, body.dark .eic-card, body.dark .submit-in
   border: 1px solid rgba(255,255,255,0.05) !important;
 }
 .container {
-  max-width: 1280px !important; 
+  max-width: 1536px !important; 
 }
 section {
   padding: 100px 0 !important; 
