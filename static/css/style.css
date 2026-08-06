@@ -713,6 +713,17 @@ body.dark .footer {
       color: var(--accent);
       background: rgba(255,255,255,0.05);
   }
+  body:not(.dark) .header-nav-bar .nav-drop-menu {
+      background: #ffffff;
+  }
+  body:not(.dark) .header-nav-bar .nav-drop-menu a {
+      color: var(--ink);
+      background: transparent;
+  }
+  body:not(.dark) .header-nav-bar .nav-drop-menu a:hover {
+      color: var(--brand);
+      background: var(--bg-soft);
+  }
   body:not(.dark) .header-search input {
       background: var(--bg-soft);
       color: var(--ink);
