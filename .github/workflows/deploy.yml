@@ -33,3 +33,5 @@ jobs:
           sudo k3s kubectl apply -f k8s.yaml
           sudo k3s kubectl rollout restart deployment/oncoscience-web
           sudo k3s kubectl rollout restart deployment/oncoscience-celery || true
+          sleep 15
+          sudo k3s kubectl logs deployment/oncoscience-web > /home/satosylv/Journal_cancercenter/migration.log || true
