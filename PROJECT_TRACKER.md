@@ -15,7 +15,7 @@ Ushbu fayl loyihada avval nima qilingani, hozirda qanday jarayon ketyotgani va k
 
 ## 🔴 Kelajakdagi rejalar (Qilinishi kerak)
 - [x] Ma'lumotlar bazasini avtomatik zaxiralash (Kunlik Postgres zaxirasi Telegram bot orqali yuborilishi Kubernetes CronJob orqali yo'lga qo'yilgan).
-- [ ] Saytning ishlash tezligi va xavfsizligini (SEO, SSL qoidalari, CORS) yana bir bor chuqur tahlil qilish (Audit).
-- [ ] Foydalanuvchilar tomonidan berilgan yangi funksional talablarni (Feature requests) ro'yxatga olish va ishlab chiqish.
+- [x] Saytning ishlash tezligi va xavfsizligini (SEO, SSL qoidalari, CORS) yana bir bor chuqur tahlil qilish (Audit o'tkazildi, Xavfsizlik sarlavhalari va Sitemap qo'shildi).
+- [x] Foydalanuvchilar tomonidan berilgan yangi funksional talablarni (Feature requests) ro'yxatga olish va ishlab chiqish (Taklif yuborish sahifasi va Admin paneli yaratildi).
 
 *Eslatma: Ushbu fayl loyiha ustida ishlovchi dasturchilar (yoki sun'iy intellekt agentlari) loyiha tarixini va joriy maqsadlarni tushunib olishi uchun har bir muhim o'zgarishdan so'ng yangilab borilishi tavsiya etiladi.*
