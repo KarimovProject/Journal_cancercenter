@@ -29,6 +29,7 @@ from .public import (  # noqa: F401
     collection_detail,
     custom_404,
     custom_500,
+    feedback_view,
 )
 
 # Autentifikatsiya va newsletter

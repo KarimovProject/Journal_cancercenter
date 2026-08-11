@@ -13,6 +13,7 @@ from .models import (
     Collection,
     Conference,
     EditorialBoardMember,
+    FeatureRequest,
     Grant,
     Issue,
     JournalInfo,
@@ -20,6 +21,7 @@ from .models import (
     JournalUpdate,
     Keyword,
     NewsletterSubscription,
+    Notification,
     PostgraduateProgram,
     Reference,
     Review,
@@ -305,3 +307,11 @@ class LogEntryAdmin(admin.ModelAdmin):
     def has_view_permission(self, request, obj=None):
         return request.user.is_superuser
 
+
+@admin.register(FeatureRequest)
+class FeatureRequestAdmin(admin.ModelAdmin):
+    list_display = ('title', 'name', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('title', 'name', 'email', 'description')
+    readonly_fields = ('created_at',)
+    list_editable = ('status',)

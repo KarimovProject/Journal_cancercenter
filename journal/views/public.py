@@ -318,3 +318,17 @@ def custom_404(request, exception=None):
 
 def custom_500(request):
     return render(request, 'journal/500.html', status=500)
+from django.contrib import messages
+from ..forms import FeatureRequestForm
+
+def feedback_view(request):
+    if request.method == 'POST':
+        form = FeatureRequestForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Taklifingiz muvaffaqiyatli yuborildi. Rahmat!')
+            form = FeatureRequestForm() # reset
+    else:
+        form = FeatureRequestForm()
+    
+    return render(request, 'journal/feedback.html', {'form': form})

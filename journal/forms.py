@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from tinymce.widgets import TinyMCE
 
-from .models import Article, ArticleFigure, ArticleSupplementaryFile, Author, Reference, Issue, Keyword, Review
+from .models import Article, ArticleFigure, ArticleSupplementaryFile, Author, Reference, Issue, Keyword, Review, FeatureRequest
 
 
 class RegistrationForm(forms.Form):
@@ -338,3 +338,14 @@ ArticleSupplementaryFileFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
+class FeatureRequestForm(forms.ModelForm):
+    class Meta:
+        model = FeatureRequest
+        fields = ['name', 'email', 'title', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Ismingiz')}),
+            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': _('Email manzilingiz')}),
+            'title': forms.TextInput(attrs={'class': 'form-input', 'placeholder': _('Taklif qisqacha mavzusi')}),
+            'description': forms.Textarea(attrs={'class': 'form-input', 'rows': 5, 'placeholder': _('Taklif yoki xatolik haqida batafsil')}),
+        }

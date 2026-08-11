@@ -958,3 +958,27 @@ class Notification(models.Model):
 
     def __str__(self):
             return f'{self.user.username} - {self.created_at.strftime("%Y-%m-%d")}'
+
+class FeatureRequest(models.Model):
+    """Foydalanuvchilar tomonidan kiritilgan takliflar va xatoliklar."""
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', _('Kutilmoqda')
+        IN_PROGRESS = 'in_progress', _('Jarayonda')
+        COMPLETED = 'completed', _('Bajarildi')
+        REJECTED = 'rejected', _('Rad etildi')
+
+    name = models.CharField(_('Ismingiz'), max_length=150)
+    email = models.EmailField(_('Email manzilingiz'))
+    title = models.CharField(_('Taklif mavzusi'), max_length=255)
+    description = models.TextField(_('Batafsil matn'))
+    status = models.CharField(_('Holat'), max_length=20, choices=Status.choices, default=Status.PENDING)
+    created_at = models.DateTimeField(_('Yuborilgan vaqt'), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Sayt taklifi')
+        verbose_name_plural = _('Sayt takliflari')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} ({self.get_status_display()})"

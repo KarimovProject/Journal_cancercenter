@@ -65,4 +65,7 @@ urlpatterns = [
     path('dashboard/editor/article/<int:pk>/', views.editor_article_detail, name='editor_article_detail'),
     path('dashboard/editor/article/<int:pk>/assign/', views.editor_assign_reviewer, name='editor_assign_reviewer'),
     path('dashboard/editor/article/<int:pk>/decision/', views.editor_make_decision, name='editor_make_decision'),
+    
+    # Feedback
+    path('taklif-yuborish/', views.feedback_view, name='feedback'),
 ]
