@@ -22,13 +22,13 @@ if [ "$USER_COUNT" -eq "0" ] && [ -f "/app/db.sqlite3" ]; then
     # Dumpdata from SQLite
     export DJANGO_SETTINGS_MODULE=oncoscience.settings.sqlite
     echo "Dumping SQLite data to /tmp/datadump.json..."
-    python manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission -e admin.logentry --indent 4 > /tmp/datadump.json
+    python manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission -e admin.logentry -e sessions.session --indent 4 > /tmp/datadump.json 2>> /app/media/migration.log
     
     if [ -s "/tmp/datadump.json" ]; then
         # Loaddata into PostgreSQL
         export DJANGO_SETTINGS_MODULE=oncoscience.settings.prod
         echo "Loading JSON into PostgreSQL..."
-        python manage.py loaddata /tmp/datadump.json
+        python manage.py loaddata /tmp/datadump.json >> /app/media/migration.log 2>&1
         echo "Data migration complete!"
     else
         echo "SQLite dump failed or was empty."

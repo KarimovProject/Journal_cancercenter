@@ -92,7 +92,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: oncoscience-postgres-pvc
+  name: oncoscience-postgres-pvc-v2
 spec:
   accessModes:
     - ReadWriteOnce
@@ -134,7 +134,7 @@ spec:
       volumes:
       - name: postgres-data
         persistentVolumeClaim:
-          claimName: oncoscience-postgres-pvc
+          claimName: oncoscience-postgres-pvc-v2
 ---
 apiVersion: v1
 kind: Service
