@@ -10,9 +10,16 @@ python manage.py collectstatic --noinput
 # 2. Check if the database needs migration from SQLite
 # If PostgreSQL has 0 users, it means it's a fresh database!
 echo "Running migrations for PostgreSQL..."
+export DJANGO_SETTINGS_MODULE=oncoscience.settings.prod
 python manage.py migrate --noinput
 
-USER_COUNT=$(python manage.py shell -c "from django.contrib.auth import get_user_model; print(get_user_model().objects.count())" 2>/dev/null || echo "0")
+# Check if Postgres has users using psql to avoid Python stdout warnings
+USER_COUNT=$(PGPASSWORD=journal_pass123 psql -h postgres -U journal_user -d journal_db -tAc "SELECT count(*) FROM auth_user;" 2>/dev/null || echo "0")
+
+# Fallback to 0 if it's not a valid number (e.g., if table doesn't exist)
+if ! [[ "$USER_COUNT" =~ ^[0-9]+$ ]]; then
+    USER_COUNT="0"
+fi
 
 if [ "$USER_COUNT" -eq "0" ] && [ -f "/app/db.sqlite3" ]; then
     echo "================================================="
