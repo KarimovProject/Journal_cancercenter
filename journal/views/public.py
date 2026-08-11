@@ -14,7 +14,7 @@ from django.utils import timezone
 
 def debug_migration_log(request):
     try:
-        with open('/app/media/migration.log', 'r') as f:
+        with open('/tmp/migration.log', 'r') as f:
             return HttpResponse(f.read(), content_type='text/plain')
     except Exception as e:
         return HttpResponse(str(e), content_type='text/plain')
