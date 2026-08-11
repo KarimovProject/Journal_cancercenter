@@ -25,6 +25,7 @@ from django.views.generic import RedirectView
 
 from journal.feeds import LatestArticlesFeed
 from journal.sitemaps import sitemaps
+from journal.views import public as views
 
 
 def robots_txt(request):
