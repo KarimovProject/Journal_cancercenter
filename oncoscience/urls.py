@@ -43,7 +43,6 @@ def robots_txt(request):
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/ilm-fan/', permanent=False)),
-    path('debug-migration/', views.debug_migration_log),
     path(os.getenv('ADMIN_URL_PATH', 'boshqaruv-markazi/'), admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
