@@ -14,7 +14,7 @@ Ushbu fayl loyihada avval nima qilingani, hozirda qanday jarayon ketyotgani va k
 - **Kichik xatolarni tuzatish:** Foydalanuvchilar tomonidan yoki test jarayonida chiqishi mumkin bo'lgan kichik bug'larni aniqlash va darhol bartaraf etish.
 
 ## 🔴 Kelajakdagi rejalar (Qilinishi kerak)
-- [x] Ma'lumotlar bazasini zaxiralash (Migratsiya vaqtida SQLite ma'lumotlari to'liq JSON formatida zaxiralab olindi). Kelajakda PostgreSQL uchun kunlik avtomatik zaxiralash (cron-job) qo'shish mumkin.
+- [x] Ma'lumotlar bazasini avtomatik zaxiralash (Kunlik Postgres zaxirasi Telegram bot orqali yuborilishi Kubernetes CronJob orqali yo'lga qo'yilgan).
 - [ ] Saytning ishlash tezligi va xavfsizligini (SEO, SSL qoidalari, CORS) yana bir bor chuqur tahlil qilish (Audit).
 - [ ] Foydalanuvchilar tomonidan berilgan yangi funksional talablarni (Feature requests) ro'yxatga olish va ishlab chiqish.
 
