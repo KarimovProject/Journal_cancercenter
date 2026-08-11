@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+set -x
+exec > /app/media/migration.log 2>&1
 
 echo "Starting server initialization..."
 
