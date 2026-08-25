@@ -55,3 +55,16 @@ try:
     INTERNAL_IPS = ['127.0.0.1']
 except ImportError:
     pass
+
+# Dev rejimida Redis shart emas — oddiy xotira cache ishlatiladi
+# Bu "Error 10061 connecting to localhost:6379" xatosini hal qiladi
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'dev-cache',
+    }
+}
+
+# Celery — dev rejimida tasklar sinxron bajariladi (broker shart emas)
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True

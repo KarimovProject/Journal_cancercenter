@@ -26,7 +26,7 @@ def is_editor(user):
 # Notifications
 # ---------------------------------------------------------------------------
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def read_notification(request, notif_id):
     from ..models import Notification
     notif = get_object_or_404(Notification, id=notif_id, user=request.user)
@@ -41,7 +41,7 @@ def read_notification(request, notif_id):
 # Peer Review
 # ---------------------------------------------------------------------------
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def reviewer_dashboard(request):
     from ..models import Notification
     Notification.objects.filter(
@@ -62,7 +62,7 @@ def reviewer_dashboard(request):
     return render(request, 'journal/reviewer_dashboard.html', context)
 
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def review_article(request, pk):
     review = get_object_or_404(
         Review.objects.select_related('article', 'reviewer'),
@@ -137,7 +137,7 @@ def admin_stats_api(request):
 # Editorial Dashboard
 # ---------------------------------------------------------------------------
 
-@user_passes_test(is_editor, login_url='/kirish/')
+@user_passes_test(is_editor)
 def editor_dashboard(request):
     articles = (
         Article.objects
@@ -145,11 +145,12 @@ def editor_dashboard(request):
         .prefetch_related('authors')
         .order_by('-created_at')
     )
+    # FIX: Article.Status enum ishlatildi — string literal emas
     stats = {
-        'new_submissions': articles.filter(status='SUBMITTED').count(),
-        'under_review': articles.filter(status='UNDER_REVIEW').count(),
-        'accepted': articles.filter(status='ACCEPTED').count(),
-        'rejected': articles.filter(status='REJECTED').count(),
+        'new_submissions': articles.filter(status=Article.Status.DRAFT).count(),
+        'under_review': articles.filter(status=Article.Status.REVIEW).count(),
+        'published': articles.filter(status=Article.Status.PUBLISHED).count(),
+        'rejected': articles.filter(status=Article.Status.REJECTED).count(),
     }
     context = {
         'articles': articles,
@@ -158,7 +159,7 @@ def editor_dashboard(request):
     return render(request, 'journal/dashboard/editor_dashboard.html', context)
 
 
-@user_passes_test(is_editor, login_url='/kirish/')
+@user_passes_test(is_editor)
 def editor_article_detail(request, pk):
     article = get_object_or_404(
         Article.objects
@@ -179,14 +180,18 @@ def editor_article_detail(request, pk):
     return render(request, 'journal/dashboard/editor_article_detail.html', context)
 
 
-@user_passes_test(is_editor, login_url='/kirish/')
+@user_passes_test(is_editor)
 def editor_assign_reviewer(request, pk):
     article = get_object_or_404(Article, pk=pk)
-    author_ids = article.authors.values_list('id', flat=True)
+    # ORM: select_related va exclude — maqola mualliflari taqrizchi bo'la olmaydi
+    author_user_ids = article.authors.filter(
+        user__isnull=False
+    ).values_list('user_id', flat=True)
+
     users = (
         User.objects
         .filter(is_active=True)
-        .exclude(id__in=author_ids)
+        .exclude(id__in=author_user_ids)
         .order_by('first_name', 'username')
     )
 
@@ -194,15 +199,22 @@ def editor_assign_reviewer(request, pk):
         reviewer_id = request.POST.get('reviewer')
         if reviewer_id:
             reviewer = get_object_or_404(User, id=reviewer_id)
-            Review.objects.create(article=article, reviewer=reviewer, status='ASSIGNED')
-
-            if article.status == 'SUBMITTED':
-                article.status = 'UNDER_REVIEW'
-                article.save()
+            # FIX: Review modelida 'status' yo'q — 'decision' ishlatiladi
+            Review.objects.create(
+                article=article,
+                reviewer=reviewer,
+                decision=Review.Decision.PENDING,  # Yangi taqriz — kutilmoqda
+            )
+            # FIX: Article.Status enum ishlatildi
+            if article.status == Article.Status.DRAFT:
+                article.status = Article.Status.REVIEW
+                article.save(update_fields=['status'])
 
             messages.success(
                 request,
-                f"Reviewer {reviewer.get_full_name() or reviewer.username} assigned successfully.",
+                _("Taqrizchi {} muvaffaqiyatli tayinlandi.").format(
+                    reviewer.get_full_name() or reviewer.username
+                ),
             )
             return redirect('journal:editor_article_detail', pk=article.pk)
 
@@ -213,19 +225,28 @@ def editor_assign_reviewer(request, pk):
     return render(request, 'journal/dashboard/editor_assign_reviewer.html', context)
 
 
-@user_passes_test(is_editor, login_url='/kirish/')
+@user_passes_test(is_editor)
 def editor_make_decision(request, pk):
     article = get_object_or_404(Article, pk=pk)
 
     if request.method == 'POST':
         new_status = request.POST.get('status')
+        rejection_reason = request.POST.get('rejection_reason', '').strip()
+
         if new_status and new_status in dict(Article.Status.choices):
             article.status = new_status
+            # FIX: Rad etilganda sabab saqlanadi
+            if new_status == Article.Status.REJECTED and rejection_reason:
+                article.rejection_reason = rejection_reason
             article.save()
-            messages.success(request, f"Article status updated to {article.get_status_display()}.")
+            messages.success(
+                request,
+                _("Maqola holati '{}'ga o'zgartirildi.").format(article.get_status_display())
+            )
             return redirect('journal:editor_article_detail', pk=article.pk)
 
     context = {
         'article': article,
+        'status_choices': Article.Status.choices,
     }
     return render(request, 'journal/dashboard/editor_make_decision.html', context)

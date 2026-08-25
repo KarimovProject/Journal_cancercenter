@@ -42,8 +42,16 @@ INSTALLED_APPS = [
     'tinymce',
     'django.contrib.sitemaps',
     # Local
+    'core',    # Unified exceptions, pagination
     'journal',
+    'django_cleanup.apps.CleanupConfig',  # Must be last
 ]
+
+# Authentication URLs — yagona manba (DRY)
+# @login_required dekoratorlar ushbu URL'dan foydalanadi
+LOGIN_URL = '/ilm-fan/kirish/'
+LOGIN_REDIRECT_URL = '/ilm-fan/'
+LOGOUT_REDIRECT_URL = '/ilm-fan/'
 
 MIDDLEWARE = [
     'axes.middleware.AxesMiddleware',
@@ -126,7 +134,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # Yagona xatolik formati (Unified Error Responses) — core/exceptions.py
+    'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
+    # Standart sahifalash — core/pagination.py
+    'DEFAULT_PAGINATION_CLASS': 'core.pagination.StandardResultsPagination',
     'PAGE_SIZE': 12,
     # Throttling — API suiiste'molini oldini olish
     'DEFAULT_THROTTLE_CLASSES': [

@@ -15,7 +15,14 @@
 <div class="container" style="padding-top:36px; padding-bottom:56px;">
 <div class="list-layout">
     <aside class="sidebar">
-        <form method="get" action="{% url 'journal:article_list' %}">
+        <form id="filter-form"
+              hx-get="{% url 'journal:article_list' %}"
+              hx-target="#articles-wrapper"
+              hx-trigger="change from:select, keyup delay:400ms from:input"
+              hx-push-url="true"
+              hx-indicator="#htmx-loader"
+              method="get"
+              action="{% url 'journal:article_list' %}">
             <div class="filter-group">
                 <h4>{% trans "Qidiruv" %}</h4>
                 <input type="text" name="q" value="{{ request.GET.q }}" placeholder="{% trans 'Kalit soʻz...' %}">
@@ -42,17 +49,24 @@
                 <label>{% trans "Muallif" %}</label>
                 <input type="text" name="author" value="{{ request.GET.author }}" placeholder="{% trans 'Muallif FISH...' %}">
             </div>
-            <button type="submit" class="btn" style="width:100%;">{% trans "Filtrlash" %}</button>
+            <noscript>
+                <button type="submit" class="btn" style="width:100%;">{% trans "Filtrlash" %}</button>
+            </noscript>
             {% if querystring %}<a href="{% url 'journal:article_list' %}" class="btn btn-outline btn-sm" style="width:100%; margin-top:8px; justify-content:center;">{% trans "Tozalash" %}</a>{% endif %}
         </form>
     </aside>
 
     <div>
         <div class="result-bar">
-            <span class="count">{{ total }} {% trans "ta natija" %}</span>
-            <form method="get" id="sortForm">
+            <span id="htmx-loader" class="htmx-indicator" style="font-size:0.85rem; color: var(--accent);">
+                {% trans "Qidirilmoqda..." %}
+            </span>
+            <form method="get" id="sortForm"
+                  hx-get="{% url 'journal:article_list' %}"
+                  hx-target="#articles-wrapper"
+                  hx-push-url="true">
                 {% for k, v in request.GET.items %}{% if k != 'sort' and k != 'page' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endif %}{% endfor %}
-                <select name="sort" onchange="document.getElementById('sortForm').submit()">
+                <select name="sort" onchange="this.form.requestSubmit()">
                     <option value="-publication_date" {% if current_sort == '-publication_date' %}selected{% endif %}>{% trans "Eng yangi" %}</option>
                     <option value="publication_date" {% if current_sort == 'publication_date' %}selected{% endif %}>{% trans "Eng eski" %}</option>
                     <option value="-views_count" {% if current_sort == '-views_count' %}selected{% endif %}>{% trans "Ko'p ko'rilgan" %}</option>
@@ -61,33 +75,12 @@
             </form>
         </div>
 
-        {% for article in articles %}
-        <article class="article-row">
-            {% if article.category %}<span class="tag">{{ article.category.name }}</span>{% endif %}
-            <h3><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h3>
-            <div class="authors">{% for a in article.authors.all %}{{ a.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-            {% if article.abstract %}<p class="excerpt">{{ article.abstract|truncatewords:34 }}</p>{% endif %}
-            <div class="meta">
-                <span>{{ article.publication_date|date:"Y-m-d" }}</span>
-                <span>{{ article.views_count }} {% trans "ko'rish" %}</span>
-                {% if article.doi %}<span>DOI: {{ article.doi }}</span>{% endif %}
-                {% if article.pdf_file %}<a href="{{ article.pdf_file.url }}" target="_blank">PDF</a>{% endif %}
-            </div>
-        </article>
-        {% empty %}
-        <div class="empty">{% trans "Berilgan shartlarga mos maqola topilmadi." %}</div>
-        {% endfor %}
-
-        {% if articles.paginator.num_pages > 1 %}
-        <div class="pagination">
-            {% if articles.has_previous %}<a href="?{{ querystring }}&page={{ articles.previous_page_number }}">&laquo;</a>{% endif %}
-            {% for num in articles.paginator.page_range %}
-                {% if num == articles.number %}<span class="current">{{ num }}</span>
-                {% elif num > articles.number|add:'-3' and num < articles.number|add:'3' %}<a href="?{{ querystring }}&page={{ num }}">{{ num }}</a>{% endif %}
-            {% endfor %}
-            {% if articles.has_next %}<a href="?{{ querystring }}&page={{ articles.next_page_number }}">&raquo;</a>{% endif %}
+        <div id="articles-wrapper"
+             hx-get="{% url 'journal:article_list' %}"
+             hx-target="this"
+             hx-trigger="filterForm from:#filter-form">
+            {% include "journal/partials/_article_results.html" %}
         </div>
-        {% endif %}
     </div>
 </div>
 </div>

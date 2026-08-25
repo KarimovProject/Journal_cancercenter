@@ -67,10 +67,12 @@ def login_view(request):
     return render(request, 'journal/auth/login.html', {'form': form})
 
 
+@require_POST
 def logout_view(request):
     auth_logout(request)
     messages.info(request, _('Tizimdan chiqdingiz.'))
-    return redirect('journal:home')
+    next_url = request.POST.get('next') or request.GET.get('next') or settings.LOGOUT_REDIRECT_URL or reverse('journal:home')
+    return redirect(next_url)
 
 
 @require_POST

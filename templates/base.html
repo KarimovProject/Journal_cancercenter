@@ -21,8 +21,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
+    {# HTMX — sahifani to'liq yangilamasdan dinamik so'rovlar uchun #}
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
 </head>
 <body>
+{# A11y: Klaviatura foydalanuvchilari uchun "Asosiy mazmunga o'tish" havolasi #}
+<a href="#main-content" class="skip-link">{% trans "Asosiy mazmunga o'tish" %}</a>
 <header class="site-header">
     <div class="container header-top">
         <a href="{% url 'journal:home' %}" class="brand">
@@ -38,19 +43,21 @@
         <div class="header-actions">
             {% if user.is_authenticated %}
                 <!-- Notification Bell -->
-                <div class="nav-dropdown" style="position: relative; margin-right: 15px; display: inline-block;" tabindex="0">
-                    <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none;">
+                {# A11y: Bildirishnomalar — aria-label, aria-expanded, role qo'shildi #}
+                <div class="nav-dropdown" style="position: relative; margin-right: 15px; display: inline-block;" tabindex="0" role="button" aria-expanded="false" aria-label="{% trans 'Bildirishnomalar' %}" aria-haspopup="true">
+                    <span class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none; cursor: pointer;">
                         &#128276;
                         {% if unread_notifications_count > 0 %}
-                            <span style="position: absolute; top: -5px; right: -10px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold;">
+                            <span style="position: absolute; top: -5px; right: -10px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold;"
+                                  aria-label="{{ unread_notifications_count }} {% trans 'o\'qilmagan xabar' %}">
                                 {{ unread_notifications_count }}
                             </span>
                         {% endif %}
-                    </a>
-                    <div class="nav-drop-menu" style="right: -50px; left: auto; min-width: 250px; max-height: 400px; overflow-y: auto; z-index: 1000; text-align: left;">
+                    </span>
+                    <div class="nav-drop-menu" role="menu" style="right: -50px; left: auto; min-width: 250px; max-height: 400px; overflow-y: auto; z-index: 1000; text-align: left;">
                         <div style="padding: 10px; font-weight: bold; border-bottom: 1px solid var(--line);">{% trans 'Bildirishnomalar' %}</div>
                         {% for notif in unread_notifications_list %}
-                            <a href="{% url 'journal:read_notification' notif.id %}" style="padding: 10px; border-bottom: 1px solid var(--line); display: block; background: var(--bg-soft); font-weight: bold;">
+                            <a href="{% url 'journal:read_notification' notif.id %}" role="menuitem" style="padding: 10px; border-bottom: 1px solid var(--line); display: block; background: var(--bg-soft); font-weight: bold;">
                                 <div style="font-size: 0.85rem; color: var(--ink); line-height: 1.2;">{{ notif.message }}</div>
                                 <div style="font-size: 0.75rem; color: var(--muted); margin-top: 5px;">{{ notif.created_at|date:"d.m.Y H:i" }}</div>
                             </a>
@@ -62,11 +69,12 @@
                 <!-- End Notification Bell -->
                 <a class="btn btn-sm" href="{% url 'journal:submit_article' %}">{% trans "Maqola yuborish" %}</a>
                 <!-- User Profile Dropdown -->
-                <div class="nav-dropdown" style="position: relative; display: inline-block;" tabindex="0">
-                    <a href="#" class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none; padding: 4px 8px;">
+                {# A11y: Foydalanuvchi menyu — aria-label, role qo'shildi #}
+                <div class="nav-dropdown" style="position: relative; display: inline-block;" tabindex="0" role="button" aria-expanded="false" aria-haspopup="true" aria-label="{% trans 'Foydalanuvchi menyusi' %}">
+                    <span class="nav-drop-toggle" style="font-size: 1.2rem; text-decoration: none; padding: 4px 8px; cursor: pointer;">
                         &#128100;
-                    </a>
-                    <div class="nav-drop-menu" style="right: 0; left: auto; min-width: 200px; z-index: 1000; text-align: left;">
+                    </span>
+                    <div class="nav-drop-menu" role="menu" style="right: 0; left: auto; min-width: 200px; z-index: 1000; text-align: left;">
                         <div style="padding: 10px; font-weight: bold; border-bottom: 1px solid var(--line); margin-bottom: 4px;">
                             {{ user.get_full_name|default:user.username }}
                         </div>
@@ -137,7 +145,8 @@
 </div>
 {% endif %}
 
-<main>
+{# A11y: id="main-content" — yuqoridagi skip-link nishoni #}
+<main id="main-content">
     {% block content %}{% endblock %}
 </main>
 
@@ -147,25 +156,32 @@
             <h4>{{ SITE_NAME }}</h4>
             <p>{% trans "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazi ilmiy nashrlari platformasi." %}</p>
         </div>
-        <div>
+        {# A11y: Footer navigatsiyasi — <ul>/<li> bilan semantik ro'yxatga o'tkazildi #}
+        <nav aria-label="{% trans 'Asosiy bo\'limlar' %}">
             <h4>{% trans "Bo'limlar" %}</h4>
-            <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a>
-            <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a>
-            <a href="{% url 'journal:editorial_board' %}">{% trans "Ilmiy kengash" %}</a>
-            <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a>
-        </div>
-        <div>
+            <ul style="list-style:none; padding:0; margin:0;">
+                <li><a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a></li>
+                <li><a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a></li>
+                <li><a href="{% url 'journal:editorial_board' %}">{% trans "Ilmiy kengash" %}</a></li>
+                <li><a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a></li>
+            </ul>
+        </nav>
+        <nav aria-label="{% trans 'Ta\'lim bo\'limlari' %}">
             <h4>{% trans "Ta'lim" %}</h4>
-            <a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a>
-            <a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a>
-            <a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a>
-        </div>
-        <div>
+            <ul style="list-style:none; padding:0; margin:0;">
+                <li><a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a></li>
+                <li><a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a></li>
+                <li><a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a></li>
+            </ul>
+        </nav>
+        <nav aria-label="{% trans 'Qo\'shimcha ma\'lumot' %}">
             <h4>{% trans "Ma'lumot" %}</h4>
-            <a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a>
-            <a href="/rss/">{% trans "RSS lenta" %}</a>
-            <a href="https://cancercenter.uz" target="_blank" rel="noopener">cancercenter.uz</a>
-        </div>
+            <ul style="list-style:none; padding:0; margin:0;">
+                <li><a href="{% url 'journal:for_authors' %}">{% trans "Mualliflar uchun" %}</a></li>
+                <li><a href="/rss/">{% trans "RSS lenta" %}</a></li>
+                <li><a href="https://cancercenter.uz" target="_blank" rel="noopener noreferrer">cancercenter.uz</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="container footer-bottom">
         <span>&copy; {% now "Y" %} {{ SITE_NAME }}. {% trans "Barcha huquqlar himoyalangan." %}</span>
@@ -191,6 +207,19 @@ function updateThemeIcon(isDark){
     if(isDark && !saved){ document.body.classList.add('dark'); }
     updateThemeIcon(isDark);
 })();
+</script>
+<script>
+    // Auto-dismiss messages (toasts) after 5 seconds
+    document.addEventListener("DOMContentLoaded", function() {
+        const messages = document.querySelectorAll(".alert");
+        messages.forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = "opacity 0.4s ease";
+                msg.style.opacity = "0";
+                setTimeout(() => msg.remove(), 400);
+            }, 5000);
+        });
+    });
 </script>
 </body>
 </html>

@@ -869,3 +869,152 @@ body.dark .site-header {
   background: var(--accent) !important;
   color: #000 !important; /* Contrast against the bright teal */
 }
+
+/* ============================================================
+   A11y: Skip Link (Klaviatura foydalanuvchilari uchun)
+   ============================================================ */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: var(--brand);
+  color: #fff;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  z-index: 9999;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   HTMX: Yuklash ko'rsatkichi (Loading Indicator)
+   ============================================================ */
+.htmx-indicator {
+  display: none;
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  display: inline-block;
+  opacity: 1;
+}
+
+/* ============================================================
+   RESPONSIVE (Mobile & Tablet)
+   ============================================================ */
+@media (max-width: 1024px) {
+    .list-layout {
+        grid-template-columns: 230px minmax(0, 1fr);
+        gap: 24px;
+    }
+    .detail-layout {
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 24px;
+    }
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+    .eic-card {
+        margin-top: 24px;
+    }
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+    
+    /* Grids to single column */
+    .list-layout,
+    .detail-layout,
+    .grid-2,
+    .grid-3,
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Header & Navigation */
+    .header-top {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+    .header-search {
+        max-width: 100%;
+        width: 100%;
+        order: 3;
+        margin-top: 10px;
+    }
+    .header-actions {
+        margin-left: 0;
+    }
+    .main-nav {
+        justify-content: center;
+    }
+
+    /* Hero */
+    .hero {
+        padding: 60px 0 40px;
+    }
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+    .hero-stats {
+        flex-direction: row;
+        gap: 20px;
+    }
+    .hero-stats > div {
+        border-right: none;
+        margin-right: 0;
+        padding-right: 0;
+    }
+
+    /* Sidebar in list-layout */
+    .sidebar {
+        position: static;
+        padding: 16px;
+    }
+
+    /* Article details */
+    .article-title {
+        font-size: 1.8rem;
+    }
+
+    /* Auth pages */
+    .auth-page {
+        padding: 30px 16px;
+    }
+    .auth-card {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-search {
+        flex-direction: column;
+    }
+    .hero-search .btn-light {
+        width: 100%;
+    }
+    .article-row {
+        padding: 16px;
+    }
+    .conf-card {
+        flex-direction: column;
+    }
+    .conf-date {
+        align-self: center;
+    }
+}
+

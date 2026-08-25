@@ -21,7 +21,7 @@ from ..forms import (
 from ..models import Article, Author
 
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def submit_article(request):
     if request.method == 'POST':
         form = ArticleSubmissionForm(request.POST, request.FILES)
@@ -30,17 +30,7 @@ def submit_article(request):
         supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=form.instance)
 
         if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
-            with transaction.atomic():
-                article = form.save(commit=False)
-                article.submitted_by = request.user
-                article.status = Article.Status.DRAFT
-                article.save()
-
-                form.save_m2m_custom(article, request.user)
-
-                for fs in (ref_fs, fig_fs, supp_fs):
-                    fs.instance = article
-                    fs.save()
+            form.save_with_formsets(request.user, [ref_fs, fig_fs, supp_fs])
 
             messages.success(request, _('Maqolangiz qabul qilindi! Tahririyat koʻrib chiqgach, natija haqida xabar beradi.'))
             return redirect('journal:my_articles')
@@ -60,7 +50,7 @@ def submit_article(request):
     return render(request, 'journal/submit_article.html', context)
 
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def edit_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if article.submitted_by != request.user:
@@ -85,16 +75,7 @@ def edit_article(request, pk):
         supp_fs = ArticleSupplementaryFileFormSet(request.POST, request.FILES, prefix='supp', instance=article)
 
         if form.is_valid() and ref_fs.is_valid() and fig_fs.is_valid() and supp_fs.is_valid():
-            with transaction.atomic():
-                article = form.save(commit=False)
-                article.status = Article.Status.DRAFT
-                article.rejection_reason = ''
-                article.save()
-
-                form.save_m2m_custom(article, request.user, is_edit=True)
-
-                for fs in (ref_fs, fig_fs, supp_fs):
-                    fs.save()
+            form.save_with_formsets(request.user, [ref_fs, fig_fs, supp_fs], is_edit=True)
 
             messages.success(request, _("Maqola yangilandi va qayta koʻrib chiqishga yuborildi."))
             return redirect('journal:my_articles')
@@ -116,7 +97,7 @@ def edit_article(request, pk):
     return render(request, 'journal/submit_article.html', context)
 
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def my_articles(request):
     articles = (
         Article.objects
@@ -146,7 +127,7 @@ def my_articles(request):
     return render(request, 'journal/my_articles.html', context)
 
 
-@login_required(login_url='/ilm-fan/kirish/')
+@login_required
 def edit_profile(request):
     author = getattr(request.user, 'author_profile', None)
     if not author:

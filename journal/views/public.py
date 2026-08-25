@@ -5,15 +5,16 @@ Ommaviy sahifalar: home, article_list, article_detail,
 issue, author, editorial_board, conference, grant, va boshqalar.
 """
 from django.conf import settings
+from django.contrib import messages
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Q, F
+from django.db.models import Q, F, Count, Prefetch
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
-
 from ..filters import ArticleFilter
+from ..forms import FeatureRequestForm
 from ..models import (
     Article,
     Author,
@@ -34,6 +35,10 @@ PUBLISHED = Article.Status.PUBLISHED
 
 
 def _published_articles():
+    """
+    Barcha joylarda ishlatiladigan asosiy published maqolalar queryset'i.
+    select_related + prefetch_related + defer orqali N+1 muammolari oldini oladi.
+    """
     return (
         Article.objects.filter(status=PUBLISHED)
         .select_related('category', 'issue')
@@ -49,17 +54,41 @@ def home(request):
         context = {
             'latest_articles': list(articles[:5]),
             'most_viewed': list(articles.order_by('-views_count')[:5]),
-            'categories': list(Category.objects.all()),
-            'editor_in_chief': EditorialBoardMember.objects.filter(
-                role=EditorialBoardMember.Role.EDITOR_IN_CHIEF
-            ).first(),
+            # ORM: annotate bilan har bir kategoriyada nechtа maqola borligini hisoblaymiz
+            # Bu bitta qo'shimcha so'rov saqlab, shablondagi .count() chaqiruvlarini yo'qotadi
+            'categories': list(
+                Category.objects.annotate(article_count=Count('articles'))
+            ),
+            'editor_in_chief': (
+                EditorialBoardMember.objects
+                .select_related()  # kelajakdagi FK uchun
+                .filter(role=EditorialBoardMember.Role.EDITOR_IN_CHIEF)
+                .first()
+            ),
             'metrics': list(JournalMetric.objects.all()),
-            'collections': list(Collection.objects.filter(status=Collection.Status.OPEN)[:3]),
+            'collections': list(
+                Collection.objects
+                .filter(status=Collection.Status.OPEN)
+                .prefetch_related('related_articles')[:3]
+            ),
             'journal_updates': list(JournalUpdate.objects.filter(is_published=True)[:3]),
             'upcoming_conferences': list(
-                Conference.objects.filter(date_start__gte=timezone.now().date()).order_by('date_start')[:3]
+                Conference.objects
+                .filter(date_start__gte=timezone.now().date())
+                .order_by('date_start')[:3]
             ),
-            'latest_issue': Issue.objects.first(),
+            # ORM: prefetch_related bilan issue sahifasida N+1 oldini olamiz
+            'latest_issue': (
+                Issue.objects
+                .prefetch_related(
+                    Prefetch(
+                        'articles',
+                        queryset=_published_articles(),
+                        to_attr='published_articles_list',
+                    )
+                )
+                .first()
+            ),
             'stats': {
                 'articles': articles.count(),
                 'authors': Author.objects.count(),
@@ -95,14 +124,22 @@ def article_list(request):
     context = {
         'articles': articles,
         'filter': f,
-        'categories': Category.objects.all(),
+        # ORM: annotate — shablonda category.article_count ishlatiladigan bo'lsa N+1 yo'q
+        'categories': Category.objects.annotate(article_count=Count('articles')),
         'years': _published_articles().dates('publication_date', 'year', order='DESC'),
         'total': filtered.count(),
         'querystring': querydict.urlencode(),
         'current_sort': ordering,
         'meta_description': 'Onkologiya va radiologiya sohasidagi ilmiy maqolalar toʻplami.',
     }
+
+    # HTMX: agar so'rov HTMX orqali kelsa, faqat maqolalar fragmentini qaytaramiz
+    # Bu sahifani to'liq yangilamasdan filtr va paginatsiyani ishlaydi
+    if request.headers.get('HX-Request'):
+        return render(request, 'journal/partials/_article_results.html', context)
+
     return render(request, 'journal/article_list.html', context)
+
 
 
 def article_detail(request, slug):
@@ -115,6 +152,7 @@ def article_detail(request, slug):
     if not article.is_published and not request.user.is_staff:
         raise Http404()
 
+    # ORM: F() expression — Python'ga yuklamay, to'g'ridan-to'g'ri DBda hisoblanadi
     Article.objects.filter(pk=article.pk).update(views_count=F('views_count') + 1)
     article.views_count += 1
 
@@ -153,7 +191,10 @@ def download_citation(request, slug, format):
 
 def author_detail(request, slug):
     from django.db.models import Sum
-    author = get_object_or_404(Author, slug=slug)
+    author = get_object_or_404(
+        Author.objects.select_related('user'),
+        slug=slug,
+    )
     articles = _published_articles().filter(authors=author)
     agg = articles.aggregate(
         total_views=Sum('views_count'),
@@ -171,7 +212,8 @@ def author_detail(request, slug):
 
 def issue_list(request):
     context = {
-        'issues': Issue.objects.all(),
+        # ORM: annotate — shablonda `issue.article_count` ishlatilganda N+1 yo'q
+        'issues': Issue.objects.annotate(article_count=Count('article')),
         'meta_description': 'Jurnal sonlari arxivi.',
     }
     return render(request, 'journal/issue_list.html', context)
@@ -179,6 +221,7 @@ def issue_list(request):
 
 def issue_detail(request, pk):
     issue = get_object_or_404(Issue, pk=pk)
+    # ORM: _published_articles() allaqachon select_related/prefetch_related qo'llagan
     articles = _published_articles().filter(issue=issue)
     context = {
         'issue': issue,
@@ -190,7 +233,8 @@ def issue_detail(request, pk):
 
 def editorial_board(request):
     context = {
-        'members': EditorialBoardMember.objects.all(),
+        # ORM: select_related — a'zoning bog'liq ma'lumotlari uchun N+1 yo'q
+        'members': EditorialBoardMember.objects.select_related().order_by('role', 'order'),
         'meta_description': "Ilmiy kengash aʼzolari.",
     }
     return render(request, 'journal/editorial_board.html', context)
@@ -243,6 +287,7 @@ def postgraduate(request, program_type):
 
 
 def grant_list(request):
+    # ORM: prefetch_related — grant'ning principal_investigators'lari uchun N+1 yo'q
     grants = Grant.objects.prefetch_related('principal_investigators')
     context = {
         'active_grants': grants.filter(status=Grant.Status.ACTIVE),
@@ -262,7 +307,7 @@ def static_page(request, key):
 
 
 def for_authors(request):
-    """'Mualliflar uchun' — StaticPage boʻlsa undan, aks holda default matn."""
+    "'Mualliflar uchun' — StaticPage boʻlsa undan, aks holda default matn."
     page = StaticPage.objects.filter(key='for-authors').first()
     context = {
         'page': page,
@@ -291,7 +336,8 @@ def update_detail(request, slug):
 
 def collection_list(request):
     context = {
-        'collections': Collection.objects.all(),
+        # ORM: prefetch_related — har bir to'plamdagi maqolalar uchun N+1 yo'q
+        'collections': Collection.objects.prefetch_related('related_articles'),
         'meta_description': "Call for papers — mavzuli toʻplamlar.",
     }
     return render(request, 'journal/collection_list.html', context)
@@ -312,23 +358,22 @@ def collection_detail(request, slug):
     return render(request, 'journal/collection_detail.html', context)
 
 
-def custom_404(request, exception=None):
-    return render(request, 'journal/404.html', status=404)
-
-
-def custom_500(request):
-    return render(request, 'journal/500.html', status=500)
-from django.contrib import messages
-from ..forms import FeatureRequestForm
-
 def feedback_view(request):
     if request.method == 'POST':
         form = FeatureRequestForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Taklifingiz muvaffaqiyatli yuborildi. Rahmat!')
-            form = FeatureRequestForm() # reset
+            form = FeatureRequestForm()
     else:
         form = FeatureRequestForm()
-    
+
     return render(request, 'journal/feedback.html', {'form': form})
+
+
+def custom_404(request, exception=None):
+    return render(request, 'journal/404.html', status=404)
+
+
+def custom_500(request):
+    return render(request, 'journal/500.html', status=500)

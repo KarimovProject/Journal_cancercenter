@@ -241,6 +241,30 @@ class ArticleSubmissionForm(forms.ModelForm):
                 keyword_obj, _created = Keyword.objects.get_or_create(name=kw)
                 article.keywords.add(keyword_obj)
 
+    def save_with_formsets(self, user, formsets, is_edit=False):
+        """Encapsulates the complex save logic for an article and its related formsets."""
+        from django.db import transaction
+        from .models import Article
+        
+        with transaction.atomic():
+            article = self.save(commit=False)
+            if not is_edit:
+                article.submitted_by = user
+                article.status = Article.Status.DRAFT
+            else:
+                article.status = Article.Status.DRAFT
+                article.rejection_reason = ''
+            article.save()
+
+            self.save_m2m_custom(article, user, is_edit=is_edit)
+
+            for fs in formsets:
+                if getattr(fs, 'is_valid', lambda: False)():
+                    fs.instance = article
+                    fs.save()
+            
+            return article
+
 
 class AuthorProfileForm(forms.ModelForm):
     """Form for users to edit their author profile."""

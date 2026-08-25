@@ -1,0 +1,50 @@
+{% load i18n %}
+<p class="count" style="margin-bottom: 1rem; font-size:0.9rem; color: var(--muted);">
+    {{ total }} {% trans "ta natija" %}
+</p>
+
+{% for article in articles %}
+<article class="article-row">
+    {% if article.category %}<span class="tag">{{ article.category.name }}</span>{% endif %}
+    <h3><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h3>
+    <div class="authors">{% for a in article.authors.all %}{{ a.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    {% if article.abstract %}<p class="excerpt">{{ article.abstract|truncatewords:34 }}</p>{% endif %}
+    <div class="meta">
+        <span>{{ article.publication_date|date:"Y-m-d" }}</span>
+        <span>{{ article.views_count }} {% trans "ko'rish" %}</span>
+        {% if article.doi %}<span>DOI: {{ article.doi }}</span>{% endif %}
+        {% if article.pdf_file %}<a href="{{ article.pdf_file.url }}" target="_blank">PDF</a>{% endif %}
+    </div>
+</article>
+{% empty %}
+<div class="empty">{% trans "Berilgan shartlarga mos maqola topilmadi." %}</div>
+{% endfor %}
+
+{% if articles.paginator.num_pages > 1 %}
+<div class="pagination">
+    {% if articles.has_previous %}
+    <a href="?{{ querystring }}&page={{ articles.previous_page_number }}"
+       hx-get="{% url 'journal:article_list' %}?{{ querystring }}&page={{ articles.previous_page_number }}"
+       hx-target="#articles-wrapper"
+       hx-swap="innerHTML"
+       hx-push-url="true">&laquo;</a>
+    {% endif %}
+    {% for num in articles.paginator.page_range %}
+        {% if num == articles.number %}<span class="current">{{ num }}</span>
+        {% elif num > articles.number|add:'-3' and num < articles.number|add:'3' %}
+        <a href="?{{ querystring }}&page={{ num }}"
+           hx-get="{% url 'journal:article_list' %}?{{ querystring }}&page={{ num }}"
+           hx-target="#articles-wrapper"
+           hx-swap="innerHTML"
+           hx-push-url="true">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if articles.has_next %}
+    <a href="?{{ querystring }}&page={{ articles.next_page_number }}"
+       hx-get="{% url 'journal:article_list' %}?{{ querystring }}&page={{ articles.next_page_number }}"
+       hx-target="#articles-wrapper"
+       hx-swap="innerHTML"
+       hx-push-url="true">&raquo;</a>
+    {% endif %}
+</div>
+{% endif %}

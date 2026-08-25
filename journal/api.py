@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 
+from core.pagination import SmallResultsPagination
 from .filters import ArticleFilter
 from .models import Article, Author, Category, Conference
 from .serializers import (
@@ -16,6 +17,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """Public read-only API for published articles.
 
     Consumed by the main cancercenter.uz site (e.g. "latest articles" block).
+    Pagination: StandardResultsPagination (12/page) — base.py dan olinadi.
     """
 
     permission_classes = [AllowAny]
@@ -40,14 +42,20 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    """Kategoriyalar ro'yxati. SmallResultsPagination: 20/page."""
+
     permission_classes = [AllowAny]
+    pagination_class = SmallResultsPagination
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     lookup_field = 'slug'
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
+    """Mualliflar ro'yxati. SmallResultsPagination: 20/page."""
+
     permission_classes = [AllowAny]
+    pagination_class = SmallResultsPagination
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     lookup_field = 'slug'
@@ -55,7 +63,10 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ConferenceViewSet(viewsets.ReadOnlyModelViewSet):
+    """Konferensiyalar ro'yxati. SmallResultsPagination: 20/page."""
+
     permission_classes = [AllowAny]
+    pagination_class = SmallResultsPagination
     queryset = Conference.objects.all()
     serializer_class = ConferenceSerializer
     lookup_field = 'slug'
