@@ -213,7 +213,7 @@ def author_detail(request, slug):
 def issue_list(request):
     context = {
         # ORM: annotate — shablonda `issue.article_count` ishlatilganda N+1 yo'q
-        'issues': Issue.objects.annotate(article_count=Count('article')),
+        'issues': Issue.objects.annotate(article_count=Count('articles')),
         'meta_description': 'Jurnal sonlari arxivi.',
     }
     return render(request, 'journal/issue_list.html', context)
