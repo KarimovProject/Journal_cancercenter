@@ -133,9 +133,9 @@ def article_list(request):
         'meta_description': 'Onkologiya va radiologiya sohasidagi ilmiy maqolalar toʻplami.',
     }
 
-    # HTMX: agar so'rov HTMX orqali kelsa, faqat maqolalar fragmentini qaytaramiz
-    # Bu sahifani to'liq yangilamasdan filtr va paginatsiyani ishlaydi
-    if request.headers.get('HX-Request'):
+    # HTMX: faqat qidiruv/filtr orqali kelgan so'rovlar uchun qisqartirilgan fragmentni qaytaramiz.
+    # Agar HX-Boost orqali (navigatsiya) kelgan bo'lsa, to'liq sahifa kerak.
+    if request.headers.get('HX-Target') == 'articles-wrapper':
         return render(request, 'journal/partials/_article_results.html', context)
 
     return render(request, 'journal/article_list.html', context)

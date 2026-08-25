@@ -24,8 +24,25 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
     {# HTMX — sahifani to'liq yangilamasdan dinamik so'rovlar uchun #}
     <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+    
+    {# NProgress - SPA Loading Bar (Yorqin Ko'k) #}
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css" />
+    <style>
+        #nprogress .bar {
+            background: #3b82f6 !important; /* Bright Blue / Accent */
+            height: 3px !important;
+        }
+        #nprogress .peg {
+            box-shadow: 0 0 10px #3b82f6, 0 0 5px #3b82f6 !important;
+        }
+        #nprogress .spinner-icon {
+            border-top-color: #3b82f6 !important;
+            border-left-color: #3b82f6 !important;
+        }
+    </style>
 </head>
-<body>
+<body hx-boost="true">
 {# A11y: Klaviatura foydalanuvchilari uchun "Asosiy mazmunga o'tish" havolasi #}
 <a href="#main-content" class="skip-link">{% trans "Asosiy mazmunga o'tish" %}</a>
 <header class="site-header">
@@ -219,6 +236,21 @@ function updateThemeIcon(isDark){
                 setTimeout(() => msg.remove(), 400);
             }, 5000);
         });
+    });
+</script>
+<script>
+    // HTMX NProgress Integration
+    document.body.addEventListener('htmx:beforeRequest', function(evt) {
+        NProgress.start();
+    });
+    document.body.addEventListener('htmx:afterOnLoad', function(evt) {
+        NProgress.done();
+    });
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+        NProgress.done();
+    });
+    document.body.addEventListener('htmx:historyRestore', function(evt) {
+        NProgress.done();
     });
 </script>
 </body>
