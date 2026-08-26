@@ -76,6 +76,44 @@ body.dark .footer {
     border-color: var(--line);
 }
 
+body.dark .site-header .brand-mark {
+    color: var(--accent);
+}
+body.dark .site-header .brand-mark.alt,
+body.dark .site-header .brand-sub,
+body.dark .site-header .nav-drop-toggle {
+    color: #ffffff;
+}
+body.dark .site-header .header-search button {
+    color: var(--muted);
+}
+body.dark .site-header .header-search button:hover {
+    color: var(--accent);
+}
+body.dark .header-nav-bar {
+    background: var(--bg-soft);
+    border-top: 1px solid var(--line);
+}
+body.dark .header-nav-bar a {
+    color: var(--ink);
+}
+body.dark .header-nav-bar a:hover {
+    color: var(--accent);
+    background: rgba(255,255,255,0.05);
+}
+body.dark .header-nav-bar .nav-drop-menu {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+}
+body.dark .header-nav-bar .nav-drop-menu a {
+    color: var(--ink);
+    background: transparent;
+}
+body.dark .header-nav-bar .nav-drop-menu a:hover {
+    color: var(--accent);
+    background: rgba(255,255,255,0.05);
+}
+
     /* ============================================================
        BASE
        ============================================================ */
