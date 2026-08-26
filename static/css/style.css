@@ -252,11 +252,11 @@ body.dark .footer {
         100% { transform: translate(30px, 30px) scale(1.05); }
     }
     
-    .hero-search{display:flex; gap:16px; max-width:700px; margin:0 0 50px; background: transparent; padding: 0; border: none; backdrop-filter: none;}
-    .hero-search input{flex:1; padding:18px 28px; border-radius: var(--radius-full); font-size:1.1rem; background: rgba(15, 23, 42, 0.4); color: #fff; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+    .hero-search{display:flex; gap:16px; max-width:700px; margin:0 0 50px; background: transparent !important; padding: 0 !important; border: none !important; backdrop-filter: none !important; box-shadow: none !important;}
+    .hero-search input{flex:1; padding:18px 28px; border-radius: 500px !important; font-size:1.1rem; background: rgba(15, 23, 42, 0.4); color: #fff; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
     .hero-search input:focus{outline:none; box-shadow: 0 0 0 3px var(--accent-glow); border-color: var(--accent);}
     .hero-search input::placeholder {color: rgba(255,255,255,0.7);}
-    .hero-search .btn-light{padding:18px 40px; font-size: 1.1rem; font-weight:600; border-radius: var(--radius-full); border: none; background: #cbd5e1; color: #0f172a; flex-shrink: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease;}
+    .hero-search .btn-light{padding:18px 40px; font-size: 1.1rem; font-weight:600; border-radius: 500px !important; border: none; background: #cbd5e1; color: #0f172a; flex-shrink: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease;}
     .hero-search .btn-light:hover{background: #f1f5f9; color: #000; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0,0,0,0.15);}
     
     .hero-stats{display:flex;flex-wrap:wrap;gap:0; animation: fadeUp 1s ease 0.5s both;}
