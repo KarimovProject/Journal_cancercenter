@@ -17,32 +17,49 @@
     <meta name="twitter:card" content="summary_large_image">
     {% block extra_head %}{% endblock %}
 
+    {# --- Tema: FOUC oldini olish uchun ENG BIRINCHI ishga tushadi --- #}
+    <script>
+    (function(){
+        try{
+            var saved = localStorage.getItem('theme');
+            var dark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme:dark)').matches);
+            if(dark){ document.documentElement.classList.add('dark'); }
+        }catch(e){}
+    })();
+    </script>
+    <style>
+        /* <body> hali mavjud emas - fonni <html>da darhol bo'yaymiz */
+        html{background:#ffffff}
+        html.dark{background:#0f172a;color-scheme:dark}
+        html:not(.dark){color-scheme:light}
+    </style>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=13">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=25">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
+
     {# HTMX — sahifani to'liq yangilamasdan dinamik so'rovlar uchun #}
-    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
-    
-    {# NProgress - SPA Loading Bar (Yorqin Ko'k) #}
-    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css" />
+    <script defer src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+    {# NProgress — yuklash indikatori (CSS inline, tashqi so'rovsiz) #}
+    <script defer src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <style>
-        #nprogress .bar {
-            background: #3b82f6 !important; /* Bright Blue / Accent */
-            height: 3px !important;
-        }
-        #nprogress .peg {
-            box-shadow: 0 0 10px #3b82f6, 0 0 5px #3b82f6 !important;
-        }
-        #nprogress .spinner-icon {
-            border-top-color: #3b82f6 !important;
-            border-left-color: #3b82f6 !important;
-        }
+        #nprogress{pointer-events:none}
+        #nprogress .bar{background:#3b82f6;position:fixed;z-index:1031;top:0;left:0;width:100%;height:3px}
+        #nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;
+            box-shadow:0 0 10px #3b82f6,0 0 5px #3b82f6;opacity:1;transform:rotate(3deg) translate(0,-4px)}
+        .nprogress-custom-parent{overflow:hidden;position:relative}
     </style>
 </head>
 <body hx-boost="true">
+<script>
+    // <html>dagi tema holatini <body>ga ko'chiramiz (CSS body.dark ga tayanadi)
+    (function(){
+        var d = document.documentElement.classList.contains('dark');
+        document.body.classList.add(d ? 'dark' : 'light');
+    })();
+</script>
 {# A11y: Klaviatura foydalanuvchilari uchun "Asosiy mazmunga o'tish" havolasi #}
 <a href="#main-content" class="skip-link">{% trans "Asosiy mazmunga o'tish" %}</a>
 <header class="site-header">
@@ -121,18 +138,21 @@
                 <input name="next" type="hidden" value="{{ request.path }}">
                 {% for code, name in LANGUAGES %}
                     <button type="submit" name="language" value="{{ code }}"
-                            class="lang-btn {% if code == LANGUAGE_CODE %}active{% endif %}">{{ code|upper }}</button>
+                            class="lang-btn {% if code == LANGUAGE_CODE %}active{% endif %}"
+                            {% if code == LANGUAGE_CODE %}aria-current="true"{% endif %}
+                            aria-label="{{ name }}">{{ code|upper }}</button>
                 {% endfor %}
             </form>
         </div>
 
-        <button class="nav-toggle" aria-label="Menu" onclick="document.body.classList.toggle('nav-open')">
+        <button class="nav-toggle" aria-label="{% trans "Menyu" %}" aria-expanded="false" aria-controls="primary-nav"
+                onclick="const o=document.body.classList.toggle('nav-open'); this.setAttribute('aria-expanded', o);">
             <span></span><span></span><span></span>
         </button>
     </div>
 
     <div class="header-nav-bar">
-        <nav class="container main-nav">
+        <nav class="container main-nav" id="primary-nav" aria-label="{% trans "Asosiy navigatsiya" %}">
             <a href="{% url 'journal:home' %}">{% trans "Bosh sahifa" %}</a>
             <a href="{% url 'journal:article_list' %}">{% trans "Maqolalar" %}</a>
             <a href="{% url 'journal:issue_list' %}">{% trans "Sonlar" %}</a>
@@ -141,8 +161,8 @@
             <a href="{% url 'journal:department_list' %}">{% trans "Kafedralar" %}</a>
             <a href="{% url 'journal:conference_list' %}">{% trans "Konferensiyalar" %}</a>
             <div class="nav-dropdown">
-                <a href="#" class="nav-drop-toggle">{% trans "Taʼlim" %} &#9662;</a>
-                <div class="nav-drop-menu">
+                <button type="button" class="nav-drop-toggle" aria-expanded="false" aria-controls="nav-drop-education">{% trans "Taʼlim" %} &#9662;</button>
+                <div class="nav-drop-menu" id="nav-drop-education">
                     <a href="{% url 'journal:aspirantura' %}">{% trans "Aspirantura" %}</a>
                     <a href="{% url 'journal:ordinatura' %}">{% trans "Ordinatura" %}</a>
                     <a href="{% url 'journal:grant_list' %}">{% trans "Grantlar" %}</a>
@@ -205,9 +225,30 @@
     </div>
 </footer>
 <script>
+// Navigatsiya dropdown'i: aria-expanded holatini haqiqiy ko'rinish bilan sinxron saqlaymiz
+document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd){
+        var btn = dd.querySelector('.nav-drop-toggle');
+        if(!btn) return;
+        var set = function(open){ btn.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+        dd.addEventListener('mouseenter', function(){ set(true); });
+        dd.addEventListener('mouseleave', function(){ set(false); });
+        dd.addEventListener('focusin',   function(){ set(true); });
+        dd.addEventListener('focusout',  function(){
+            if(!dd.contains(document.activeElement)) set(false);
+        });
+        // Klaviatura: Escape bilan yopish
+        dd.addEventListener('keydown', function(e){
+            if(e.key === 'Escape'){ btn.focus(); btn.blur(); set(false); }
+        });
+    });
+});
+</script>
+<script>
 function toggleTheme(){
     const isDark = document.body.classList.toggle('dark');
     document.body.classList.toggle('light', !isDark);
+    document.documentElement.classList.toggle('dark', isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateThemeIcon(isDark);
 }
@@ -215,15 +256,7 @@ function updateThemeIcon(isDark){
     const icon = document.getElementById('theme-icon');
     if(icon){ icon.innerHTML = isDark ? '&#9789;' : '&#9728;'; }
 }
-(function(){
-    const saved = localStorage.getItem('theme');
-    if(saved === 'dark'){ document.body.classList.add('dark'); }
-    else if(saved === 'light'){ document.body.classList.add('light'); }
-    const isDark = document.body.classList.contains('dark') ||
-        (!saved && window.matchMedia('(prefers-color-scheme:dark)').matches);
-    if(isDark && !saved){ document.body.classList.add('dark'); }
-    updateThemeIcon(isDark);
-})();
+updateThemeIcon(document.body.classList.contains('dark'));
 </script>
 <script>
     // Auto-dismiss messages (toasts) after 5 seconds
@@ -239,18 +272,14 @@ function updateThemeIcon(isDark){
     });
 </script>
 <script>
-    // HTMX NProgress Integration
-    document.body.addEventListener('htmx:beforeRequest', function(evt) {
-        NProgress.start();
-    });
-    document.body.addEventListener('htmx:afterOnLoad', function(evt) {
-        NProgress.done();
-    });
-    document.body.addEventListener('htmx:afterRequest', function(evt) {
-        NProgress.done();
-    });
-    document.body.addEventListener('htmx:historyRestore', function(evt) {
-        NProgress.done();
+    // HTMX NProgress Integration (skriptlar defer — DOMContentLoaded'da bog'lanadi)
+    document.addEventListener('DOMContentLoaded', function(){
+        if(typeof NProgress === 'undefined') return;
+        NProgress.configure({ showSpinner: false });
+        document.body.addEventListener('htmx:beforeRequest', function(){ NProgress.start(); });
+        document.body.addEventListener('htmx:afterOnLoad', function(){ NProgress.done(); });
+        document.body.addEventListener('htmx:afterRequest', function(){ NProgress.done(); });
+        document.body.addEventListener('htmx:historyRestore', function(){ NProgress.done(); });
     });
 </script>
 </body>
