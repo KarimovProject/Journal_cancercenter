@@ -6,6 +6,8 @@
 > hafta" keyingi sessiyada ma'nosini yo'qotadi).
 
 **Oxirgi yangilanish:** 2026-09-04
+**Joriy branch:** `frontend/design-system-refactor` (3 ta commit, `main` ga
+merge qilinmagan)
 
 ---
 
@@ -93,6 +95,20 @@ Mobil 390px da gorizontal toshib ketish yo'q.
 takroriy `font-size` qoidasi olib tashlandi. Hero h1: 32px → 52px (1280px da).
 Maqola matni: 105 → 73 belgi/qator.
 
+### Autentifikatsiya baglari (2026-09-04)
+- **Ro'yxatdan o'tish productionda buzuq edi.** `RegistrationForm.save()`
+  qaytargan user `authenticate()` dan o'tmagani uchun `.backend` atributiga ega
+  emas; ikkita `AUTHENTICATION_BACKENDS` sozlangani sababli `login()`
+  `ValueError` ko'targan. Har bir ro'yxatdan o'tish shunga urilgan.
+  Yechim: `auth_login(request, user, backend='...ModelBackend')`.
+  (`login_view` ta'sirlanmagan — `AuthenticationForm.get_user()` `.backend` ni
+  o'zi qo'yadi.)
+- Testlarda axes o'chirildi (`base.py`, `TESTING` bayrog'i). Django test
+  client'ining `login()` metodi `authenticate()` ni `request`siz chaqiradi,
+  `AxesStandaloneBackend` esa uni talab qiladi. Axes lockout mantig'i HTTP
+  so'rovlar orqali sinaladi, shuning uchun qamrov yo'qolmadi.
+- Natija: `Ran 56 tests — FAILED (errors=14)` → **`OK`**
+
 ### Muhit sozlamalari (2026-09-03)
 - `.claude/settings.json` — model Opus 5
 - `.mcp.json` — `ruflo@latest` → `ruflo@3.38.21` pin qilindi
@@ -107,10 +123,12 @@ tekshirilgan** — ikkala temada, uch xil ekran o'lchamida.
 
 **Ochiq muammolar:**
 
+Testlar to'liq o'tadi: `Ran 56 tests — OK`.
+
 | # | Muammo | Joyi | Og'irligi |
 |---|---|---|---|
 | 1 | Tahririyat paneli umumiy dizayn tizimidan tashqarida | `templates/journal/dashboard/` | Yuqori |
-| 2 | 14 ta test xato beradi (`django-axes`) | `journal/tests.py` | O'rta |
+| 2 | CI testlarni umuman ishga tushirmaydi | `.github/workflows/` | O'rta |
 
 ---
 
@@ -135,19 +153,12 @@ Reja: `base_dashboard.html` ni `style.css` ga ulash → `<style>` blokidagi
 qattiq ranglarni tokenlarga almashtirish (`--surface`, `--card-border`, `--ink`,
 `--muted`, `--brand`) → inline `style=` larni tozalash → ikkala temada tekshirish.
 
-### 4.2. Test xatolarini tuzatish — O'RTA
+### 4.2. CI'ga test bosqichini qo'shish — O'RTA
 
-56 testdan 14 tasi xato. 13 tasi bir sababdan:
-`AxesBackendRequestParameterRequired: AxesBackend requires a request as an
-argument to authenticate` — testlar `self.client.login()` chaqiradi, u esa
-`request`siz `authenticate()` ga boradi.
-
-Yechim: test uchun `AXES_ENABLED = False` qo'yish (alohida test settings yoki
-`@override_settings`). Qolgan 1 tasi `ValueError`/`AttributeError` — alohida
-ko'rish kerak.
-
-**Muhim:** bu xatolar 2026-09-03 frontend ishidan OLDIN ham bor edi — o'sha
-ishda faqat CSS va shablonlar o'zgartirilgan.
+`.github/workflows/` da faqat `deploy.yml` va `fetch_logs.yml` bor — testlar
+umuman ishga tushirilmaydi. Shu sababli ro'yxatdan o'tishni buzgan bag va 14 ta
+test xatosi uzoq vaqt sezilmay qolgan. Deploy'dan oldin `manage.py test journal`
+bosqichi qo'shilishi kerak.
 
 ### 4.3. Keyinroq
 - Qolgan public sahifalarni ko'zdan kechirish (`issue_detail`, `collection_*`,
@@ -185,6 +196,11 @@ bo'lishi mumkin. Bu bir marta chalg'itgan.
 
 **URL'lar** — til prefiksi bor. `curl` bilan tekshirsangiz `-L` qo'shing,
 aks holda 302 olasiz.
+
+**Ikkita auth backend** — `AUTHENTICATION_BACKENDS` da 2 ta backend bor
+(axes + ModelBackend). `authenticate()` dan o'tmagan userni `login()` qilsangiz,
+Django qaysi backendni ishlatishni bilmaydi va `ValueError` beradi. Bunday
+joyda `backend=` ni ochiq ko'rsating.
 
 **Kontrast o'lchash** — brauzerda `body.className` ni ish vaqtida almashtirib
 o'lchash **ishonchsiz** natija beradi (ajdod ranglari qayta hal bo'lmaydi).
