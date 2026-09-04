@@ -9,7 +9,8 @@
         <h1>{% trans "Onkologiya va radiologiya sohasidagi ilmiy nashrlar" %}</h1>
         <p>{% trans "Respublika Ixtisoslashtirilgan Onkologiya va Radiologiya Ilmiy-Amaliy Tibbiyot Markazining maqolalari, konferensiyalari va ilmiy faoliyati." %}</p>
         <form class="hero-search" action="{% url 'journal:article_list' %}" method="get">
-            <input type="text" name="q" placeholder="{% trans 'Maqola, muallif yoki kalit soʻz boʻyicha qidirish...' %}">
+            <label for="hero-q" class="sr-only">{% trans "Maqola, muallif yoki kalit soʻz boʻyicha qidirish" %}</label>
+            <input type="search" id="hero-q" name="q" placeholder="{% trans 'Maqola, muallif yoki kalit soʻz boʻyicha qidirish...' %}">
             <button class="btn btn-light" type="submit">{% trans "Qidirish" %}</button>
         </form>
         <div class="hero-stats">

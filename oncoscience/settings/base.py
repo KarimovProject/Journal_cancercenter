@@ -5,6 +5,7 @@ Barcha muhitlarga tegishli umumiy sozlamalar.
 Dev va Prod spesifik sozlamalar uchun dev.py va prod.py fayllarini ko'ring.
 """
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -266,6 +267,14 @@ AUTHENTICATION_BACKENDS = [
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1
 AXES_LOCKOUT_TEMPLATE = 'axes/lockout.html'
+
+# Testlarda axes o'chiriladi. Sabab: Django test client'ining login() metodi
+# authenticate() ni `request`siz chaqiradi, AxesStandaloneBackend esa uni
+# talab qilib AxesBackendRequestParameterRequired ko'taradi. Axes'ning
+# lockout mantig'i HTTP so'rovlar orqali sinaladi, client.login() orqali emas.
+TESTING = 'test' in sys.argv
+if TESTING:
+    AXES_ENABLED = False
 
 # Celery & Redis Cache
 REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')

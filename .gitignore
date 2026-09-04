@@ -24,3 +24,17 @@ db.sqlite3-journal
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Environment (local overrides)
+.env.local
+.env.*.local
+
+# AI tooling — lokal sozlama, repoga qo'shilmaydi
+# (CLAUDE.md va GOALS.md ataylab kuzatiladi — loyiha hujjatlari)
+.claude/
+.mcp.json
+.agents/
+
+# AI tooling runtime ma'lumotlari (DB, loglar, sessiyalar)
+.claude-flow/
+.swarm/

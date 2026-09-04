@@ -8,7 +8,8 @@
         <form action="{% url 'journal:newsletter_subscribe' %}" method="post" class="alerts-form">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path }}">
-            <input type="email" name="email" required placeholder="{% trans 'Email manzilingiz' %}">
+            <label for="alerts-email" class="sr-only">{% trans "Email manzilingiz" %}</label>
+            <input type="email" id="alerts-email" name="email" required placeholder="{% trans 'Email manzilingiz' %}">
             <button type="submit" class="btn btn-light">{% trans "Obuna bo'lish" %}</button>
         </form>
     </div>

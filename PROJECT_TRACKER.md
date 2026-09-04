@@ -1,5 +1,9 @@
 # Loyiha Holati va Rivojlanish Jurnali (Project Tracker)
 
+> ⚠️ **ESKIRGAN — bu fayl faqat tarixiy ma'lumot uchun qoldirilgan.**
+> Loyihaning joriy holati, keyingi qadamlari va tuzoqlari **`GOALS.md`** da.
+> Yangilashni ham o'sha yerda qiling; bu faylni yangilamang.
+
 Ushbu fayl loyihada avval nima qilingani, hozirda qanday jarayon ketyotgani va kelajakda nimalar qilinishi kerakligini kuzatib borish uchun mo'ljallangan (kesh vazifasini o'taydi).
 
 ## 🟢 Avval qilingan ishlar (Bajarilgan)
