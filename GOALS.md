@@ -6,8 +6,7 @@
 > hafta" keyingi sessiyada ma'nosini yo'qotadi).
 
 **Oxirgi yangilanish:** 2026-09-04
-**Joriy branch:** `frontend/design-system-refactor` (3 ta commit, `main` ga
-merge qilinmagan)
+**Joriy branch:** `frontend/design-system-refactor` — `main` ga merge qilinmagan
 
 ---
 
