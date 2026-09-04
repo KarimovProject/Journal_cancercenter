@@ -43,7 +43,10 @@ def register_view(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            auth_login(request, user)
+            # Ikkita AUTHENTICATION_BACKENDS sozlangani uchun Django qaysi
+            # backend ishlatilganini o'zi aniqlay olmaydi (yangi user
+            # authenticate() dan o'tmagan) — backendni ochiq ko'rsatamiz.
+            auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, _('Hisobingiz muvaffaqiyatli yaratildi!'))
             return redirect('journal:home')
     else:
