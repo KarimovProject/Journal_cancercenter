@@ -29,12 +29,13 @@ Thumbs.db
 .env.local
 .env.*.local
 
-# AI tooling — lokal sozlama, repoga qo'shilmaydi
-# (CLAUDE.md va GOALS.md ataylab kuzatiladi — loyiha hujjatlari)
+# Local tooling & dev notes
 .claude/
+.claude-flow/
 .mcp.json
 .agents/
-
-# AI tooling runtime ma'lumotlari (DB, loglar, sessiyalar)
-.claude-flow/
 .swarm/
+skills-lock.json
+CLAUDE.md
+GOALS.md
+PROJECT_TRACKER.md
