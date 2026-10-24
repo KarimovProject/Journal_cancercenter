@@ -1,4 +1,4 @@
-name: K3s CD Pipeline
+name: Deploy Journal Cancer Center
 
 on:
   push:
@@ -11,27 +11,26 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Copy code to app directory
         run: |
-          rsync -avz --exclude='.git' --exclude='env' --exclude='myvenv' --exclude='__pycache__' ./ /home/satosylv/Journal_cancercenter/
+          rsync -avz --exclude='.git' --exclude='media' --exclude='.env' --exclude='staticfiles' --exclude='db.sqlite3' --exclude='env' --exclude='venv' --exclude='myvenv' --exclude='__pycache__' ./ /home/satosylv/Journal_cancercenter/
 
-      - name: Build Docker Image
+      - name: Rebuild and restart web container
         run: |
           cd /home/satosylv/Journal_cancercenter
-          sudo docker build -t oncoscience-web:latest .
-          
-      - name: Import Image to K3s Containerd
+          docker compose up -d --build web
+
+      - name: Run migrations
         run: |
           cd /home/satosylv/Journal_cancercenter
-          sudo docker save oncoscience-web:latest | sudo k3s ctr images import -
-          
-      - name: Restart Deployment
+          docker compose exec -T web python manage.py migrate
+
+      - name: Collect static files
         run: |
           cd /home/satosylv/Journal_cancercenter
-          sudo k3s kubectl apply -f k8s.yaml
-          sudo k3s kubectl rollout restart deployment/oncoscience-web
-          sudo k3s kubectl rollout restart deployment/oncoscience-celery || true
-          sleep 15
-          sudo k3s kubectl logs deployment/oncoscience-web > /home/satosylv/Journal_cancercenter/migration.log || true
+          docker compose exec -T web python manage.py collectstatic --noinput
+
+      - name: Clean up unused Docker images
+        run: docker image prune -f
